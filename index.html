@@ -18,7 +18,6 @@
         .tab-content { display: none; }
         .tab-content.active { display: block; }
 
-        /* ===== КЕЙСЫ ===== */
         .cases-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin: 15px 0; }
         .case-card { background: #1a1a3e; border: 2px solid #ffd700; border-radius: 15px; padding: 12px 8px; cursor: pointer; transition: 0.3s; }
         .case-card:hover { transform: scale(1.03); box-shadow: 0 0 30px rgba(255,215,0,0.2); }
@@ -27,14 +26,13 @@
         .case-card .price { font-size: 12px; color: #888; }
         .case-card .chance { font-size: 11px; color: #555; }
 
-        /* ===== ПРОФИЛЬ ===== */
         .profile-card { background: #1a1a3e; border: 2px solid #ffd700; border-radius: 20px; padding: 20px; margin: 15px 0; }
         .profile-card .id { color: #888; font-size: 14px; }
         .profile-card .id span { color: #ffd700; font-weight: bold; }
         .profile-card .balance { font-size: 22px; color: #ffd700; margin: 10px 0; }
 
         .inventory-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin: 15px 0; }
-        .inv-item { background: #111; border: 1px solid #444; border-radius: 12px; padding: 10px; text-align: center; transition: 0.3s; }
+        .inv-item { background: #111; border: 1px solid #444; border-radius: 12px; padding: 10px; text-align: center; transition: 0.3s; cursor: pointer; }
         .inv-item .emoji { font-size: 28px; }
         .inv-item .name { font-size: 11px; color: #aaa; }
         .inv-item .rarity { font-size: 10px; }
@@ -46,7 +44,6 @@
         .btn-support { background: #222; border: 1px solid #ffd700; color: #ffd700; padding: 8px 20px; border-radius: 10px; cursor: pointer; transition: 0.3s; font-weight: bold; margin: 5px; }
         .btn-support:hover { background: #ffd700; color: #000; }
 
-        /* ===== АПГРЕЙД ===== */
         .upgrade-slots { display: grid; grid-template-columns: repeat(5, 1fr); gap: 8px; margin: 15px 0; }
         .slot { background: #111; border: 2px dashed #444; border-radius: 12px; aspect-ratio: 1; display: flex; align-items: center; justify-content: center; font-size: 24px; cursor: pointer; transition: 0.3s; }
         .slot.filled { border: 2px solid #ffd700; background: #1a1a3e; }
@@ -59,7 +56,6 @@
         .craft-progress { background: #111; border-radius: 10px; height: 20px; overflow: hidden; margin: 10px 0; }
         .craft-progress .fill { height: 100%; background: linear-gradient(90deg, #ffd700, #ff8c00); width: 0%; transition: width 0.5s; }
 
-        /* ===== БОНУСЫ ===== */
         .bonus-card { background: #1a1a3e; border: 2px solid #ffd700; border-radius: 20px; padding: 20px; margin: 15px 0; }
         .bonus-card .task { display: flex; justify-content: space-between; align-items: center; padding: 10px 0; border-bottom: 1px solid #222; }
         .bonus-card .task:last-child { border-bottom: none; }
@@ -69,7 +65,6 @@
         .btn-claim:hover { transform: scale(1.05); }
         .btn-claim:disabled { opacity: 0.4; cursor: not-allowed; }
 
-        /* ===== ПРЕВЬЮ КЕЙСА ===== */
         .preview-modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.9); z-index: 999; justify-content: center; align-items: center; }
         .preview-modal.active { display: flex; }
         .preview-content { background: #1a1a3e; padding: 25px; border-radius: 20px; border: 3px solid #ffd700; max-width: 400px; width: 90%; text-align: center; max-height: 80vh; overflow-y: auto; }
@@ -79,14 +74,26 @@
         .preview-content .skin-item .price { color: #ffd700; }
         .preview-close { background: #ffd700; border: none; padding: 10px 30px; font-size: 16px; font-weight: bold; border-radius: 12px; cursor: pointer; color: #000; margin-top: 15px; }
 
-        /* ===== ОБЩЕЕ ===== */
-        .btn-secondary { background: #222; border: 1px solid #ffd700; color: #ffd700; padding: 8px 20px; border-radius: 10px; cursor: pointer; transition: 0.3s; font-weight: bold; }
-        .btn-secondary:hover { background: #ffd700; color: #000; }
+        .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.9); z-index: 1000; justify-content: center; align-items: center; }
+        .modal.active { display: flex; }
+        .modal-content { background: #1a1a3e; padding: 30px; border-radius: 20px; border: 3px solid #ffd700; max-width: 400px; width: 90%; text-align: center; }
+        .scroll-container { width: 100%; overflow: hidden; border-radius: 15px; background: #0a0a1a; border: 2px solid #ffd700; margin: 15px 0; position: relative; }
+        .scroll-track { display: flex; transition: transform 6s cubic-bezier(0.1, 0.8, 0.1, 1); will-change: transform; }
+        .scroll-item { flex: 0 0 auto; width: 120px; padding: 10px; text-align: center; background: #111; border-right: 1px solid #222; }
+        .scroll-item .skin-box { width: 80px; height: 80px; border-radius: 10px; margin: 0 auto 5px; display: flex; align-items: center; justify-content: center; font-size: 30px; border: 2px solid #444; }
+        .arrow { position: absolute; top: -5px; left: 50%; transform: translateX(-50%); font-size: 40px; color: #ffd700; filter: drop-shadow(0 0 20px #ffd700); z-index: 10; pointer-events: none; animation: arrowBounce 0.8s ease-in-out infinite; }
+        @keyframes arrowBounce { 0%, 100% { transform: translateX(-50%) translateY(0); } 50% { transform: translateX(-50%) translateY(10px); } }
+        .win-text { font-size: 24px; font-weight: bold; margin: 10px 0; }
+        .close-btn { background: #ffd700; border: none; padding: 10px 30px; font-size: 18px; font-weight: bold; border-radius: 12px; cursor: pointer; color: #000; margin-top: 15px; }
 
-        .footer { margin-top: 20px; font-size: 11px; color: #333; }
-        .rarity-common { color: #b0b0b0; } .rarity-uncommon { color: #5e98d9; } .rarity-rare { color: #4b69ff; } .rarity-epic { color: #8847ff; } .rarity-legendary { color: #ff8000; } .rarity-mythical { color: #ff2d55; }
+        .support-modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.9); z-index: 1001; justify-content: center; align-items: center; }
+        .support-modal.active { display: flex; }
+        .support-content { background: #1a1a3e; padding: 30px; border-radius: 20px; border: 3px solid #ffd700; max-width: 380px; width: 90%; text-align: center; }
+        .support-content h2 { color: #ffd700; margin-bottom: 15px; }
+        .support-content .info { color: #aaa; font-size: 16px; line-height: 1.6; margin: 15px 0; }
+        .support-content .highlight { color: #ffd700; font-weight: bold; font-size: 18px; }
+        .support-close-btn { background: #ffd700; border: none; padding: 10px 30px; font-size: 18px; font-weight: bold; border-radius: 12px; cursor: pointer; color: #000; margin-top: 15px; }
 
-        /* ===== САПЁР ===== */
         .sapper-grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 6px; margin: 15px auto; max-width: 300px; }
         .sapper-cell { background: #1a1a3e; border: 2px solid #444; border-radius: 8px; aspect-ratio: 1; display: flex; align-items: center; justify-content: center; font-size: 20px; font-weight: bold; cursor: pointer; transition: 0.3s; color: #fff; }
         .sapper-cell:hover { border-color: #ffd700; transform: scale(1.05); }
@@ -113,27 +120,8 @@
         .sapper-balance { margin: 10px 0; padding: 10px; background: #111; border-radius: 10px; color: #888; font-size: 16px; border: 1px solid #222; }
         .sapper-balance span { color: #ffd700; font-weight: bold; }
 
-        /* ===== АНИМАЦИЯ ОТКРЫТИЯ ===== */
-        .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.9); z-index: 1000; justify-content: center; align-items: center; }
-        .modal.active { display: flex; }
-        .modal-content { background: #1a1a3e; padding: 30px; border-radius: 20px; border: 3px solid #ffd700; max-width: 400px; width: 90%; text-align: center; }
-        .scroll-container { width: 100%; overflow: hidden; border-radius: 15px; background: #0a0a1a; border: 2px solid #ffd700; margin: 15px 0; position: relative; }
-        .scroll-track { display: flex; transition: transform 6s cubic-bezier(0.1, 0.8, 0.1, 1); will-change: transform; }
-        .scroll-item { flex: 0 0 auto; width: 120px; padding: 10px; text-align: center; background: #111; border-right: 1px solid #222; }
-        .scroll-item .skin-box { width: 80px; height: 80px; border-radius: 10px; margin: 0 auto 5px; display: flex; align-items: center; justify-content: center; font-size: 30px; border: 2px solid #444; }
-        .arrow { position: absolute; top: -5px; left: 50%; transform: translateX(-50%); font-size: 40px; color: #ffd700; filter: drop-shadow(0 0 20px #ffd700); z-index: 10; pointer-events: none; animation: arrowBounce 0.8s ease-in-out infinite; }
-        @keyframes arrowBounce { 0%, 100% { transform: translateX(-50%) translateY(0); } 50% { transform: translateX(-50%) translateY(10px); } }
-        .win-text { font-size: 24px; font-weight: bold; margin: 10px 0; }
-        .close-btn { background: #ffd700; border: none; padding: 10px 30px; font-size: 18px; font-weight: bold; border-radius: 12px; cursor: pointer; color: #000; margin-top: 15px; }
-
-        /* ===== ПОДДЕРЖКА ===== */
-        .support-modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.9); z-index: 1001; justify-content: center; align-items: center; }
-        .support-modal.active { display: flex; }
-        .support-content { background: #1a1a3e; padding: 30px; border-radius: 20px; border: 3px solid #ffd700; max-width: 380px; width: 90%; text-align: center; }
-        .support-content h2 { color: #ffd700; margin-bottom: 15px; }
-        .support-content .info { color: #aaa; font-size: 16px; line-height: 1.6; margin: 15px 0; }
-        .support-content .highlight { color: #ffd700; font-weight: bold; font-size: 18px; }
-        .support-close-btn { background: #ffd700; border: none; padding: 10px 30px; font-size: 18px; font-weight: bold; border-radius: 12px; cursor: pointer; color: #000; margin-top: 15px; }
+        .footer { margin-top: 20px; font-size: 11px; color: #333; }
+        .rarity-common { color: #b0b0b0; } .rarity-uncommon { color: #5e98d9; } .rarity-rare { color: #4b69ff; } .rarity-epic { color: #8847ff; } .rarity-legendary { color: #ff8000; } .rarity-mythical { color: #ff2d55; }
     </style>
 </head>
 <body>
@@ -555,7 +543,7 @@ document.getElementById('supportModal').addEventListener('click', function(e) {
 });
 
 // ============================================================
-//  САПЁР
+//  САПЁР (ИСПРАВЛЕННЫЙ)
 // ============================================================
 let sapperBet = 10;
 let sapperBombs = 9;
@@ -589,9 +577,8 @@ function resetSapper() {
     document.getElementById('sapperStatus').textContent = `💰 Ставка: ${sapperBet} Gold | Выигрыш: 0 Gold`;
     document.getElementById('sapperTakeBtn').disabled = true;
     
-    document.querySelectorAll('#sapperDifficulty button').forEach(b => b.classList.remove('active'));
-    document.querySelector('#sapperDifficulty button[data-bombs="9"]').classList.add('active');
-    sapperBombs = 9;
+    // ✅ НЕ СБРАСЫВАЕМ АКТИВНУЮ КНОПКУ!
+    // Просто используем текущее значение sapperBombs
     
     renderSapperGrid();
 }
@@ -630,6 +617,7 @@ function sapperClick(index) {
             return;
         }
         
+        // Размещаем бомбы (используем sapperBombs)
         let bombsPlaced = 0;
         while (bombsPlaced < sapperBombs) {
             const pos = Math.floor(Math.random() * 25);
@@ -725,14 +713,27 @@ document.getElementById('sapperBetInput').addEventListener('input', function() {
     document.getElementById('sapperStatus').textContent = `💰 Ставка: ${sapperBet} Gold | Выигрыш: 0 Gold`;
 });
 
+// ============================================================
+//  ВЫБОР СЛОЖНОСТИ (САПЁР)
+// ============================================================
 document.querySelectorAll('#sapperDifficulty button').forEach(btn => {
     btn.addEventListener('click', function() {
-        if (!sapperFirstClick) return;
+        // Снимаем активный класс со всех
         document.querySelectorAll('#sapperDifficulty button').forEach(b => b.classList.remove('active'));
         this.classList.add('active');
+        // Запоминаем количество бомб
         sapperBombs = parseInt(this.dataset.bombs);
-        resetSapper();
-        document.querySelector(`#sapperDifficulty button[data-bombs="${sapperBombs}"]`).classList.add('active');
+        // Обновляем статус (без сброса игры)
+        document.getElementById('sapperStatus').textContent = `💣 Бомб: ${sapperBombs} | Ставка: ${sapperBet} Gold`;
+        // Перерисовываем поле (без сброса сложности)
+        renderSapperGrid();
+        // Сбрасываем игровой статус (чтобы можно было играть с новой сложностью)
+        sapperGameOver = false;
+        sapperFirstClick = true;
+        sapperCurrentWin = 0;
+        sapperOpenedCells = 0;
+        document.getElementById('sapperTakeBtn').disabled = true;
+        document.getElementById('sapperStatus').textContent = `💰 Ставка: ${sapperBet} Gold | Выигрыш: 0 Gold | 💣 Бомб: ${sapperBombs}`;
     });
 });
 
@@ -747,7 +748,10 @@ document.querySelectorAll('.tab-btn').forEach(btn => {
         document.getElementById('tab-' + this.dataset.tab).classList.add('active');
         if (this.dataset.tab === 'profile') renderInventory();
         if (this.dataset.tab === 'upgrade') renderUpgradeSlots();
-        if (this.dataset.tab === 'sapper') resetSapper();
+        if (this.dataset.tab === 'sapper') {
+            document.getElementById('sapperBalanceDisplay').textContent = balance;
+            renderSapperGrid();
+        }
     });
 });
 
