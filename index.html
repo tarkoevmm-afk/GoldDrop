@@ -100,6 +100,9 @@
         .inv-item .emoji { font-size: 30px; }
         .inv-item .name { font-size: 11px; color: #aaa; margin-top: 5px; }
         .inv-item .rarity { font-size: 10px; }
+        .inv-item .price { font-size: 10px; color: #ffd700; }
+
+        .price-tag { color: #ffd700; font-weight: bold; font-size: 14px; margin: 5px 0; }
     </style>
 </head>
 <body>
@@ -145,7 +148,7 @@
             
             <div class="game-card" onclick="openUpgrade()">
                 <h2>🔧 Апгрейд скинов</h2>
-                <p>Улучши свой скин бесплатно! Выбери шанс и рискуй.</p>
+                <p>Улучши свой скин! Выбери шанс и рискуй.</p>
             </div>
 
             <div style="color:#444; font-size:14px; margin-top:20px; border-top:1px solid #222; padding-top:20px;">
@@ -217,14 +220,17 @@
             <p style="color:#888; font-size:14px;">Выбери скин из инвентаря и шанс</p>
             
             <div class="upgrade-slot" id="upgradeSlot">➕</div>
-            <div style="margin:10px 0; color:#888; font-size:14px;">
+            <div style="margin:5px 0; color:#888; font-size:14px;">
                 <span id="selectedSkinName">Скин не выбран</span>
             </div>
+            <div id="selectedSkinPrice" class="price-tag"></div>
 
             <div style="margin:10px 0;">
                 <p style="color:#888; font-size:12px;">Твой инвентарь:</p>
                 <div id="inventoryList" class="inventory-grid"></div>
             </div>
+
+            <div id="upgradePriceInfo" style="color:#888; font-size:13px; margin:10px 0;"></div>
 
             <div class="chance-grid">
                 <button class="chance-btn" data-chance="0.8">
@@ -253,7 +259,7 @@
                 </button>
             </div>
 
-            <button class="upgrade-btn" id="upgradeBtn" disabled>🔮 Апгрейд (бесплатно)</button>
+            <button class="upgrade-btn" id="upgradeBtn" disabled>🔮 Апгрейд</button>
             <div id="upgradeResult" style="margin-top:15px; font-size:18px; color:#ffd700;"></div>
             <button class="close-btn" onclick="closeUpgrade()" style="margin-top:15px;">Закрыть</button>
         </div>
@@ -329,7 +335,7 @@
                 }, 100);
 
                 setTimeout(() => {
-                    resultText.innerHTML = `🎉 <span style="color:${win.color};">${win.emoji} ${win.name}</span> (${win.rarity})!`;
+                    resultText.innerHTML = `🎉 <span style="color:${win.color};">${win.emoji} ${win.name}</span> (${win.rarity})!<br><span style="color:#ffd700;font-size:16px;">💰 ${win.price} ₽</span>`;
                 }, 6500);
             });
         });
@@ -385,6 +391,7 @@
                     <div class="emoji">${skin.emoji}</div>
                     <div class="name">${skin.name}</div>
                     <div class="rarity" style="color:${skin.color};">${skin.rarity}</div>
+                    <div class="price">💰 ${skin.price} ₽</div>
                 `;
                 div.addEventListener('click', () => selectSkinForUpgrade(index));
                 container.appendChild(div);
@@ -398,7 +405,21 @@
             slot.className = 'upgrade-slot filled';
             slot.style.borderColor = selectedSkin.color;
             document.getElementById('selectedSkinName').textContent = `${selectedSkin.emoji} ${selectedSkin.name} (${selectedSkin.rarity})`;
+            document.getElementById('selectedSkinPrice').textContent = `💰 Стоимость: ${selectedSkin.price} ₽`;
             document.getElementById('upgradeResult').textContent = '';
+            
+            // Показываем цену возможного выигрыша
+            const currentIndex = rarityOrder.indexOf(selectedSkin.rarity);
+            if (currentIndex < rarityOrder.length - 1) {
+                const nextRarity = rarityOrder[currentIndex + 1];
+                const nextSkin = skins.find(s => s.rarity === nextRarity);
+                if (nextSkin) {
+                    document.getElementById('upgradePriceInfo').innerHTML = `🎯 При успехе: <span style="color:#ffd700;">${nextSkin.emoji} ${nextSkin.name}</span> (💰 ${nextSkin.price} ₽)`;
+                }
+            } else {
+                document.getElementById('upgradePriceInfo').textContent = '🌟 Это максимальная редкость!';
+            }
+            
             checkUpgradeReady();
         }
 
@@ -420,10 +441,11 @@
             document.getElementById('upgradeSlot').textContent = '➕';
             document.getElementById('upgradeSlot').className = 'upgrade-slot';
             document.getElementById('selectedSkinName').textContent = 'Скин не выбран';
+            document.getElementById('selectedSkinPrice').textContent = '';
+            document.getElementById('upgradePriceInfo').textContent = '';
             document.getElementById('upgradeResult').textContent = '';
             document.querySelectorAll('.chance-btn').forEach(b => b.classList.remove('selected'));
             document.getElementById('upgradeBtn').disabled = true;
-            document.getElementById('upgradeBtn').textContent = '🔮 Апгрейд (бесплатно)';
         }
 
         // Выбор шанса
@@ -443,11 +465,11 @@
                 btn.textContent = `🔮 Апгрейд (${selectedChance}%)`;
             } else {
                 btn.disabled = true;
-                btn.textContent = '🔮 Апгрейд (бесплатно)';
+                btn.textContent = '🔮 Апгрейд';
             }
         }
 
-        // Апгрейд (БЕСПЛАТНО!)
+        // Апгрейд
         document.getElementById('upgradeBtn').addEventListener('click', function() {
             if (!selectedSkin || selectedChance === null) return;
 
@@ -467,24 +489,24 @@
                 if (newSkin) {
                     const upgradedSkin = { ...newSkin };
                     inventory.push(upgradedSkin);
-                    resultDiv.innerHTML = `✅ АПГРЕЙД УСПЕШЕН!<br>🎉 ${upgradedSkin.emoji} ${upgradedSkin.name} (${upgradedSkin.rarity})`;
-                    // Обновляем слот
+                    resultDiv.innerHTML = `✅ АПГРЕЙД УСПЕШЕН!<br>🎉 ${upgradedSkin.emoji} ${upgradedSkin.name} (${upgradedSkin.rarity})<br><span style="color:#ffd700;font-size:16px;">💰 ${upgradedSkin.price} ₽</span>`;
                     document.getElementById('upgradeSlot').textContent = upgradedSkin.emoji;
                     document.getElementById('upgradeSlot').style.borderColor = upgradedSkin.color;
                     document.getElementById('selectedSkinName').textContent = `${upgradedSkin.emoji} ${upgradedSkin.name} (${upgradedSkin.rarity})`;
+                    document.getElementById('selectedSkinPrice').textContent = `💰 Стоимость: ${upgradedSkin.price} ₽`;
                     selectedSkin = upgradedSkin;
                 }
             } else if (isSuccess && currentIndex === rarityOrder.length - 1) {
-                // Максимальная редкость — скин остаётся
                 inventory.push(selectedSkin);
-                resultDiv.innerHTML = `🌟 Это уже максимальная редкость! Скин остался с вами.`;
+                resultDiv.innerHTML = `🌟 Это уже максимальная редкость! Скин остался с вами.<br><span style="color:#ffd700;font-size:16px;">💰 ${selectedSkin.price} ₽</span>`;
             } else {
                 resultDiv.innerHTML = `💥 АПГРЕЙД НЕ УДАЛСЯ! Скин сгорел.`;
-                // Скин уже удалён из инвентаря
                 selectedSkin = null;
                 document.getElementById('upgradeSlot').textContent = '➕';
                 document.getElementById('upgradeSlot').className = 'upgrade-slot';
                 document.getElementById('selectedSkinName').textContent = 'Скин не выбран';
+                document.getElementById('selectedSkinPrice').textContent = '';
+                document.getElementById('upgradePriceInfo').textContent = '';
             }
 
             renderInventory();
