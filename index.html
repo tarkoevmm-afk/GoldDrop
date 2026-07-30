@@ -44,17 +44,29 @@
         .btn-support { background: #222; border: 1px solid #ffd700; color: #ffd700; padding: 8px 20px; border-radius: 10px; cursor: pointer; transition: 0.3s; font-weight: bold; margin: 5px; }
         .btn-support:hover { background: #ffd700; color: #000; }
 
-        .upgrade-slots { display: grid; grid-template-columns: repeat(5, 1fr); gap: 8px; margin: 15px 0; }
-        .slot { background: #111; border: 2px dashed #444; border-radius: 12px; aspect-ratio: 1; display: flex; align-items: center; justify-content: center; font-size: 24px; cursor: pointer; transition: 0.3s; }
-        .slot.filled { border: 2px solid #ffd700; background: #1a1a3e; }
-        .slot:hover { border-color: #ffd700; }
+        .upgrade-slots { display: grid; grid-template-columns: repeat(5, 1fr); gap: 8px; margin: 15px 0; max-width: 400px; margin-left: auto; margin-right: auto; }
+        .upgrade-slot { background: #111; border: 2px dashed #444; border-radius: 12px; aspect-ratio: 1; display: flex; align-items: center; justify-content: center; font-size: 24px; cursor: pointer; transition: 0.3s; position: relative; }
+        .upgrade-slot.filled { border: 2px solid #ffd700; background: #1a1a3e; }
+        .upgrade-slot:hover { border-color: #ffd700; }
+        .upgrade-slot .remove-btn { position: absolute; top: -8px; right: -8px; background: #ff2d55; border-radius: 50%; width: 20px; height: 20px; font-size: 12px; display: flex; align-items: center; justify-content: center; cursor: pointer; border: none; color: #fff; }
+
+        .upgrade-arrow { font-size: 24px; color: #ffd700; animation: arrowPulse 1s ease-in-out infinite; margin: 10px 0; }
+        @keyframes arrowPulse { 0%, 100% { opacity: 0.3; transform: translateY(0); } 50% { opacity: 1; transform: translateY(5px); } }
+
+        .upgrade-target { margin: 15px 0; }
+        .upgrade-target select { background: #111; border: 1px solid #444; color: #fff; padding: 10px; border-radius: 10px; width: 100%; }
+
+        .upgrade-gold { margin: 15px 0; }
+        .upgrade-gold input[type="range"] { width: 100%; accent-color: #ffd700; background: #222; height: 6px; border-radius: 3px; }
+        .upgrade-gold input[type="number"] { background: #111; border: 1px solid #444; color: #fff; padding: 8px; border-radius: 10px; width: 80px; text-align: center; }
 
         .craft-btn { background: linear-gradient(135deg, #ffd700, #ff8c00); border: none; padding: 12px 30px; font-size: 16px; font-weight: bold; border-radius: 12px; cursor: pointer; color: #000; transition: 0.3s; margin: 10px 0; }
         .craft-btn:hover { transform: scale(1.05); box-shadow: 0 0 30px rgba(255,215,0,0.4); }
         .craft-btn:disabled { opacity: 0.5; cursor: not-allowed; }
 
-        .craft-progress { background: #111; border-radius: 10px; height: 20px; overflow: hidden; margin: 10px 0; }
-        .craft-progress .fill { height: 100%; background: linear-gradient(90deg, #ffd700, #ff8c00); width: 0%; transition: width 0.5s; }
+        .upgrade-info { background: #111; padding: 15px; border-radius: 12px; margin: 15px 0; }
+        .upgrade-info .chance { font-size: 28px; color: #ffd700; font-weight: bold; }
+        .upgrade-info .details { font-size: 14px; color: #888; }
 
         .bonus-card { background: #1a1a3e; border: 2px solid #ffd700; border-radius: 20px; padding: 20px; margin: 15px 0; }
         .bonus-card .task { display: flex; justify-content: space-between; align-items: center; padding: 10px 0; border-bottom: 1px solid #222; }
@@ -104,7 +116,6 @@
 
         .sapper-bet { display: flex; gap: 10px; flex-wrap: wrap; justify-content: center; margin: 10px 0; align-items: center; }
         .sapper-bet input { background: #111; border: 1px solid #444; border-radius: 10px; padding: 8px 12px; color: #fff; font-size: 16px; width: 100px; text-align: center; }
-        .sapper-bet input:focus { border-color: #ffd700; outline: none; }
 
         .sapper-difficulty { display: flex; gap: 10px; flex-wrap: wrap; justify-content: center; margin: 10px 0; }
         .sapper-difficulty button { background: #222; border: 1px solid #ff2d55; color: #ff2d55; padding: 8px 16px; border-radius: 10px; cursor: pointer; transition: 0.3s; font-weight: bold; }
@@ -141,17 +152,47 @@
         <div class="cases-grid" id="casesGrid"></div>
     </div>
 
-    <!-- ===== АПГРЕЙД ===== -->
+    <!-- ===== АПГРЕЙД (НОВЫЙ) ===== -->
     <div id="tab-upgrade" class="tab-content">
         <h3 style="color:#ffd700;">🔧 Апгрейд скинов</h3>
-        <p style="color:#888; font-size:14px;">Выбери 10 скинов из инвентаря для крафта</p>
+        <p style="color:#888; font-size:14px;">Выбери от 1 до 10 скинов и цель для апгрейда</p>
+        
+        <!-- Стрелка -->
+        <div class="upgrade-arrow" id="upgradeArrow">▼ Выберите скины ▼</div>
+
+        <!-- Слоты -->
         <div class="upgrade-slots" id="upgradeSlots"></div>
-        <button class="craft-btn" id="craftBtn">🔮 Скрафтить</button>
-        <div class="craft-progress"><div class="fill" id="craftProgress" style="width:0%;"></div></div>
-        <p style="color:#888; font-size:14px;">Крафт-монеты: <span id="craftCoins" style="color:#ffd700;">0</span></p>
-        <div style="margin-top:15px;">
-            <button class="btn-secondary" onclick="openCraftShop()">🛒 Магазин крафта</button>
+
+        <!-- Инвентарь для выбора скинов -->
+        <p style="color:#888; font-size:14px; margin-top:15px;">Твой инвентарь:</p>
+        <div class="inventory-grid" id="upgradeInventory" style="grid-template-columns: repeat(3, 1fr);"></div>
+
+        <!-- Выбор цели -->
+        <div class="upgrade-target">
+            <p style="color:#888; font-size:14px;">🎯 Выбери целевой скин:</p>
+            <select id="targetSkinSelect"></select>
         </div>
+
+        <!-- Добавка Gold -->
+        <div class="upgrade-gold">
+            <p style="color:#888; font-size:14px;">💰 Добавь Gold к шансу:</p>
+            <input type="range" id="bonusGoldSlider" min="0" max="1000" value="0" step="10">
+            <div style="display: flex; justify-content: center; align-items: center; gap: 10px; margin-top: 8px;">
+                <input type="number" id="bonusGoldInput" value="0" min="0" step="10" style="width:100px;">
+                <span style="color:#888;">Gold</span>
+                <span style="color:#888; font-size:12px;">(+<span id="bonusChanceDisplay">0</span>%)</span>
+            </div>
+        </div>
+
+        <!-- Информация о шансе -->
+        <div class="upgrade-info">
+            <div class="chance" id="upgradeChanceDisplay">0%</div>
+            <div class="details" id="upgradeDetails">Выберите скины и цель</div>
+        </div>
+
+        <!-- Кнопка -->
+        <button class="craft-btn" id="upgradeBtn" disabled>🔮 Апгрейд</button>
+        <div id="upgradeResult" style="margin-top:15px; font-size:18px;"></div>
     </div>
 
     <!-- ===== ПРОФИЛЬ ===== -->
@@ -292,8 +333,6 @@ const cases = [
 // ============================================================
 let balance = 100;
 let inventory = [];
-let craftCoins = 0;
-let selectedSlots = new Array(10).fill(null);
 let bonusClaimed = { tg: false, daily: false, cases: false };
 
 // ============================================================
@@ -400,6 +439,7 @@ function openCase(index) {
     setTimeout(() => {
         resultText.innerHTML = `🎉 <span style="color:${win.color};">${win.emoji} ${win.name}</span> (${win.rarity})!<br><span style="color:#ffd700;font-size:16px;">💰 ${win.price} Gold</span>`;
         renderInventory();
+        renderUpgradeInventory();
     }, 6500);
 }
 
@@ -433,7 +473,6 @@ function renderInventory() {
             e.stopPropagation();
             sellSkin(index);
         });
-        div.addEventListener('click', () => selectSkinForSlot(index));
         grid.appendChild(div);
     });
 }
@@ -444,72 +483,213 @@ function sellSkin(index) {
     inventory.splice(index, 1);
     document.getElementById('balanceDisplay').textContent = balance;
     renderInventory();
+    renderUpgradeInventory();
 }
 
 // ============================================================
-//  АПГРЕЙД (КРАФТ)
+//  АПГРЕЙД (НОВЫЙ — КАК В STANDOFFCRAFT)
 // ============================================================
+let upgradeSlots = new Array(10).fill(null);
+let targetSkin = null;
+let selectedUpgradeSkinIndex = null;
+let bonusGold = 0;
+
 function renderUpgradeSlots() {
     const container = document.getElementById('upgradeSlots');
     container.innerHTML = '';
-    selectedSlots.forEach((slot, i) => {
+    upgradeSlots.forEach((slot, i) => {
         const div = document.createElement('div');
-        div.className = 'slot' + (slot ? ' filled' : '');
+        div.className = 'upgrade-slot' + (slot ? ' filled' : '');
         div.textContent = slot ? slot.emoji : '➕';
-        div.addEventListener('click', () => clearSlot(i));
+        if (slot) {
+            const removeBtn = document.createElement('button');
+            removeBtn.className = 'remove-btn';
+            removeBtn.textContent = '✕';
+            removeBtn.addEventListener('click', (e) => {
+                e.stopPropagation();
+                clearUpgradeSlot(i);
+            });
+            div.appendChild(removeBtn);
+        }
         container.appendChild(div);
     });
-    document.getElementById('craftCoins').textContent = craftCoins;
-    updateCraftProgress();
+    updateUpgradeChance();
+    checkUpgradeArrow();
 }
 
-function selectSkinForSlot(index) {
+function checkUpgradeArrow() {
+    const filled = upgradeSlots.filter(s => s !== null).length;
+    const arrow = document.getElementById('upgradeArrow');
+    if (filled === 0) {
+        arrow.style.display = 'block';
+    } else {
+        arrow.style.display = 'none';
+    }
+}
+
+function clearUpgradeSlot(index) {
+    if (!upgradeSlots[index]) return;
+    inventory.push(upgradeSlots[index]);
+    upgradeSlots[index] = null;
+    renderUpgradeSlots();
+    renderInventory();
+    renderUpgradeInventory();
+}
+
+function selectSkinForUpgrade(index) {
     const skin = inventory[index];
     if (!skin) return;
-    const emptyIdx = selectedSlots.indexOf(null);
+    const emptyIdx = upgradeSlots.indexOf(null);
     if (emptyIdx === -1) {
         alert('❌ Все слоты заняты!');
         return;
     }
-    selectedSlots[emptyIdx] = skin;
+    upgradeSlots[emptyIdx] = skin;
     inventory.splice(index, 1);
     renderUpgradeSlots();
     renderInventory();
+    renderUpgradeInventory();
 }
 
-function clearSlot(index) {
-    if (!selectedSlots[index]) return;
-    inventory.push(selectedSlots[index]);
-    selectedSlots[index] = null;
-    renderUpgradeSlots();
-    renderInventory();
-}
-
-function updateCraftProgress() {
-    const filled = selectedSlots.filter(s => s !== null).length;
-    const pct = (filled / 10) * 100;
-    document.getElementById('craftProgress').style.width = pct + '%';
-    document.getElementById('craftBtn').disabled = filled < 10;
-}
-
-document.getElementById('craftBtn').addEventListener('click', function() {
-    const filled = selectedSlots.filter(s => s !== null).length;
-    if (filled < 10) {
-        alert('❌ Заполните все 10 слотов!');
+function renderUpgradeInventory() {
+    const container = document.getElementById('upgradeInventory');
+    container.innerHTML = '';
+    if (inventory.length === 0) {
+        container.innerHTML = '<p style="color:#444;font-size:14px;grid-column:span 3;">Инвентарь пуст</p>';
         return;
     }
-    const totalValue = selectedSlots.reduce((sum, s) => sum + s.price, 0);
-    craftCoins += Math.floor(totalValue / 5);
-    selectedSlots.fill(null);
-    renderUpgradeSlots();
-    renderInventory();
-    document.getElementById('craftCoins').textContent = craftCoins;
-    alert(`✅ Крафт завершён! +${Math.floor(totalValue/5)} крафт-монет`);
+    inventory.forEach((skin, index) => {
+        const div = document.createElement('div');
+        div.className = 'inv-item';
+        div.innerHTML = `
+            <div class="emoji">${skin.emoji}</div>
+            <div class="name">${skin.name}</div>
+            <div class="rarity" style="color:${skin.color};">${skin.rarity}</div>
+            <div class="price">💰 ${skin.price} Gold</div>
+            <button class="btn-sell" data-index="${index}">Выбрать</button>
+        `;
+        div.querySelector('.btn-sell').addEventListener('click', (e) => {
+            e.stopPropagation();
+            selectSkinForUpgrade(index);
+        });
+        container.appendChild(div);
+    });
+}
+
+function renderTargetSkins() {
+    const select = document.getElementById('targetSkinSelect');
+    select.innerHTML = '';
+    skinsList.forEach((skin, index) => {
+        const option = document.createElement('option');
+        option.value = index;
+        option.textContent = `${skin.emoji} ${skin.name} (${skin.price} Gold)`;
+        select.appendChild(option);
+    });
+    targetSkin = skinsList[0];
+}
+
+function updateUpgradeChance() {
+    const filled = upgradeSlots.filter(s => s !== null);
+    const targetIndex = document.getElementById('targetSkinSelect').value;
+    const target = skinsList[targetIndex] || skinsList[0];
+    targetSkin = target;
+    
+    const bonusGoldInput = parseInt(document.getElementById('bonusGoldInput').value) || 0;
+    bonusGold = Math.min(bonusGoldInput, balance);
+    document.getElementById('bonusGoldInput').value = bonusGold;
+    
+    const bonusChance = Math.floor(bonusGold / 10);
+    document.getElementById('bonusChanceDisplay').textContent = bonusChance;
+    
+    if (filled.length === 0 || !target) {
+        document.getElementById('upgradeChanceDisplay').textContent = '0%';
+        document.getElementById('upgradeDetails').textContent = 'Выберите скины и цель';
+        document.getElementById('upgradeBtn').disabled = true;
+        return;
+    }
+    
+    const totalPrice = filled.reduce((sum, s) => sum + s.price, 0);
+    const targetPrice = target.price;
+    
+    let chance = (totalPrice / targetPrice) * 100;
+    chance = Math.min(chance + bonusChance, 95);
+    chance = Math.round(chance);
+    
+    document.getElementById('upgradeChanceDisplay').textContent = `${chance}%`;
+    document.getElementById('upgradeDetails').textContent = 
+        `💰 Скины: ${totalPrice} Gold | 🎯 Цель: ${targetPrice} Gold | +${bonusChance}% за Gold`;
+    document.getElementById('upgradeBtn').disabled = false;
+    document.getElementById('upgradeBtn').dataset.chance = chance;
+    document.getElementById('upgradeBtn').dataset.target = targetIndex;
+}
+
+// Слайдер и поле для бонусного Gold
+document.getElementById('bonusGoldSlider').addEventListener('input', function() {
+    const val = parseInt(this.value);
+    document.getElementById('bonusGoldInput').value = val;
+    updateUpgradeChance();
 });
 
-function openCraftShop() {
-    alert('🛒 Магазин крафта\nЗдесь можно купить скины за крафт-монеты\n(в разработке)');
-}
+document.getElementById('bonusGoldInput').addEventListener('input', function() {
+    let val = parseInt(this.value) || 0;
+    if (val < 0) val = 0;
+    if (val > balance) val = balance;
+    this.value = val;
+    document.getElementById('bonusGoldSlider').value = val;
+    updateUpgradeChance();
+});
+
+document.getElementById('targetSkinSelect').addEventListener('change', updateUpgradeChance);
+
+// Кнопка апгрейда
+document.getElementById('upgradeBtn').addEventListener('click', function() {
+    const filled = upgradeSlots.filter(s => s !== null);
+    const targetIndex = parseInt(this.dataset.target);
+    const target = skinsList[targetIndex];
+    const chance = parseInt(this.dataset.chance);
+    const bonusGoldUsed = parseInt(document.getElementById('bonusGoldInput').value) || 0;
+    
+    if (filled.length === 0 || !target) {
+        alert('❌ Выберите скины и цель!');
+        return;
+    }
+    
+    if (bonusGoldUsed > balance) {
+        alert('❌ Недостаточно Gold для бонуса!');
+        return;
+    }
+    
+    // Списываем бонусный Gold
+    if (bonusGoldUsed > 0) {
+        balance -= bonusGoldUsed;
+        document.getElementById('balanceDisplay').textContent = balance;
+    }
+    
+    // Сгорают все скины из слотов
+    const burnedSkins = [...filled];
+    upgradeSlots.fill(null);
+    
+    // Рандом
+    const isSuccess = Math.random() * 100 < chance;
+    const resultDiv = document.getElementById('upgradeResult');
+    
+    if (isSuccess) {
+        const winSkin = { ...target };
+        inventory.push(winSkin);
+        resultDiv.innerHTML = `🎉 АПГРЕЙД УСПЕШЕН!<br>${winSkin.emoji} ${winSkin.name} (${winSkin.rarity})`;
+        resultDiv.style.color = '#ffd700';
+    } else {
+        resultDiv.innerHTML = `💥 АПГРЕЙД НЕ УДАЛСЯ!<br>Скины сгорели`;
+        resultDiv.style.color = '#ff2d55';
+    }
+    
+    renderUpgradeSlots();
+    renderInventory();
+    renderUpgradeInventory();
+    document.getElementById('bonusGoldInput').value = 0;
+    document.getElementById('bonusGoldSlider').value = 0;
+    updateUpgradeChance();
+});
 
 // ============================================================
 //  БОНУСЫ
@@ -543,7 +723,7 @@ document.getElementById('supportModal').addEventListener('click', function(e) {
 });
 
 // ============================================================
-//  САПЁР (ИСПРАВЛЕННЫЙ)
+//  САПЁР
 // ============================================================
 let sapperBet = 10;
 let sapperBombs = 9;
@@ -576,9 +756,6 @@ function resetSapper() {
     document.getElementById('sapperBalanceDisplay').textContent = balance;
     document.getElementById('sapperStatus').textContent = `💰 Ставка: ${sapperBet} Gold | Выигрыш: 0 Gold`;
     document.getElementById('sapperTakeBtn').disabled = true;
-    
-    // ✅ НЕ СБРАСЫВАЕМ АКТИВНУЮ КНОПКУ!
-    // Просто используем текущее значение sapperBombs
     
     renderSapperGrid();
 }
@@ -617,7 +794,6 @@ function sapperClick(index) {
             return;
         }
         
-        // Размещаем бомбы (используем sapperBombs)
         let bombsPlaced = 0;
         while (bombsPlaced < sapperBombs) {
             const pos = Math.floor(Math.random() * 25);
@@ -713,27 +889,12 @@ document.getElementById('sapperBetInput').addEventListener('input', function() {
     document.getElementById('sapperStatus').textContent = `💰 Ставка: ${sapperBet} Gold | Выигрыш: 0 Gold`;
 });
 
-// ============================================================
-//  ВЫБОР СЛОЖНОСТИ (САПЁР)
-// ============================================================
 document.querySelectorAll('#sapperDifficulty button').forEach(btn => {
     btn.addEventListener('click', function() {
-        // Снимаем активный класс со всех
         document.querySelectorAll('#sapperDifficulty button').forEach(b => b.classList.remove('active'));
         this.classList.add('active');
-        // Запоминаем количество бомб
         sapperBombs = parseInt(this.dataset.bombs);
-        // Обновляем статус (без сброса игры)
-        document.getElementById('sapperStatus').textContent = `💣 Бомб: ${sapperBombs} | Ставка: ${sapperBet} Gold`;
-        // Перерисовываем поле (без сброса сложности)
-        renderSapperGrid();
-        // Сбрасываем игровой статус (чтобы можно было играть с новой сложностью)
-        sapperGameOver = false;
-        sapperFirstClick = true;
-        sapperCurrentWin = 0;
-        sapperOpenedCells = 0;
-        document.getElementById('sapperTakeBtn').disabled = true;
-        document.getElementById('sapperStatus').textContent = `💰 Ставка: ${sapperBet} Gold | Выигрыш: 0 Gold | 💣 Бомб: ${sapperBombs}`;
+        resetSapper();
     });
 });
 
@@ -747,7 +908,12 @@ document.querySelectorAll('.tab-btn').forEach(btn => {
         this.classList.add('active');
         document.getElementById('tab-' + this.dataset.tab).classList.add('active');
         if (this.dataset.tab === 'profile') renderInventory();
-        if (this.dataset.tab === 'upgrade') renderUpgradeSlots();
+        if (this.dataset.tab === 'upgrade') {
+            renderUpgradeSlots();
+            renderUpgradeInventory();
+            renderTargetSkins();
+            updateUpgradeChance();
+        }
         if (this.dataset.tab === 'sapper') {
             document.getElementById('sapperBalanceDisplay').textContent = balance;
             renderSapperGrid();
@@ -761,6 +927,9 @@ document.querySelectorAll('.tab-btn').forEach(btn => {
 renderCases();
 renderInventory();
 renderUpgradeSlots();
+renderUpgradeInventory();
+renderTargetSkins();
+updateUpgradeChance();
 document.getElementById('balanceDisplay').textContent = balance;
 resetSapper();
 </script>
