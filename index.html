@@ -331,7 +331,158 @@
             if (e.target === this) closeModal();
         });
 
-        // ========== САПЁР ==========
+      <!-- Модальное окно для Сапёра -->
+    <div class="modal" id="sapperModal">
+        <div class="modal-content">
+            <h2>💣 Сапёр</h2>
+            <p style="color:#888; font-size:14px; margin-bottom:10px;">Выбери ставку и сложность, затем открывай клетки</p>
+            
+            <div class="sapper-bet">
+                <input type="number" id="sapperBetInput" value="10" min="1" step="1">
+                <span style="color:#888;">Gold</span>
+            </div>
+
+            <div class="sapper-difficulty" id="sapperDifficulty">
+                <button data-bombs="9" class="active">9 бомб</button>
+                <button data-bombs="12">12 бомб</button>
+                <button data-bombs="15">15 бомб</button>
+                <button data-bombs="20">20 бомб</button>
+            </div>
+
+            <div id="sapperGrid" class="sapper-grid"></div>
+            <div id="sapperStatus" style="color:#ffd700; font-size:16px; margin:10px 0;">💰 Выигрыш: 0 Gold</div>
+
+            <div class="sapper-actions">
+                <button class="btn-take" id="sapperTakeBtn" disabled onclick="takeWin()">💰 Забрать</button>
+                <button class="btn" onclick="resetSapper()">🔄 Новая игра</button>
+            </div>
+            <button class="close-btn" onclick="closeSapper()" style="margin-top:10px;">Закрыть</button>
+        </div>
+    </div>
+
+    <script>
+        // ========== БАЗА ДАННЫХ ==========
+        const skinsList = [
+            { name: "P250 | Sand Dune", rarity: "Обычный", color: "#b0b0b0", emoji: "🟤", price: 10 },
+            { name: "Galil AR | Sage Spray", rarity: "Обычный", color: "#b0b0b0", emoji: "🌿", price: 12 },
+            { name: "MP7 | Forest DDPAT", rarity: "Обычный", color: "#b0b0b0", emoji: "🌲", price: 15 },
+            { name: "FAMAS | Colony IV", rarity: "Обычный", color: "#b0b0b0", emoji: "🏛️", price: 15 },
+            { name: "M4A4 | Dragon King", rarity: "Редкий", color: "#4b69ff", emoji: "🐉", price: 30 },
+            { name: "AK-47 | Cartel", rarity: "Редкий", color: "#4b69ff", emoji: "💀", price: 35 },
+            { name: "AWP | Worm God", rarity: "Редкий", color: "#4b69ff", emoji: "🐛", price: 40 },
+            { name: "USP-S | Orion", rarity: "Редкий", color: "#4b69ff", emoji: "🌟", price: 45 },
+            { name: "MP7 | Nemesis", rarity: "Эпический", color: "#8847ff", emoji: "😈", price: 70 },
+            { name: "Desert Eagle | Cobalt", rarity: "Эпический", color: "#8847ff", emoji: "🔵", price: 75 },
+            { name: "M4A4 | Бабулгам", rarity: "Легендарный", color: "#ff8000", emoji: "🔥", price: 120 },
+            { name: "AK-47 | Blood Moon", rarity: "Мифический", color: "#ff2d55", emoji: "🌙", price: 200 },
+            { name: "AWP | Dragon Lore", rarity: "Легендарный", color: "#ff8000", emoji: "🐉", price: 250 },
+            { name: "★ Нож | Ice Phantom", rarity: "Эпический", color: "#8847ff", emoji: "❄️", price: 150 }
+        ];
+
+        const cases = [
+            { name: "Пыльный Шторм", price: 10, emoji: "🌪️", chance: 7 },
+            { name: "Лесной Призрак", price: 15, emoji: "🌿", chance: 7 },
+            { name: "Стальной Осколок", price: 20, emoji: "⚔️", chance: 7 },
+            { name: "Теневой Бандит", price: 25, emoji: "🔪", chance: 7 },
+            { name: "Ржавый Центурион", price: 30, emoji: "🛡️", chance: 7 },
+            { name: "Небесный Дракон", price: 50, emoji: "🐉", chance: 5 },
+            { name: "Ледяной Фантом", price: 70, emoji: "❄️", chance: 5 },
+            { name: "Кровавый Рассвет", price: 85, emoji: "🌅", chance: 5 },
+            { name: "Золотой Тигр", price: 100, emoji: "🐯", chance: 5 },
+            { name: "Изумрудный Ужас", price: 150, emoji: "💎", chance: 5 },
+            { name: "Адский Пламень", price: 200, emoji: "🔥", chance: 5 },
+            { name: "Теневой Лорд", price: 250, emoji: "👑", chance: 5 },
+            { name: "Космический Странник", price: 350, emoji: "🚀", chance: 5 },
+            { name: "Драконья Ярость", price: 450, emoji: "🐲", chance: 5 },
+            { name: "Бессмертный", price: 500, emoji: "⚡", chance: 5 }
+        ];
+
+        let balance = 100;
+        let inventory = [];
+
+        // ========== КЕЙСЫ ==========
+        function renderCases() {
+            const container = document.getElementById('casesList');
+            container.innerHTML = '';
+            cases.forEach(c => {
+                const div = document.createElement('div');
+                div.className = 'case-box';
+                div.dataset.price = c.price;
+                div.innerHTML = `
+                    <h2>${c.emoji} Кейс «${c.name}»</h2>
+                    <div class="skin-img" style="background: #1a1a3e; font-size: 40px;">${c.emoji}</div>
+                    <p>Шанс на редкий скин: <strong>${c.chance}%</strong></p>
+                    <p class="case-price">💰 ${c.price} Gold</p>
+                    <button class="btn">Открыть</button>
+                `;
+                div.addEventListener('click', function(e) {
+                    if (e.target.tagName === 'BUTTON') {
+                        openCase(this.dataset.price);
+                    }
+                });
+                container.appendChild(div);
+            });
+        }
+
+        function openCase(price) {
+            price = parseInt(price);
+            if (balance < price) {
+                alert('❌ Недостаточно Gold! Пополните баланс.');
+                return;
+            }
+            balance -= price;
+            document.getElementById('balanceDisplay').textContent = balance;
+
+            const modal = document.getElementById('caseModal');
+            const track = document.getElementById('scrollTrack');
+            const resultText = document.getElementById('resultText');
+
+            const win = skinsList[Math.floor(Math.random() * skinsList.length)];
+            inventory.push(win);
+
+            let items = '';
+            for (let i = 0; i < 35; i++) {
+                const s = skinsList[i % skinsList.length];
+                items += `<div class="scroll-item">
+                            <div class="skin-box" style="background:${s.color};">${s.emoji}</div>
+                            <div class="name">${s.name}</div>
+                            <div class="rarity" style="color:${s.color};">${s.rarity}</div>
+                         </div>`;
+            }
+            track.innerHTML = items;
+
+            const itemWidth = 120 + 2;
+            const maxOffset = (35 - 4) * itemWidth;
+            const targetOffset = Math.floor(Math.random() * (maxOffset - 100)) + 100;
+
+            modal.classList.add('active');
+            document.getElementById('resultImage').style.display = 'none';
+            resultText.textContent = '';
+            document.getElementById('arrow').style.display = 'block';
+
+            setTimeout(() => {
+                track.style.transition = 'transform 6s cubic-bezier(0.1, 0.8, 0.1, 1)';
+                track.style.transform = `translateX(-${targetOffset}px)`;
+            }, 100);
+
+            setTimeout(() => {
+                resultText.innerHTML = `🎉 <span style="color:${win.color};">${win.emoji} ${win.name}</span> (${win.rarity})!<br><span style="color:#ffd700;font-size:16px;">💰 ${win.price} Gold</span>`;
+            }, 6500);
+        }
+
+        function closeModal() {
+            document.getElementById('caseModal').classList.remove('active');
+            document.getElementById('resultImage').classList.remove('glow');
+            document.getElementById('scrollTrack').style.transform = 'translateX(0px)';
+            document.getElementById('resultText').textContent = '';
+            document.getElementById('arrow').style.display = 'block';
+        }
+
+        document.getElementById('caseModal').addEventListener('click', function(e) {
+            if (e.target === this) closeModal();
+        });
+
+        // ========== САПЁР (НОВЫЙ) ==========
         let sapperBet = 10;
         let sapperBombs = 9;
         let sapperGrid = [];
@@ -339,13 +490,10 @@
         let sapperGameOver = false;
         let sapperFirstClick = true;
         let sapperCurrentWin = 0;
+        let sapperOpenedCells = 0; // Счётчик открытых клеток
 
-        const sapperMultipliers = {
-            9: 1.6,
-            12: 2.2,
-            15: 3.0,
-            20: 5.0
-        };
+        // Множитель за клетку (0.20)
+        const PER_CELL_MULTIPLIER = 0.20;
 
         function openSapper() {
             document.getElementById('sapperModal').classList.add('active');
@@ -362,13 +510,15 @@
             sapperGameOver = false;
             sapperFirstClick = true;
             sapperCurrentWin = 0;
+            sapperOpenedCells = 0;
             document.getElementById('sapperStatus').textContent = '💰 Выигрыш: 0 Gold';
             document.getElementById('sapperStatus').style.color = '#ffd700';
             document.getElementById('sapperTakeBtn').disabled = true;
             
             const betInput = document.getElementById('sapperBetInput');
-            sapperBet = parseInt(betInput.value) || 10;
-            if (sapperBet < 1) sapperBet = 1;
+            let val = parseInt(betInput.value) || 10;
+            if (val < 1) val = 1;
+            sapperBet = val;
             betInput.value = sapperBet;
             
             document.querySelectorAll('#sapperDifficulty button').forEach(b => b.classList.remove('active'));
@@ -398,6 +548,7 @@
 
             if (sapperFirstClick) {
                 sapperFirstClick = false;
+                // Размещаем бомбы
                 let bombsPlaced = 0;
                 while (bombsPlaced < sapperBombs) {
                     const pos = Math.floor(Math.random() * 25);
@@ -406,6 +557,7 @@
                         bombsPlaced++;
                     }
                 }
+                // Первый клик безопасен
                 if (sapperGrid[index] === 1) {
                     sapperGrid[index] = 0;
                     let newPos = Math.floor(Math.random() * 25);
@@ -414,6 +566,7 @@
                     }
                     sapperGrid[newPos] = 1;
                 }
+                // Проверяем баланс
                 if (balance < sapperBet) {
                     alert('❌ Недостаточно Gold!');
                     sapperGameOver = true;
@@ -426,6 +579,7 @@
                 document.getElementById('sapperTakeBtn').disabled = false;
             }
 
+            // Попали на бомбу
             if (sapperGrid[index] === 1) {
                 sapperGameOver = true;
                 revealAll();
@@ -435,24 +589,24 @@
                 return;
             }
 
+            // Открываем безопасную клетку
             sapperRevealed[index] = true;
+            sapperOpenedCells++;
             const cell = document.querySelector(`.sapper-cell[data-index="${index}"]`);
             cell.classList.add('revealed', 'safe');
             cell.textContent = '✅';
             cell.style.color = '#4b69ff';
 
-            const perCell = Math.floor(sapperBet / 10);
-            if (perCell > 0) {
-                sapperCurrentWin += perCell;
-            } else {
-                sapperCurrentWin += 1;
-            }
+            // ✅ НОВЫЙ РАСЧЁТ: ставка × (количество клеток × 0.20)
+            const multiplier = sapperOpenedCells * PER_CELL_MULTIPLIER;
+            sapperCurrentWin = Math.floor(sapperBet * multiplier);
 
             const safeCells = sapperGrid.filter(c => c === 0).length;
             const revealedSafe = sapperRevealed.filter((r, i) => r && sapperGrid[i] === 0).length;
-            document.getElementById('sapperStatus').textContent = `💰 Выигрыш: ${sapperCurrentWin} Gold (${revealedSafe}/${safeCells} клеток)`;
+            document.getElementById('sapperStatus').textContent = `💰 Выигрыш: ${sapperCurrentWin} Gold (${revealedSafe}/${safeCells} клеток) | x${multiplier.toFixed(2)}`;
             document.getElementById('sapperStatus').style.color = '#ffd700';
 
+            // Проверка победы (все клетки открыты)
             if (revealedSafe === safeCells) {
                 sapperGameOver = true;
                 const winAmount = Math.floor(sapperBet * sapperMultipliers[sapperBombs]);
@@ -493,6 +647,15 @@
             });
         }
 
+        // Событие изменения ставки
+        document.getElementById('sapperBetInput').addEventListener('input', function() {
+            if (!sapperFirstClick) return;
+            let val = parseInt(this.value) || 10;
+            if (val < 1) val = 1;
+            this.value = val;
+            sapperBet = val;
+        });
+
         document.getElementById('sapperBetInput').addEventListener('change', function() {
             if (!sapperFirstClick) return;
             let val = parseInt(this.value) || 10;
@@ -500,9 +663,9 @@
             this.value = val;
             sapperBet = val;
             resetSapper();
-            document.querySelector('#sapperBetInput').value = sapperBet;
         });
 
+        // Выбор сложности
         document.querySelectorAll('#sapperDifficulty button').forEach(btn => {
             btn.addEventListener('click', function() {
                 if (!sapperFirstClick) return;
