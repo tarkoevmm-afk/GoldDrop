@@ -334,7 +334,7 @@
             if (e.target === this) closeModal();
         });
 
-        // ========== САПЁР (ВЫИГРЫШ ОТ ТВОЕЙ СТАВКИ) ==========
+        // ========== САПЁР (ИТОГОВЫЙ) ==========
         let sapperBet = 10;
         let sapperBombs = 9;
         let sapperGrid = [];
@@ -344,7 +344,9 @@
         let sapperCurrentWin = 0;
         let sapperOpenedCells = 0;
 
-        const PER_CELL_MULTIPLIER = 0.20;
+        const BASE_MULTIPLIER = 1.20;
+        const STEP_MULTIPLIER = 0.20;
+
         const sapperMultipliers = {
             9: 1.6,
             12: 2.2,
@@ -408,7 +410,6 @@
             if (sapperFirstClick) {
                 sapperFirstClick = false;
                 
-                // ✅ Берём ставку из поля
                 const betInput = document.getElementById('sapperBetInput');
                 let val = parseInt(betInput.value) || 10;
                 if (val < 1) val = 1;
@@ -424,7 +425,6 @@
                     return;
                 }
                 
-                // Размещаем бомбы
                 let bombsPlaced = 0;
                 while (bombsPlaced < sapperBombs) {
                     const pos = Math.floor(Math.random() * 25);
@@ -442,7 +442,6 @@
                     sapperGrid[newPos] = 1;
                 }
                 
-                // ✅ СПИСЫВАЕМ СТАВКУ
                 balance -= sapperBet;
                 document.getElementById('balanceDisplay').textContent = balance;
                 document.getElementById('sapperTakeBtn').disabled = false;
@@ -467,9 +466,8 @@
             cell.textContent = '✅';
             cell.style.color = '#4b69ff';
 
-            // ✅ ВЫИГРЫШ = СТАВКА × (клетки × 0.20)
-            const multiplier = sapperOpenedCells * PER_CELL_MULTIPLIER;
-            sapperCurrentWin = Math.floor(sapperBet * multiplier);
+            const multiplier = BASE_MULTIPLIER + (sapperOpenedCells - 1) * STEP_MULTIPLIER;
+            sapperCurrentWin = Math.round(sapperBet * multiplier);
 
             const safeCells = sapperGrid.filter(c => c === 0).length;
             const revealedSafe = sapperRevealed.filter((r, i) => r && sapperGrid[i] === 0).length;
@@ -478,7 +476,7 @@
 
             if (revealedSafe === safeCells) {
                 sapperGameOver = true;
-                const winAmount = Math.floor(sapperBet * sapperMultipliers[sapperBombs]);
+                const winAmount = Math.round(sapperBet * sapperMultipliers[sapperBombs]);
                 balance += winAmount;
                 document.getElementById('balanceDisplay').textContent = balance;
                 document.getElementById('sapperStatus').textContent = `🎉 ПОБЕДА! Вы выиграли ${winAmount} Gold (x${sapperMultipliers[sapperBombs]})!`;
