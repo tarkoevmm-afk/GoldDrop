@@ -202,7 +202,7 @@
             </div>
 
             <div id="sapperGrid" class="sapper-grid"></div>
-            <div id="sapperStatus" style="color:#ffd700; font-size:16px; margin:10px 0;">💰 Выигрыш: 0 Gold</div>
+            <div id="sapperStatus" style="color:#ffd700; font-size:16px; margin:10px 0;">💰 Ставка: 10 Gold</div>
 
             <div class="sapper-actions">
                 <button class="btn-take" id="sapperTakeBtn" disabled onclick="takeWin()">💰 Забрать</button>
@@ -334,7 +334,7 @@
             if (e.target === this) closeModal();
         });
 
-        // ========== САПЁР (НОВЫЙ) ==========
+        // ========== САПЁР (ИДЕАЛЬНЫЙ) ==========
         let sapperBet = 10;
         let sapperBombs = 9;
         let sapperGrid = [];
@@ -368,9 +368,6 @@
             sapperFirstClick = true;
             sapperCurrentWin = 0;
             sapperOpenedCells = 0;
-            document.getElementById('sapperStatus').textContent = '💰 Выигрыш: 0 Gold';
-            document.getElementById('sapperStatus').style.color = '#ffd700';
-            document.getElementById('sapperTakeBtn').disabled = true;
             
             const betInput = document.getElementById('sapperBetInput');
             let val = parseInt(betInput.value) || 10;
@@ -378,6 +375,10 @@
             sapperBet = val;
             betInput.placeholder = '10';
             betInput.value = '';
+            
+            document.getElementById('sapperStatus').textContent = `💰 Ставка: ${sapperBet} Gold | Выигрыш: 0 Gold`;
+            document.getElementById('sapperStatus').style.color = '#ffd700';
+            document.getElementById('sapperTakeBtn').disabled = true;
             
             document.querySelectorAll('#sapperDifficulty button').forEach(b => b.classList.remove('active'));
             document.querySelector('#sapperDifficulty button[data-bombs="9"]').classList.add('active');
@@ -414,6 +415,15 @@
                 betInput.placeholder = '10';
                 betInput.value = '';
                 
+                if (balance < sapperBet) {
+                    alert('❌ Недостаточно Gold!');
+                    sapperGameOver = true;
+                    document.getElementById('sapperStatus').textContent = '❌ Недостаточно Gold!';
+                    document.getElementById('sapperStatus').style.color = '#ff2d55';
+                    return;
+                }
+                
+                // Размещаем бомбы
                 let bombsPlaced = 0;
                 while (bombsPlaced < sapperBombs) {
                     const pos = Math.floor(Math.random() * 25);
@@ -430,13 +440,7 @@
                     }
                     sapperGrid[newPos] = 1;
                 }
-                if (balance < sapperBet) {
-                    alert('❌ Недостаточно Gold!');
-                    sapperGameOver = true;
-                    document.getElementById('sapperStatus').textContent = '❌ Недостаточно Gold!';
-                    document.getElementById('sapperStatus').style.color = '#ff2d55';
-                    return;
-                }
+                
                 balance -= sapperBet;
                 document.getElementById('balanceDisplay').textContent = balance;
                 document.getElementById('sapperTakeBtn').disabled = false;
@@ -461,6 +465,7 @@
             cell.textContent = '✅';
             cell.style.color = '#4b69ff';
 
+            // РАСЧЁТ: ставка × (клетки × 0.20)
             const multiplier = sapperOpenedCells * PER_CELL_MULTIPLIER;
             sapperCurrentWin = Math.floor(sapperBet * multiplier);
 
@@ -524,6 +529,7 @@
             let val = parseInt(this.value) || 10;
             if (val < 1) val = 1;
             sapperBet = val;
+            document.getElementById('sapperStatus').textContent = `💰 Ставка: ${sapperBet} Gold | Выигрыш: 0 Gold`;
         });
 
         document.getElementById('sapperBetInput').addEventListener('change', function() {
