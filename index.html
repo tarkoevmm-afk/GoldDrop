@@ -97,6 +97,10 @@
         .sapper-actions .btn-take:hover { transform: scale(1.05); box-shadow: 0 0 20px rgba(75,105,255,0.5); }
         .sapper-actions .btn-take:disabled { opacity: 0.5; cursor: not-allowed; transform: none; }
         .sapper-actions .btn { padding: 10px 20px; font-size: 16px; }
+
+        /* Дополнительный баланс внутри сапёра */
+        .sapper-balance { margin: 10px 0; padding: 10px; background: #111; border-radius: 10px; color: #888; font-size: 16px; border: 1px solid #222; }
+        .sapper-balance span { color: #ffd700; font-weight: bold; }
     </style>
 </head>
 <body>
@@ -189,6 +193,11 @@
             <h2>💣 Сапёр</h2>
             <p style="color:#888; font-size:14px; margin-bottom:10px;">Выбери ставку и сложность, затем открывай клетки</p>
             
+            <!-- ✅ БАЛАНС ВНУТРИ САПЁРА -->
+            <div class="sapper-balance">
+                💰 Ваш баланс: <span id="sapperBalanceDisplay">100</span> Gold
+            </div>
+
             <div class="sapper-bet">
                 <input type="number" id="sapperBetInput" placeholder="10" min="1" step="1">
                 <span style="color:#888;">Gold</span>
@@ -293,7 +302,7 @@
             inventory.push(win);
 
             let items = '';
-            for (let i = 0; i < 35; i++) {
+            for (let i = 0; i < 40; i++) {
                 const s = skinsList[i % skinsList.length];
                 items += `<div class="scroll-item">
                             <div class="skin-box" style="background:${s.color};">${s.emoji}</div>
@@ -304,7 +313,9 @@
             track.innerHTML = items;
 
             const itemWidth = 120 + 2;
-            const maxOffset = (35 - 4) * itemWidth;
+            const totalWidth = 40 * itemWidth;
+            const visibleWidth = 4 * itemWidth;
+            const maxOffset = totalWidth - visibleWidth;
             const targetOffset = Math.floor(Math.random() * (maxOffset - 100)) + 100;
 
             modal.classList.add('active');
@@ -378,6 +389,9 @@
             betInput.placeholder = '10';
             betInput.value = '';
             
+            // Обновляем баланс в сапёре
+            document.getElementById('sapperBalanceDisplay').textContent = balance;
+            
             document.getElementById('sapperStatus').textContent = `💰 Ставка: ${sapperBet} Gold | Выигрыш: 0 Gold`;
             document.getElementById('sapperStatus').style.color = '#ffd700';
             document.getElementById('sapperTakeBtn').disabled = true;
@@ -410,7 +424,6 @@
             if (sapperFirstClick) {
                 sapperFirstClick = false;
                 
-                // ✅ ЧИТАЕМ СТАВКУ ПРЯМО ИЗ ПОЛЯ
                 const betInput = document.getElementById('sapperBetInput');
                 let val = parseInt(betInput.value) || 10;
                 if (val < 1) val = 1;
@@ -443,9 +456,9 @@
                     sapperGrid[newPos] = 1;
                 }
                 
-                // ✅ СПИСЫВАЕМ ТОЧНО ТУ СТАВКУ, КОТОРУЮ ВВЁЛ
                 balance -= sapperBet;
                 document.getElementById('balanceDisplay').textContent = balance;
+                document.getElementById('sapperBalanceDisplay').textContent = balance;
                 document.getElementById('sapperTakeBtn').disabled = false;
                 
                 document.getElementById('sapperStatus').textContent = `💰 Ставка: ${sapperBet} Gold | Выигрыш: 0 Gold`;
@@ -479,9 +492,9 @@
             if (revealedSafe === safeCells) {
                 sapperGameOver = true;
                 const winAmount = Math.round(sapperBet * sapperMultipliers[sapperBombs]);
-                // ✅ ПРИ ВЫИГРЫШЕ ПРИБАВЛЯЕМ ВЕСЬ ВЫИГРЫШ (СТАВКА УЖЕ СНЯТА)
                 balance += winAmount;
                 document.getElementById('balanceDisplay').textContent = balance;
+                document.getElementById('sapperBalanceDisplay').textContent = balance;
                 document.getElementById('sapperStatus').textContent = `🎉 ПОБЕДА! Вы выиграли ${winAmount} Gold (x${sapperMultipliers[sapperBombs]})!`;
                 document.getElementById('sapperStatus').style.color = '#ffd700';
                 revealAll();
@@ -495,9 +508,9 @@
                 alert('❌ Нечего забирать!');
                 return;
             }
-            // ✅ Зачисляем ТОЧНО ту сумму, которая показана на экране
             balance += sapperCurrentWin;
             document.getElementById('balanceDisplay').textContent = balance;
+            document.getElementById('sapperBalanceDisplay').textContent = balance;
             document.getElementById('sapperStatus').textContent = `✅ Вы забрали ${sapperCurrentWin} Gold!`;
             document.getElementById('sapperStatus').style.color = '#4b69ff';
             sapperGameOver = true;
@@ -521,7 +534,6 @@
             });
         }
 
-        // ✅ ФУНКЦИЯ ДЛЯ МГНОВЕННОГО ОБНОВЛЕНИЯ СТАВКИ
         function updateBet() {
             const input = document.getElementById('sapperBetInput');
             let val = parseInt(input.value) || 10;
