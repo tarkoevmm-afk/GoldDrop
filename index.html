@@ -85,6 +85,7 @@
         .sapper-bet { display: flex; gap: 10px; flex-wrap: wrap; justify-content: center; margin: 10px 0; align-items: center; }
         .sapper-bet input { background: #111; border: 1px solid #444; border-radius: 10px; padding: 8px 12px; color: #fff; font-size: 16px; width: 100px; text-align: center; }
         .sapper-bet input:focus { border-color: #ffd700; outline: none; }
+        .sapper-bet input::placeholder { color: #555; }
 
         .sapper-difficulty { display: flex; gap: 10px; flex-wrap: wrap; justify-content: center; margin: 10px 0; }
         .sapper-difficulty button { background: #222; border: 1px solid #ff2d55; color: #ff2d55; padding: 8px 16px; border-radius: 10px; cursor: pointer; transition: 0.3s; font-weight: bold; }
@@ -189,7 +190,7 @@
             <p style="color:#888; font-size:14px; margin-bottom:10px;">Выбери ставку и сложность, затем открывай клетки</p>
             
             <div class="sapper-bet">
-                <input type="number" id="sapperBetInput" value="10" min="1" step="1">
+                <input type="number" id="sapperBetInput" placeholder="10" min="1" step="1">
                 <span style="color:#888;">Gold</span>
             </div>
 
@@ -344,6 +345,12 @@
         let sapperOpenedCells = 0;
 
         const PER_CELL_MULTIPLIER = 0.20;
+        const sapperMultipliers = {
+            9: 1.6,
+            12: 2.2,
+            15: 3.0,
+            20: 5.0
+        };
 
         function openSapper() {
             document.getElementById('sapperModal').classList.add('active');
@@ -369,7 +376,8 @@
             let val = parseInt(betInput.value) || 10;
             if (val < 1) val = 1;
             sapperBet = val;
-            betInput.value = sapperBet;
+            betInput.placeholder = '10';
+            betInput.value = '';
             
             document.querySelectorAll('#sapperDifficulty button').forEach(b => b.classList.remove('active'));
             document.querySelector('#sapperDifficulty button[data-bombs="9"]').classList.add('active');
@@ -398,6 +406,14 @@
 
             if (sapperFirstClick) {
                 sapperFirstClick = false;
+                
+                const betInput = document.getElementById('sapperBetInput');
+                let val = parseInt(betInput.value) || 10;
+                if (val < 1) val = 1;
+                sapperBet = val;
+                betInput.placeholder = '10';
+                betInput.value = '';
+                
                 let bombsPlaced = 0;
                 while (bombsPlaced < sapperBombs) {
                     const pos = Math.floor(Math.random() * 25);
@@ -424,6 +440,9 @@
                 balance -= sapperBet;
                 document.getElementById('balanceDisplay').textContent = balance;
                 document.getElementById('sapperTakeBtn').disabled = false;
+                
+                document.getElementById('sapperStatus').textContent = `💰 Ставка: ${sapperBet} Gold | Выигрыш: 0 Gold`;
+                document.getElementById('sapperStatus').style.color = '#ffd700';
             }
 
             if (sapperGrid[index] === 1) {
@@ -490,11 +509,20 @@
             });
         }
 
+        document.getElementById('sapperBetInput').addEventListener('focus', function() {
+            this.placeholder = '';
+        });
+
+        document.getElementById('sapperBetInput').addEventListener('blur', function() {
+            if (this.value === '') {
+                this.placeholder = '10';
+            }
+        });
+
         document.getElementById('sapperBetInput').addEventListener('input', function() {
             if (!sapperFirstClick) return;
             let val = parseInt(this.value) || 10;
             if (val < 1) val = 1;
-            this.value = val;
             sapperBet = val;
         });
 
@@ -502,7 +530,6 @@
             if (!sapperFirstClick) return;
             let val = parseInt(this.value) || 10;
             if (val < 1) val = 1;
-            this.value = val;
             sapperBet = val;
             resetSapper();
         });
