@@ -410,6 +410,7 @@
             if (sapperFirstClick) {
                 sapperFirstClick = false;
                 
+                // ✅ ЧИТАЕМ СТАВКУ ПРЯМО ПЕРЕД СПИСАНИЕМ
                 const betInput = document.getElementById('sapperBetInput');
                 let val = parseInt(betInput.value) || 10;
                 if (val < 1) val = 1;
@@ -442,6 +443,7 @@
                     sapperGrid[newPos] = 1;
                 }
                 
+                // ✅ ТЕПЕРЬ СПИСЫВАЕТСЯ ТО, ЧТО ТЫ ВВЁЛ (50, 100, ЛЮБОЕ)
                 balance -= sapperBet;
                 document.getElementById('balanceDisplay').textContent = balance;
                 document.getElementById('sapperTakeBtn').disabled = false;
