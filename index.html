@@ -13,15 +13,19 @@
         .case-box:hover { box-shadow: 0 0 60px rgba(255,215,0,0.25); transform: scale(1.02); }
         .case-box h2 { font-size: 20px; margin-bottom: 10px; color: #ffd700; }
         .case-box p { color: #aaa; font-size: 14px; margin-bottom: 15px; }
-        .case-box .skin-img { width: 120px; border-radius: 15px; margin: 10px 0; border: 2px solid #ffd700; }
+        .case-box .skin-img { width: 100px; border-radius: 15px; margin: 10px 0; border: 2px solid #ffd700; }
         .btn { background: linear-gradient(135deg, #ffd700, #ff8c00); border: none; padding: 12px 35px; font-size: 18px; font-weight: bold; border-radius: 12px; cursor: pointer; color: #000; transition: 0.3s; }
         .btn:hover { transform: scale(1.05); box-shadow: 0 0 20px rgba(255,215,0,0.5); }
         .balance { margin-top: 25px; padding: 15px; background: #111; border-radius: 10px; color: #888; font-size: 16px; border: 1px solid #222; }
         .balance span { color: #ffd700; font-weight: bold; }
         .footer { margin-top: 20px; font-size: 12px; color: #333; }
+
+        .rarity-common { color: #b0b0b0; }
+        .rarity-uncommon { color: #5e98d9; }
+        .rarity-rare { color: #4b69ff; }
+        .rarity-epic { color: #8847ff; }
         .rarity-legendary { color: #ff8000; }
         .rarity-mythical { color: #ff2d55; }
-        .rarity-epic { color: #8847ff; }
 
         .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.9); z-index: 999; justify-content: center; align-items: center; }
         .modal.active { display: flex; }
@@ -31,9 +35,9 @@
         .scroll-container { width: 100%; overflow: hidden; border-radius: 15px; background: #0a0a1a; border: 2px solid #ffd700; margin: 15px 0; position: relative; }
         .scroll-track { display: flex; transition: transform 6s cubic-bezier(0.1, 0.8, 0.1, 1); will-change: transform; }
         .scroll-item { flex: 0 0 auto; width: 120px; padding: 10px; text-align: center; background: #111; border-right: 1px solid #222; }
-        .scroll-item img { width: 80px; border-radius: 10px; margin-bottom: 5px; }
-        .scroll-item .name { font-size: 12px; color: #fff; }
-        .scroll-item .rarity { font-size: 10px; color: #aaa; }
+        .scroll-item .skin-box { width: 80px; height: 80px; border-radius: 10px; margin: 0 auto 5px; display: flex; align-items: center; justify-content: center; font-size: 30px; border: 2px solid #444; }
+        .scroll-item .name { font-size: 11px; color: #fff; }
+        .scroll-item .rarity { font-size: 10px; }
 
         .arrow {
             position: absolute;
@@ -65,27 +69,27 @@
         <p style="margin:10px 0 5px; color:#888;">Открывай кейсы Standoff 2</p>
         <p style="font-size:12px; color:#555; margin-bottom:15px;">Нажми на кейс, чтобы открыть</p>
 
-        <div class="case-box" data-price="50" data-skin="M4 Бабулгам" data-image="https://cdn.standoff2.com/skins/m4a4_babulgam.png">
+        <div class="case-box" data-price="50" data-skin="M4 Бабулгам">
             <h2>🔴 Кейс «Золотой Дракон»</h2>
-            <img src="https://cdn.standoff2.com/skins/m4a4_babulgam.png" class="skin-img" alt="M4 Бабулгам">
+            <img src="" class="skin-img" style="background: #ff8000; display: flex; align-items: center; justify-content: center; font-size: 40px; color: #fff;">⭐
             <p>Редкость: <span class="rarity-legendary">Легендарный</span></p>
-            <p>Шанс: <strong>5%</strong></p>
+            <p>Шанс на редкий скин: <strong>5%</strong></p>
             <button class="btn">Открыть за 50 ₽</button>
         </div>
 
-        <div class="case-box" data-price="100" data-skin="AK-47 Blood Moon" data-image="https://cdn.standoff2.com/skins/ak47_blood_moon.png">
+        <div class="case-box" data-price="100" data-skin="AK-47 Blood Moon">
             <h2>🔵 Кейс «Кровавая Луна»</h2>
-            <img src="https://cdn.standoff2.com/skins/ak47_blood_moon.png" class="skin-img" alt="AK-47 Blood Moon">
+            <img src="" class="skin-img" style="background: #ff2d55; display: flex; align-items: center; justify-content: center; font-size: 40px; color: #fff;">🌙
             <p>Редкость: <span class="rarity-mythical">Мифический</span></p>
-            <p>Шанс: <strong>8%</strong></p>
+            <p>Шанс на редкий скин: <strong>8%</strong></p>
             <button class="btn">Открыть за 100 ₽</button>
         </div>
 
-        <div class="case-box" data-price="30" data-skin="Knife Ice Phantom" data-image="https://cdn.standoff2.com/skins/knife_ice_phantom.png">
+        <div class="case-box" data-price="30" data-skin="Knife Ice Phantom">
             <h2>⚪ Кейс «Ледяной Фантом»</h2>
-            <img src="https://cdn.standoff2.com/skins/knife_ice_phantom.png" class="skin-img" alt="Knife Ice Phantom">
+            <img src="" class="skin-img" style="background: #8847ff; display: flex; align-items: center; justify-content: center; font-size: 40px; color: #fff;">❄️
             <p>Редкость: <span class="rarity-epic">Эпический</span></p>
-            <p>Шанс: <strong>3%</strong></p>
+            <p>Шанс на редкий скин: <strong>3%</strong></p>
             <button class="btn">Открыть за 30 ₽</button>
         </div>
 
@@ -107,16 +111,43 @@
     </div>
 
     <script>
+        // 30 скинов (дешёвые, средние, дорогие)
         const skins = [
-            { name: "M4 Бабулгам", rarity: "Легендарный", image: "https://cdn.standoff2.com/skins/m4a4_babulgam.png" },
-            { name: "AK-47 Blood Moon", rarity: "Мифический", image: "https://cdn.standoff2.com/skins/ak47_blood_moon.png" },
-            { name: "Knife Ice Phantom", rarity: "Эпический", image: "https://cdn.standoff2.com/skins/knife_ice_phantom.png" },
-            { name: "AWP Dragon Lore", rarity: "Легендарный", image: "https://cdn.standoff2.com/skins/awp_dragon_lore.png" },
-            { name: "Desert Eagle Blaze", rarity: "Мифический", image: "https://cdn.standoff2.com/skins/deagle_blaze.png" },
-            { name: "USP-S Kill Confirmed", rarity: "Эпический", image: "https://cdn.standoff2.com/skins/usp_kill_confirmed.png" },
-            { name: "M4A1-S Hot Rod", rarity: "Легендарный", image: "https://cdn.standoff2.com/skins/m4a1_hot_rod.png" },
-            { name: "SSG 08 Death Strike", rarity: "Мифический", image: "https://cdn.standoff2.com/skins/ssg_death_strike.png" },
-            { name: "Glock-18 Water Elemental", rarity: "Эпический", image: "https://cdn.standoff2.com/skins/glock_water.png" }
+            // 🌟 Дешёвые (Common, Uncommon)
+            { name: "P250 | Sand Dune", rarity: "Обычный", color: "#b0b0b0", emoji: "🟤" },
+            { name: "Galil AR | Sage Spray", rarity: "Обычный", color: "#b0b0b0", emoji: "🌿" },
+            { name: "SG 553 | Army Sheen", rarity: "Обычный", color: "#b0b0b0", emoji: "🪖" },
+            { name: "MP7 | Forest DDPAT", rarity: "Обычный", color: "#b0b0b0", emoji: "🌲" },
+            { name: "FAMAS | Colony IV", rarity: "Обычный", color: "#b0b0b0", emoji: "🏛️" },
+            { name: "MAG-7 | Navy Sheen", rarity: "Обычный", color: "#b0b0b0", emoji: "⚓" },
+            { name: "Negev | Army Sheen", rarity: "Обычный", color: "#b0b0b0", emoji: "💣" },
+            { name: "UMP-45 | Urban DDPAT", rarity: "Обычный", color: "#b0b0b0", emoji: "🏙️" },
+            { name: "Nova | Ranger", rarity: "Обычный", color: "#b0b0b0", emoji: "🌄" },
+            { name: "MP9 | Green Plaid", rarity: "Обычный", color: "#b0b0b0", emoji: "🟩" },
+
+            // 💰 Средние (Rare, Epic)
+            { name: "M4A4 | Dragon King", rarity: "Редкий", color: "#4b69ff", emoji: "🐉" },
+            { name: "AK-47 | Cartel", rarity: "Редкий", color: "#4b69ff", emoji: "💀" },
+            { name: "AWP | Worm God", rarity: "Редкий", color: "#4b69ff", emoji: "🐛" },
+            { name: "USP-S | Orion", rarity: "Редкий", color: "#4b69ff", emoji: "🌟" },
+            { name: "Glock-18 | Wasteland Rebel", rarity: "Редкий", color: "#4b69ff", emoji: "🏴" },
+            { name: "P2000 | Imperial", rarity: "Редкий", color: "#4b69ff", emoji: "👑" },
+            { name: "M4A1-S | Basilisk", rarity: "Редкий", color: "#4b69ff", emoji: "🐍" },
+            { name: "MP7 | Nemesis", rarity: "Эпический", color: "#8847ff", emoji: "😈" },
+            { name: "Desert Eagle | Cobalt", rarity: "Эпический", color: "#8847ff", emoji: "🔵" },
+            { name: "SSG 08 | Big Iron", rarity: "Эпический", color: "#8847ff", emoji: "🔫" },
+
+            // 💎 Дорогие (Legendary, Mythical)
+            { name: "M4A4 | Бабулгам", rarity: "Легендарный", color: "#ff8000", emoji: "🔥" },
+            { name: "AK-47 | Blood Moon", rarity: "Мифический", color: "#ff2d55", emoji: "🌙" },
+            { name: "AWP | Dragon Lore", rarity: "Легендарный", color: "#ff8000", emoji: "🐉" },
+            { name: "★ Нож | Ice Phantom", rarity: "Эпический", color: "#8847ff", emoji: "❄️" },
+            { name: "M4A1-S | Hot Rod", rarity: "Легендарный", color: "#ff8000", emoji: "🏎️" },
+            { name: "USP-S | Kill Confirmed", rarity: "Эпический", color: "#8847ff", emoji: "☠️" },
+            { name: "Desert Eagle | Blaze", rarity: "Мифический", color: "#ff2d55", emoji: "🔥" },
+            { name: "SSG 08 | Death Strike", rarity: "Мифический", color: "#ff2d55", emoji: "💀" },
+            { name: "Glock-18 | Water Elemental", rarity: "Эпический", color: "#8847ff", emoji: "💧" },
+            { name: "★ Нож | Fade", rarity: "Легендарный", color: "#ff8000", emoji: "🌈" }
         ];
 
         let balance = 100;
@@ -138,19 +169,19 @@
                 const resultText = document.getElementById('resultText');
 
                 let items = '';
-                for (let i = 0; i < 30; i++) {
+                for (let i = 0; i < 35; i++) {
                     const s = skins[i % skins.length];
                     items += `<div class="scroll-item">
-                                <img src="${s.image}">
+                                <div class="skin-box" style="background:${s.color};">${s.emoji}</div>
                                 <div class="name">${s.name}</div>
-                                <div class="rarity">${s.rarity}</div>
+                                <div class="rarity" style="color:${s.color};">${s.rarity}</div>
                              </div>`;
                 }
                 track.innerHTML = items;
 
                 const win = skins[Math.floor(Math.random() * skins.length)];
                 const itemWidth = 120 + 2;
-                const maxOffset = (30 - 4) * itemWidth;
+                const maxOffset = (35 - 4) * itemWidth;
                 const targetOffset = Math.floor(Math.random() * (maxOffset - 100)) + 100;
 
                 modal.classList.add('active');
@@ -163,10 +194,8 @@
                 }, 100);
 
                 setTimeout(() => {
-                    resultImg.src = win.image;
-                    resultImg.style.display = 'block';
-                    resultImg.classList.add('glow');
-                    resultText.textContent = `🎉 ${win.name} (${win.rarity})!`;
+                    resultImg.style.display = 'none';
+                    resultText.innerHTML = `🎉 <span style="color:${win.color};">${win.emoji} ${win.name}</span> (${win.rarity})!`;
                 }, 6500);
             });
         });
@@ -175,6 +204,7 @@
             document.getElementById('caseModal').classList.remove('active');
             document.getElementById('resultImage').classList.remove('glow');
             document.getElementById('scrollTrack').style.transform = 'translateX(0px)';
+            document.getElementById('resultText').textContent = '';
         }
 
         document.getElementById('caseModal').addEventListener('click', function(e) {
