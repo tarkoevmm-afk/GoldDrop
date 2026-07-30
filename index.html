@@ -64,10 +64,6 @@
         .craft-btn:hover { transform: scale(1.05); box-shadow: 0 0 30px rgba(255,215,0,0.4); }
         .craft-btn:disabled { opacity: 0.5; cursor: not-allowed; }
 
-        .upgrade-info { background: #111; padding: 15px; border-radius: 12px; margin: 15px 0; }
-        .upgrade-info .chance { font-size: 28px; color: #ffd700; font-weight: bold; }
-        .upgrade-info .details { font-size: 14px; color: #888; }
-
         .bonus-card { background: #1a1a3e; border: 2px solid #ffd700; border-radius: 20px; padding: 20px; margin: 15px 0; }
         .bonus-card .task { display: flex; justify-content: space-between; align-items: center; padding: 10px 0; border-bottom: 1px solid #222; }
         .bonus-card .task:last-child { border-bottom: none; }
@@ -184,10 +180,30 @@
             </div>
         </div>
 
-        <!-- Информация о шансе -->
-        <div class="upgrade-info">
-            <div class="chance" id="upgradeChanceDisplay">0%</div>
-            <div class="details" id="upgradeDetails">Выберите скины и цель</div>
+        <!-- Шкала и стрелка -->
+        <div style="margin: 20px 0; position: relative; background: #111; border-radius: 12px; padding: 20px; border: 1px solid #333;">
+            <div style="position: relative; height: 40px; background: #222; border-radius: 10px; overflow: hidden;">
+                <!-- Фон шкалы -->
+                <div style="position: absolute; top: 0; left: 0; height: 100%; width: 100%; background: linear-gradient(90deg, #ff2d55, #ffd700, #4b69ff); opacity: 0.3;"></div>
+                <!-- Заполнение шанса -->
+                <div id="chanceFill" style="position: absolute; top: 0; left: 0; height: 100%; width: 0%; background: linear-gradient(90deg, #ff2d55, #ffd700, #4b69ff); transition: width 1s;"></div>
+                <!-- Стрелка -->
+                <div id="arrowPointer" style="position: absolute; top: -15px; left: 0%; width: 4px; height: 70px; background: #ffd700; box-shadow: 0 0 20px #ffd700; transition: left 0.1s; transform: translateX(-50%);">
+                    <div style="width: 0; height: 0; border-left: 15px solid transparent; border-right: 15px solid transparent; border-top: 20px solid #ffd700; position: absolute; bottom: -20px; left: -13px; filter: drop-shadow(0 0 10px #ffd700);"></div>
+                </div>
+                <!-- Метки процентов -->
+                <div style="position: absolute; top: 50px; left: 0; width: 100%; display: flex; justify-content: space-between; font-size: 10px; color: #555; padding: 0 5px;">
+                    <span>0%</span>
+                    <span>25%</span>
+                    <span>50%</span>
+                    <span>75%</span>
+                    <span>100%</span>
+                </div>
+            </div>
+            <div style="display: flex; justify-content: space-between; margin-top: 25px; font-size: 14px; color: #888;">
+                <span>Шанс: <span id="upgradeChanceDisplay">0%</span></span>
+                <span>Результат: <span id="arrowResult" style="color:#ffd700;">—</span></span>
+            </div>
         </div>
 
         <!-- Кнопка -->
@@ -487,12 +503,12 @@ function sellSkin(index) {
 }
 
 // ============================================================
-//  АПГРЕЙД (НОВЫЙ — КАК В STANDOFFCRAFT)
+//  АПГРЕЙД (НОВЫЙ — СТРЕЛКА КАК В STANDOFFCRAFT)
 // ============================================================
 let upgradeSlots = new Array(10).fill(null);
 let targetSkin = null;
-let selectedUpgradeSkinIndex = null;
 let bonusGold = 0;
+let isArrowSpinning = false;
 
 function renderUpgradeSlots() {
     const container = document.getElementById('upgradeSlots');
@@ -603,7 +619,7 @@ function updateUpgradeChance() {
     
     if (filled.length === 0 || !target) {
         document.getElementById('upgradeChanceDisplay').textContent = '0%';
-        document.getElementById('upgradeDetails').textContent = 'Выберите скины и цель';
+        document.getElementById('chanceFill').style.width = '0%';
         document.getElementById('upgradeBtn').disabled = true;
         return;
     }
@@ -616,14 +632,12 @@ function updateUpgradeChance() {
     chance = Math.round(chance);
     
     document.getElementById('upgradeChanceDisplay').textContent = `${chance}%`;
-    document.getElementById('upgradeDetails').textContent = 
-        `💰 Скины: ${totalPrice} Gold | 🎯 Цель: ${targetPrice} Gold | +${bonusChance}% за Gold`;
+    document.getElementById('chanceFill').style.width = `${chance}%`;
     document.getElementById('upgradeBtn').disabled = false;
     document.getElementById('upgradeBtn').dataset.chance = chance;
     document.getElementById('upgradeBtn').dataset.target = targetIndex;
 }
 
-// Слайдер и поле для бонусного Gold
 document.getElementById('bonusGoldSlider').addEventListener('input', function() {
     const val = parseInt(this.value);
     document.getElementById('bonusGoldInput').value = val;
@@ -641,8 +655,43 @@ document.getElementById('bonusGoldInput').addEventListener('input', function() {
 
 document.getElementById('targetSkinSelect').addEventListener('change', updateUpgradeChance);
 
+// Анимация стрелки
+function spinArrow(finalPercent, callback) {
+    const arrow = document.getElementById('arrowPointer');
+    const resultDisplay = document.getElementById('arrowResult');
+    resultDisplay.textContent = '...';
+    
+    let current = 0;
+    const duration = 3000;
+    const startTime = Date.now();
+    
+    function animate() {
+        const elapsed = Date.now() - startTime;
+        if (elapsed >= duration) {
+            arrow.style.left = finalPercent + '%';
+            resultDisplay.textContent = finalPercent + '%';
+            resultDisplay.style.color = finalPercent <= parseFloat(document.getElementById('upgradeChanceDisplay').textContent) ? '#4b69ff' : '#ff2d55';
+            if (callback) callback();
+            return;
+        }
+        
+        const progress = elapsed / duration;
+        const eased = 1 - Math.pow(1 - progress, 3);
+        const range = 100;
+        const randomOffset = Math.sin(progress * 20) * 10;
+        current = (eased * range + randomOffset) % 100;
+        arrow.style.left = current + '%';
+        
+        requestAnimationFrame(animate);
+    }
+    
+    animate();
+}
+
 // Кнопка апгрейда
 document.getElementById('upgradeBtn').addEventListener('click', function() {
+    if (isArrowSpinning) return;
+    
     const filled = upgradeSlots.filter(s => s !== null);
     const targetIndex = parseInt(this.dataset.target);
     const target = skinsList[targetIndex];
@@ -659,36 +708,45 @@ document.getElementById('upgradeBtn').addEventListener('click', function() {
         return;
     }
     
-    // Списываем бонусный Gold
-    if (bonusGoldUsed > 0) {
-        balance -= bonusGoldUsed;
-        document.getElementById('balanceDisplay').textContent = balance;
-    }
+    isArrowSpinning = true;
+    this.disabled = true;
+    document.getElementById('upgradeResult').textContent = '🎯 Апгрейд в процессе...';
+    document.getElementById('upgradeResult').style.color = '#ffd700';
     
-    // Сгорают все скины из слотов
-    const burnedSkins = [...filled];
-    upgradeSlots.fill(null);
+    const resultPercent = Math.random() * 100;
     
-    // Рандом
-    const isSuccess = Math.random() * 100 < chance;
-    const resultDiv = document.getElementById('upgradeResult');
-    
-    if (isSuccess) {
-        const winSkin = { ...target };
-        inventory.push(winSkin);
-        resultDiv.innerHTML = `🎉 АПГРЕЙД УСПЕШЕН!<br>${winSkin.emoji} ${winSkin.name} (${winSkin.rarity})`;
-        resultDiv.style.color = '#ffd700';
-    } else {
-        resultDiv.innerHTML = `💥 АПГРЕЙД НЕ УДАЛСЯ!<br>Скины сгорели`;
-        resultDiv.style.color = '#ff2d55';
-    }
-    
-    renderUpgradeSlots();
-    renderInventory();
-    renderUpgradeInventory();
-    document.getElementById('bonusGoldInput').value = 0;
-    document.getElementById('bonusGoldSlider').value = 0;
-    updateUpgradeChance();
+    spinArrow(resultPercent, () => {
+        isArrowSpinning = false;
+        document.getElementById('upgradeBtn').disabled = false;
+        
+        const isSuccess = resultPercent <= chance;
+        const resultDiv = document.getElementById('upgradeResult');
+        
+        if (bonusGoldUsed > 0) {
+            balance -= bonusGoldUsed;
+            document.getElementById('balanceDisplay').textContent = balance;
+        }
+        
+        const burnedSkins = [...filled];
+        upgradeSlots.fill(null);
+        
+        if (isSuccess) {
+            const winSkin = { ...target };
+            inventory.push(winSkin);
+            resultDiv.innerHTML = `🎉 АПГРЕЙД УСПЕШЕН!<br>${winSkin.emoji} ${winSkin.name} (${winSkin.rarity})`;
+            resultDiv.style.color = '#ffd700';
+        } else {
+            resultDiv.innerHTML = `💥 АПГРЕЙД НЕ УДАЛСЯ!<br>Скины сгорели`;
+            resultDiv.style.color = '#ff2d55';
+        }
+        
+        renderUpgradeSlots();
+        renderInventory();
+        renderUpgradeInventory();
+        document.getElementById('bonusGoldInput').value = 0;
+        document.getElementById('bonusGoldSlider').value = 0;
+        updateUpgradeChance();
+    });
 });
 
 // ============================================================
