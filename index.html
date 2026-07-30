@@ -64,58 +64,6 @@
         .craft-btn:hover { transform: scale(1.05); box-shadow: 0 0 30px rgba(255,215,0,0.4); }
         .craft-btn:disabled { opacity: 0.5; cursor: not-allowed; }
 
-        /* КРУГЛАЯ ШКАЛА (СТАНДОФФ КРАФТ) */
-        .circle-container { 
-            position: relative; 
-            width: 220px; 
-            height: 220px; 
-            margin: 20px auto; 
-        }
-        .circle-bg { fill: none; stroke: #1a1a2e; stroke-width: 14; }
-        .circle-fill { 
-            fill: none; 
-            stroke: url(#grad); 
-            stroke-width: 14; 
-            stroke-linecap: round; 
-            transition: stroke-dashoffset 0.5s ease; 
-            transform: rotate(-90deg); 
-            transform-origin: 50% 50%; 
-        }
-        .circle-center { 
-            position: absolute; 
-            top: 50%; 
-            left: 50%; 
-            transform: translate(-50%, -50%); 
-            text-align: center; 
-        }
-        .circle-center .chance-text { font-size: 32px; font-weight: bold; color: #ffd700; }
-        .circle-center .chance-label { font-size: 14px; color: #888; }
-
-        .arrow-handle { 
-            position: absolute; 
-            top: 50%; 
-            left: 50%; 
-            width: 6px; 
-            height: 90px; 
-            background: #ffd700; 
-            transform-origin: bottom center; 
-            transform: translate(-50%, -100%) rotate(0deg); 
-            transition: transform 4s cubic-bezier(0.1, 0.6, 0.1, 1); 
-            box-shadow: 0 0 30px #ffd700; 
-            z-index: 5;
-        }
-        .arrow-handle::after { 
-            content: ''; 
-            position: absolute; 
-            top: -16px; 
-            left: -16px; 
-            width: 32px; 
-            height: 32px; 
-            background: #ffd700; 
-            border-radius: 50%; 
-            box-shadow: 0 0 40px #ffd700; 
-        }
-
         .bonus-card { background: #1a1a3e; border: 2px solid #ffd700; border-radius: 20px; padding: 20px; margin: 15px 0; }
         .bonus-card .task { display: flex; justify-content: space-between; align-items: center; padding: 10px 0; border-bottom: 1px solid #222; }
         .bonus-card .task:last-child { border-bottom: none; }
@@ -200,7 +148,7 @@
         <div class="cases-grid" id="casesGrid"></div>
     </div>
 
-    <!-- ===== АПГРЕЙД ===== -->
+    <!-- ===== АПГРЕЙД (ГОРИЗОНТАЛЬНАЯ СТРЕЛКА) ===== -->
     <div id="tab-upgrade" class="tab-content">
         <h3 style="color:#ffd700;">🔧 Апгрейд скинов</h3>
         <p style="color:#888; font-size:14px;">Выбери от 1 до 10 скинов и цель для апгрейда</p>
@@ -226,29 +174,23 @@
             </div>
         </div>
 
-        <!-- КРУГЛАЯ ШКАЛА -->
-        <div class="circle-container">
-            <svg width="220" height="220" viewBox="0 0 220 220">
-                <defs>
-                    <linearGradient id="grad" x1="0%" y1="0%" x2="100%" y2="0%">
-                        <stop offset="0%" style="stop-color:#ff2d55;stop-opacity:1" />
-                        <stop offset="50%" style="stop-color:#ffd700;stop-opacity:1" />
-                        <stop offset="100%" style="stop-color:#4b69ff;stop-opacity:1" />
-                    </linearGradient>
-                </defs>
-                <circle class="circle-bg" cx="110" cy="110" r="95" />
-                <circle class="circle-fill" id="circleFill" cx="110" cy="110" r="95" 
-                    stroke-dasharray="597" stroke-dashoffset="597" />
-            </svg>
-            <div class="arrow-handle" id="arrowHandle"></div>
-            <div class="circle-center">
-                <div class="chance-text" id="chanceText">0%</div>
-                <div class="chance-label">Шанс</div>
+        <!-- ШКАЛА С ГОРИЗОНТАЛЬНОЙ СТРЕЛКОЙ (ТОЧНО КАК В КЕЙСАХ) -->
+        <div style="margin: 20px 0; position: relative; background: #111; border-radius: 12px; padding: 20px; border: 1px solid #333;">
+            <div style="position: relative; height: 40px; background: #222; border-radius: 10px; overflow: hidden;">
+                <div style="position: absolute; top: 0; left: 0; height: 100%; width: 100%; background: linear-gradient(90deg, #ff2d55, #ffd700, #4b69ff); opacity: 0.3;"></div>
+                <div id="chanceFill" style="position: absolute; top: 0; left: 0; height: 100%; width: 0%; background: linear-gradient(90deg, #ff2d55, #ffd700, #4b69ff); transition: width 1s;"></div>
+                <!-- СТРЕЛКА (горизонтальная, как в кейсах) -->
+                <div id="arrowPointer" style="position: absolute; top: -15px; left: 0%; width: 4px; height: 70px; background: #ffd700; box-shadow: 0 0 20px #ffd700; transition: left 0.1s; transform: translateX(-50%);">
+                    <div style="width: 0; height: 0; border-left: 15px solid transparent; border-right: 15px solid transparent; border-top: 20px solid #ffd700; position: absolute; bottom: -20px; left: -13px; filter: drop-shadow(0 0 10px #ffd700);"></div>
+                </div>
+                <div style="position: absolute; top: 50px; left: 0; width: 100%; display: flex; justify-content: space-between; font-size: 10px; color: #555; padding: 0 5px;">
+                    <span>0%</span><span>25%</span><span>50%</span><span>75%</span><span>100%</span>
+                </div>
             </div>
-        </div>
-
-        <div style="display: flex; justify-content: space-between; margin-top: 10px; font-size: 14px; color: #888;">
-            <span>Результат: <span id="arrowResult" style="color:#ffd700;">—</span></span>
+            <div style="display: flex; justify-content: space-between; margin-top: 25px; font-size: 14px; color: #888;">
+                <span>Шанс: <span id="upgradeChanceDisplay">0%</span></span>
+                <span>Результат: <span id="arrowResult" style="color:#ffd700;">—</span></span>
+            </div>
         </div>
 
         <button class="craft-btn" id="upgradeBtn" disabled>🔮 Апгрейд</button>
@@ -547,7 +489,7 @@ function sellSkin(index) {
 }
 
 // ============================================================
-//  АПГРЕЙД (СТАНДОФФ КРАФТ)
+//  АПГРЕЙД (ГОРИЗОНТАЛЬНАЯ СТРЕЛКА)
 // ============================================================
 let upgradeSlots = new Array(10).fill(null);
 let targetSkin = null;
@@ -663,8 +605,8 @@ function updateUpgradeChance() {
     document.getElementById('bonusChanceDisplay').textContent = bonusChance;
     
     if (filled.length === 0 || !target) {
-        document.getElementById('chanceText').textContent = '0%';
-        document.getElementById('circleFill').style.strokeDashoffset = 597;
+        document.getElementById('upgradeChanceDisplay').textContent = '0%';
+        document.getElementById('chanceFill').style.width = '0%';
         document.getElementById('upgradeBtn').disabled = true;
         return;
     }
@@ -676,11 +618,8 @@ function updateUpgradeChance() {
     chance = Math.min(chance + bonusChance, 95);
     chance = Math.round(chance);
     
-    const circumference = 597;
-    const offset = circumference - (chance / 100) * circumference;
-    
-    document.getElementById('chanceText').textContent = `${chance}%`;
-    document.getElementById('circleFill').style.strokeDashoffset = offset;
+    document.getElementById('upgradeChanceDisplay').textContent = `${chance}%`;
+    document.getElementById('chanceFill').style.width = `${chance}%`;
     document.getElementById('upgradeBtn').disabled = false;
     document.getElementById('upgradeBtn').dataset.chance = chance;
     document.getElementById('upgradeBtn').dataset.target = targetIndex;
@@ -703,35 +642,32 @@ document.getElementById('bonusGoldInput').addEventListener('input', function() {
 
 document.getElementById('targetSkinSelect').addEventListener('change', updateUpgradeChance);
 
-// АНИМАЦИЯ СТРЕЛКИ (7-10 ОБОРОТОВ + ЗАМЕДЛЕНИЕ)
-function spinCircleArrow(finalPercent, callback) {
-    const arrow = document.getElementById('arrowHandle');
+// АНИМАЦИЯ ГОРИЗОНТАЛЬНОЙ СТРЕЛКИ (КАК В КЕЙСАХ)
+function spinArrow(finalPercent, callback) {
+    const arrow = document.getElementById('arrowPointer');
     const resultDisplay = document.getElementById('arrowResult');
     resultDisplay.textContent = '...';
     
-    const endAngle = (finalPercent / 100) * 360;
-    // 7-10 случайных оборотов
-    const extraSpins = Math.floor(Math.random() * 4) + 7;
-    const totalRotation = extraSpins * 360 + endAngle;
-    const duration = 4500 + Math.random() * 1500; // 4.5-6 секунд
-    
+    let current = 0;
+    const duration = 3000 + Math.random() * 1000;
     const startTime = Date.now();
     
     function animate() {
         const elapsed = Date.now() - startTime;
         if (elapsed >= duration) {
-            arrow.style.transform = `translate(-50%, -100%) rotate(${totalRotation}deg)`;
+            arrow.style.left = finalPercent + '%';
             resultDisplay.textContent = finalPercent + '%';
-            resultDisplay.style.color = finalPercent <= parseFloat(document.getElementById('chanceText').textContent) ? '#4b69ff' : '#ff2d55';
+            resultDisplay.style.color = finalPercent <= parseFloat(document.getElementById('upgradeChanceDisplay').textContent) ? '#4b69ff' : '#ff2d55';
             if (callback) callback();
             return;
         }
         
         const progress = elapsed / duration;
-        // easeOutQuint: максимальное ускорение в начале, плавный стоп в конце
         const eased = 1 - Math.pow(1 - progress, 5);
-        const currentAngle = eased * totalRotation;
-        arrow.style.transform = `translate(-50%, -100%) rotate(${currentAngle}deg)`;
+        const range = 100;
+        const randomOffset = Math.sin(progress * 25) * 15;
+        current = (eased * range + randomOffset) % 100;
+        arrow.style.left = current + '%';
         
         requestAnimationFrame(animate);
     }
@@ -764,7 +700,6 @@ document.getElementById('upgradeBtn').addEventListener('click', function() {
     document.getElementById('upgradeResult').textContent = '🎯 Апгрейд в процессе...';
     document.getElementById('upgradeResult').style.color = '#ffd700';
     
-    // Генерируем результат с защитой от повторений
     let resultPercent;
     let attempts = 0;
     do {
@@ -773,7 +708,7 @@ document.getElementById('upgradeBtn').addEventListener('click', function() {
     } while (lastResult !== null && Math.abs(resultPercent - lastResult) < 3 && attempts < 20);
     lastResult = resultPercent;
     
-    spinCircleArrow(resultPercent, () => {
+    spinArrow(resultPercent, () => {
         isArrowSpinning = false;
         document.getElementById('upgradeBtn').disabled = false;
         
