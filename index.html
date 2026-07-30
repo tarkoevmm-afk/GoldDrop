@@ -119,7 +119,7 @@
             <div class="info">
                 Для пополнения баланса напишите в Telegram:<br>
                 <span class="highlight">@GoldDrop_Support</span><br><br>
-                После оплаты укажите ваш ID: <span class="highlight">tarkoevmm-afk</span><br>
+                <strong style="color: #fff;">Укажите ваш ID</strong> (написан внизу экрана)<br>
                 Средства будут зачислены вручную в течение 5 минут.
             </div>
             <button class="support-close-btn" onclick="closeSupport()">Понятно, спасибо</button>
@@ -175,7 +175,6 @@
 
         let balance = 100;
 
-        // Пополнение: показываем окно поддержки
         document.querySelectorAll('.deposit-btn, .payment-btn').forEach(btn => {
             btn.addEventListener('click', function() {
                 document.getElementById('supportModal').classList.add('active');
@@ -190,7 +189,6 @@
             if (e.target === this) closeSupport();
         });
 
-        // Открытие кейсов
         document.querySelectorAll('.case-box').forEach(box => {
             box.addEventListener('click', function(e) {
                 if (e.target.tagName === 'BUTTON') return;
