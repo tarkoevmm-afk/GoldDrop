@@ -98,7 +98,6 @@
         .sapper-actions .btn-take:disabled { opacity: 0.5; cursor: not-allowed; transform: none; }
         .sapper-actions .btn { padding: 10px 20px; font-size: 16px; }
 
-        /* Дополнительный баланс внутри сапёра */
         .sapper-balance { margin: 10px 0; padding: 10px; background: #111; border-radius: 10px; color: #888; font-size: 16px; border: 1px solid #222; }
         .sapper-balance span { color: #ffd700; font-weight: bold; }
     </style>
@@ -193,7 +192,6 @@
             <h2>💣 Сапёр</h2>
             <p style="color:#888; font-size:14px; margin-bottom:10px;">Выбери ставку и сложность, затем открывай клетки</p>
             
-            <!-- ✅ БАЛАНС ВНУТРИ САПЁРА -->
             <div class="sapper-balance">
                 💰 Ваш баланс: <span id="sapperBalanceDisplay">100</span> Gold
             </div>
@@ -298,9 +296,11 @@
             const track = document.getElementById('scrollTrack');
             const resultText = document.getElementById('resultText');
 
+            // ✅ ВЫБИРАЕМ ВЫИГРЫШНЫЙ СКИН
             const win = skinsList[Math.floor(Math.random() * skinsList.length)];
             inventory.push(win);
 
+            // ✅ СТРОИМ ЛЕНТУ С ПОВТОРАМИ
             let items = '';
             for (let i = 0; i < 40; i++) {
                 const s = skinsList[i % skinsList.length];
@@ -312,11 +312,24 @@
             }
             track.innerHTML = items;
 
+            // ✅ РАССЧИТЫВАЕМ ПОЗИЦИЮ, ЧТОБЫ СТРЕЛКА БЫЛА НА ВЫИГРЫШЕ
             const itemWidth = 120 + 2;
+            const containerWidth = 400;
             const totalWidth = 40 * itemWidth;
-            const visibleWidth = 4 * itemWidth;
-            const maxOffset = totalWidth - visibleWidth;
-            const targetOffset = Math.floor(Math.random() * (maxOffset - 100)) + 100;
+            const maxOffset = totalWidth - containerWidth;
+            
+            // Находим индекс выигрышного скина в ленте
+            let winIndex = 0;
+            for (let i = 0; i < 40; i++) {
+                const s = skinsList[i % skinsList.length];
+                if (s.name === win.name && s.rarity === win.rarity) {
+                    winIndex = i;
+                    break;
+                }
+            }
+            
+            // Смещаем так, чтобы выигрыш оказался примерно по центру (под стрелкой)
+            const targetOffset = Math.max(0, Math.min(winIndex * itemWidth - containerWidth / 2 + itemWidth / 2, maxOffset));
 
             modal.classList.add('active');
             document.getElementById('resultImage').style.display = 'none';
@@ -328,6 +341,7 @@
                 track.style.transform = `translateX(-${targetOffset}px)`;
             }, 100);
 
+            // ✅ ПОКАЗЫВАЕМ ТОТ ЖЕ СКИН
             setTimeout(() => {
                 resultText.innerHTML = `🎉 <span style="color:${win.color};">${win.emoji} ${win.name}</span> (${win.rarity})!<br><span style="color:#ffd700;font-size:16px;">💰 ${win.price} Gold</span>`;
             }, 6500);
@@ -389,9 +403,7 @@
             betInput.placeholder = '10';
             betInput.value = '';
             
-            // Обновляем баланс в сапёре
             document.getElementById('sapperBalanceDisplay').textContent = balance;
-            
             document.getElementById('sapperStatus').textContent = `💰 Ставка: ${sapperBet} Gold | Выигрыш: 0 Gold`;
             document.getElementById('sapperStatus').style.color = '#ffd700';
             document.getElementById('sapperTakeBtn').disabled = true;
