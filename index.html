@@ -64,6 +64,17 @@
         .craft-btn:hover { transform: scale(1.05); box-shadow: 0 0 30px rgba(255,215,0,0.4); }
         .craft-btn:disabled { opacity: 0.5; cursor: not-allowed; }
 
+        /* КРУГЛАЯ ШКАЛА */
+        .circle-container { position: relative; width: 200px; height: 200px; margin: 20px auto; }
+        .circle-bg { fill: none; stroke: #222; stroke-width: 12; }
+        .circle-fill { fill: none; stroke: url(#grad); stroke-width: 12; stroke-linecap: round; transition: stroke-dashoffset 1s ease; transform: rotate(-90deg); transform-origin: 50% 50%; }
+        .circle-center { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); text-align: center; }
+        .circle-center .chance-text { font-size: 28px; font-weight: bold; color: #ffd700; }
+        .circle-center .chance-label { font-size: 12px; color: #888; }
+
+        .arrow-handle { position: absolute; top: 50%; left: 50%; width: 4px; height: 80px; background: #ffd700; transform-origin: bottom center; transform: translate(-50%, -100%) rotate(0deg); transition: transform 2s cubic-bezier(0.1, 0.8, 0.1, 1); box-shadow: 0 0 20px #ffd700; }
+        .arrow-handle::after { content: ''; position: absolute; top: -12px; left: -12px; width: 28px; height: 28px; background: #ffd700; border-radius: 50%; box-shadow: 0 0 30px #ffd700; }
+
         .bonus-card { background: #1a1a3e; border: 2px solid #ffd700; border-radius: 20px; padding: 20px; margin: 15px 0; }
         .bonus-card .task { display: flex; justify-content: space-between; align-items: center; padding: 10px 0; border-bottom: 1px solid #222; }
         .bonus-card .task:last-child { border-bottom: none; }
@@ -148,28 +159,22 @@
         <div class="cases-grid" id="casesGrid"></div>
     </div>
 
-    <!-- ===== АПГРЕЙД (НОВЫЙ) ===== -->
+    <!-- ===== АПГРЕЙД ===== -->
     <div id="tab-upgrade" class="tab-content">
         <h3 style="color:#ffd700;">🔧 Апгрейд скинов</h3>
         <p style="color:#888; font-size:14px;">Выбери от 1 до 10 скинов и цель для апгрейда</p>
         
-        <!-- Стрелка -->
         <div class="upgrade-arrow" id="upgradeArrow">▼ Выберите скины ▼</div>
-
-        <!-- Слоты -->
         <div class="upgrade-slots" id="upgradeSlots"></div>
 
-        <!-- Инвентарь для выбора скинов -->
         <p style="color:#888; font-size:14px; margin-top:15px;">Твой инвентарь:</p>
         <div class="inventory-grid" id="upgradeInventory" style="grid-template-columns: repeat(3, 1fr);"></div>
 
-        <!-- Выбор цели -->
         <div class="upgrade-target">
             <p style="color:#888; font-size:14px;">🎯 Выбери целевой скин:</p>
             <select id="targetSkinSelect"></select>
         </div>
 
-        <!-- Добавка Gold -->
         <div class="upgrade-gold">
             <p style="color:#888; font-size:14px;">💰 Добавь Gold к шансу:</p>
             <input type="range" id="bonusGoldSlider" min="0" max="1000" value="0" step="10">
@@ -180,33 +185,31 @@
             </div>
         </div>
 
-        <!-- Шкала и стрелка -->
-        <div style="margin: 20px 0; position: relative; background: #111; border-radius: 12px; padding: 20px; border: 1px solid #333;">
-            <div style="position: relative; height: 40px; background: #222; border-radius: 10px; overflow: hidden;">
-                <!-- Фон шкалы -->
-                <div style="position: absolute; top: 0; left: 0; height: 100%; width: 100%; background: linear-gradient(90deg, #ff2d55, #ffd700, #4b69ff); opacity: 0.3;"></div>
-                <!-- Заполнение шанса -->
-                <div id="chanceFill" style="position: absolute; top: 0; left: 0; height: 100%; width: 0%; background: linear-gradient(90deg, #ff2d55, #ffd700, #4b69ff); transition: width 1s;"></div>
-                <!-- Стрелка -->
-                <div id="arrowPointer" style="position: absolute; top: -15px; left: 0%; width: 4px; height: 70px; background: #ffd700; box-shadow: 0 0 20px #ffd700; transition: left 0.1s; transform: translateX(-50%);">
-                    <div style="width: 0; height: 0; border-left: 15px solid transparent; border-right: 15px solid transparent; border-top: 20px solid #ffd700; position: absolute; bottom: -20px; left: -13px; filter: drop-shadow(0 0 10px #ffd700);"></div>
-                </div>
-                <!-- Метки процентов -->
-                <div style="position: absolute; top: 50px; left: 0; width: 100%; display: flex; justify-content: space-between; font-size: 10px; color: #555; padding: 0 5px;">
-                    <span>0%</span>
-                    <span>25%</span>
-                    <span>50%</span>
-                    <span>75%</span>
-                    <span>100%</span>
-                </div>
-            </div>
-            <div style="display: flex; justify-content: space-between; margin-top: 25px; font-size: 14px; color: #888;">
-                <span>Шанс: <span id="upgradeChanceDisplay">0%</span></span>
-                <span>Результат: <span id="arrowResult" style="color:#ffd700;">—</span></span>
+        <!-- КРУГЛАЯ ШКАЛА -->
+        <div class="circle-container">
+            <svg width="200" height="200" viewBox="0 0 200 200">
+                <defs>
+                    <linearGradient id="grad" x1="0%" y1="0%" x2="100%" y2="0%">
+                        <stop offset="0%" style="stop-color:#ff2d55;stop-opacity:1" />
+                        <stop offset="50%" style="stop-color:#ffd700;stop-opacity:1" />
+                        <stop offset="100%" style="stop-color:#4b69ff;stop-opacity:1" />
+                    </linearGradient>
+                </defs>
+                <circle class="circle-bg" cx="100" cy="100" r="85" />
+                <circle class="circle-fill" id="circleFill" cx="100" cy="100" r="85" 
+                    stroke-dasharray="534" stroke-dashoffset="534" />
+            </svg>
+            <div class="arrow-handle" id="arrowHandle"></div>
+            <div class="circle-center">
+                <div class="chance-text" id="chanceText">0%</div>
+                <div class="chance-label">Шанс</div>
             </div>
         </div>
 
-        <!-- Кнопка -->
+        <div style="display: flex; justify-content: space-between; margin-top: 10px; font-size: 14px; color: #888;">
+            <span>Результат: <span id="arrowResult" style="color:#ffd700;">—</span></span>
+        </div>
+
         <button class="craft-btn" id="upgradeBtn" disabled>🔮 Апгрейд</button>
         <div id="upgradeResult" style="margin-top:15px; font-size:18px;"></div>
     </div>
@@ -503,7 +506,7 @@ function sellSkin(index) {
 }
 
 // ============================================================
-//  АПГРЕЙД (НОВЫЙ — СТРЕЛКА КАК В STANDOFFCRAFT)
+//  АПГРЕЙД (КРУГЛАЯ СТРЕЛКА)
 // ============================================================
 let upgradeSlots = new Array(10).fill(null);
 let targetSkin = null;
@@ -618,8 +621,8 @@ function updateUpgradeChance() {
     document.getElementById('bonusChanceDisplay').textContent = bonusChance;
     
     if (filled.length === 0 || !target) {
-        document.getElementById('upgradeChanceDisplay').textContent = '0%';
-        document.getElementById('chanceFill').style.width = '0%';
+        document.getElementById('chanceText').textContent = '0%';
+        document.getElementById('circleFill').style.strokeDashoffset = 534;
         document.getElementById('upgradeBtn').disabled = true;
         return;
     }
@@ -631,8 +634,11 @@ function updateUpgradeChance() {
     chance = Math.min(chance + bonusChance, 95);
     chance = Math.round(chance);
     
-    document.getElementById('upgradeChanceDisplay').textContent = `${chance}%`;
-    document.getElementById('chanceFill').style.width = `${chance}%`;
+    const circumference = 534;
+    const offset = circumference - (chance / 100) * circumference;
+    
+    document.getElementById('chanceText').textContent = `${chance}%`;
+    document.getElementById('circleFill').style.strokeDashoffset = offset;
     document.getElementById('upgradeBtn').disabled = false;
     document.getElementById('upgradeBtn').dataset.chance = chance;
     document.getElementById('upgradeBtn').dataset.target = targetIndex;
@@ -655,32 +661,31 @@ document.getElementById('bonusGoldInput').addEventListener('input', function() {
 
 document.getElementById('targetSkinSelect').addEventListener('change', updateUpgradeChance);
 
-// Анимация стрелки
-function spinArrow(finalPercent, callback) {
-    const arrow = document.getElementById('arrowPointer');
+// Анимация круглой стрелки
+function spinCircleArrow(finalPercent, callback) {
+    const arrow = document.getElementById('arrowHandle');
     const resultDisplay = document.getElementById('arrowResult');
     resultDisplay.textContent = '...';
     
-    let current = 0;
+    const startAngle = 0;
+    const endAngle = (finalPercent / 100) * 360;
     const duration = 3000;
     const startTime = Date.now();
     
     function animate() {
         const elapsed = Date.now() - startTime;
         if (elapsed >= duration) {
-            arrow.style.left = finalPercent + '%';
+            arrow.style.transform = `translate(-50%, -100%) rotate(${endAngle}deg)`;
             resultDisplay.textContent = finalPercent + '%';
-            resultDisplay.style.color = finalPercent <= parseFloat(document.getElementById('upgradeChanceDisplay').textContent) ? '#4b69ff' : '#ff2d55';
+            resultDisplay.style.color = finalPercent <= parseFloat(document.getElementById('chanceText').textContent) ? '#4b69ff' : '#ff2d55';
             if (callback) callback();
             return;
         }
         
         const progress = elapsed / duration;
         const eased = 1 - Math.pow(1 - progress, 3);
-        const range = 100;
-        const randomOffset = Math.sin(progress * 20) * 10;
-        current = (eased * range + randomOffset) % 100;
-        arrow.style.left = current + '%';
+        const currentAngle = eased * 360;
+        arrow.style.transform = `translate(-50%, -100%) rotate(${currentAngle}deg)`;
         
         requestAnimationFrame(animate);
     }
@@ -715,7 +720,7 @@ document.getElementById('upgradeBtn').addEventListener('click', function() {
     
     const resultPercent = Math.random() * 100;
     
-    spinArrow(resultPercent, () => {
+    spinCircleArrow(resultPercent, () => {
         isArrowSpinning = false;
         document.getElementById('upgradeBtn').disabled = false;
         
@@ -727,7 +732,6 @@ document.getElementById('upgradeBtn').addEventListener('click', function() {
             document.getElementById('balanceDisplay').textContent = balance;
         }
         
-        const burnedSkins = [...filled];
         upgradeSlots.fill(null);
         
         if (isSuccess) {
