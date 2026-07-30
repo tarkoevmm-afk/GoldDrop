@@ -13,7 +13,7 @@
         .case-box:hover { box-shadow: 0 0 60px rgba(255,215,0,0.25); transform: scale(1.02); }
         .case-box h2 { font-size: 20px; margin-bottom: 10px; color: #ffd700; }
         .case-box p { color: #aaa; font-size: 14px; margin-bottom: 15px; }
-        .case-box .skin-img { width: 100px; border-radius: 15px; margin: 10px 0; border: 2px solid #ffd700; }
+        .case-box .skin-img { width: 100px; border-radius: 15px; margin: 10px 0; border: 2px solid #ffd700; height: 100px; display: flex; align-items: center; justify-content: center; font-size: 40px; }
         .btn { background: linear-gradient(135deg, #ffd700, #ff8c00); border: none; padding: 12px 35px; font-size: 18px; font-weight: bold; border-radius: 12px; cursor: pointer; color: #000; transition: 0.3s; }
         .btn:hover { transform: scale(1.05); box-shadow: 0 0 20px rgba(255,215,0,0.5); }
         
@@ -28,13 +28,17 @@
         .payment-btn { background: #1a1a2e; border: 1px solid #444; border-radius: 12px; padding: 8px 16px; font-size: 13px; font-weight: bold; color: #ccc; cursor: pointer; transition: 0.3s; flex: 1; min-width: 80px; }
         .payment-btn:hover { border-color: #ffd700; color: #ffd700; background: #222; transform: scale(1.05); }
 
+        /* Модальное окно для поддержки */
+        .support-modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.9); z-index: 1000; justify-content: center; align-items: center; }
+        .support-modal.active { display: flex; }
+        .support-content { background: #1a1a3e; padding: 30px; border-radius: 20px; border: 3px solid #ffd700; max-width: 380px; width: 90%; text-align: center; }
+        .support-content h2 { color: #ffd700; margin-bottom: 15px; }
+        .support-content .info { color: #aaa; font-size: 16px; line-height: 1.6; margin: 15px 0; }
+        .support-content .highlight { color: #ffd700; font-weight: bold; font-size: 18px; }
+        .support-close-btn { background: #ffd700; border: none; padding: 10px 30px; font-size: 18px; font-weight: bold; border-radius: 12px; cursor: pointer; color: #000; margin-top: 15px; }
+
         .footer { margin-top: 20px; font-size: 12px; color: #333; }
-        .rarity-common { color: #b0b0b0; }
-        .rarity-uncommon { color: #5e98d9; }
-        .rarity-rare { color: #4b69ff; }
-        .rarity-epic { color: #8847ff; }
-        .rarity-legendary { color: #ff8000; }
-        .rarity-mythical { color: #ff2d55; }
+        .rarity-common { color: #b0b0b0; } .rarity-uncommon { color: #5e98d9; } .rarity-rare { color: #4b69ff; } .rarity-epic { color: #8847ff; } .rarity-legendary { color: #ff8000; } .rarity-mythical { color: #ff2d55; }
 
         .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.9); z-index: 999; justify-content: center; align-items: center; }
         .modal.active { display: flex; }
@@ -64,9 +68,10 @@
         <p style="margin:10px 0 5px; color:#888;">Открывай кейсы Standoff 2</p>
         <p style="font-size:12px; color:#555; margin-bottom:15px;">Нажми на кейс, чтобы открыть</p>
 
+        <!-- Кейсы -->
         <div class="case-box" data-price="50">
             <h2>🔴 Кейс «Золотой Дракон»</h2>
-            <div class="skin-img" style="background: #ff8000; display: flex; align-items: center; justify-content: center; font-size: 40px; color: #fff; height:100px;">⭐</div>
+            <div class="skin-img" style="background: #ff8000;">⭐</div>
             <p>Редкость: <span class="rarity-legendary">Легендарный</span></p>
             <p>Шанс: <strong>5%</strong></p>
             <button class="btn">Открыть за 50 ₽</button>
@@ -74,7 +79,7 @@
 
         <div class="case-box" data-price="100">
             <h2>🔵 Кейс «Кровавая Луна»</h2>
-            <div class="skin-img" style="background: #ff2d55; display: flex; align-items: center; justify-content: center; font-size: 40px; color: #fff; height:100px;">🌙</div>
+            <div class="skin-img" style="background: #ff2d55;">🌙</div>
             <p>Редкость: <span class="rarity-mythical">Мифический</span></p>
             <p>Шанс: <strong>8%</strong></p>
             <button class="btn">Открыть за 100 ₽</button>
@@ -82,13 +87,13 @@
 
         <div class="case-box" data-price="30">
             <h2>⚪ Кейс «Ледяной Фантом»</h2>
-            <div class="skin-img" style="background: #8847ff; display: flex; align-items: center; justify-content: center; font-size: 40px; color: #fff; height:100px;">❄️</div>
+            <div class="skin-img" style="background: #8847ff;">❄️</div>
             <p>Редкость: <span class="rarity-epic">Эпический</span></p>
             <p>Шанс: <strong>3%</strong></p>
             <button class="btn">Открыть за 30 ₽</button>
         </div>
 
-        <!-- Блок баланса и пополнения -->
+        <!-- Блок баланса с пополнением -->
         <div class="balance">
             <div class="row">
                 <span>💰 Баланс:</span>
@@ -111,6 +116,21 @@
         <div class="footer">GoldDrop — лучший сайт для открытия кейсов Standoff 2</div>
     </div>
 
+    <!-- Модальное окно "Поддержка" -->
+    <div class="support-modal" id="supportModal">
+        <div class="support-content">
+            <h2>📞 Свяжитесь с поддержкой</h2>
+            <div class="info">
+                Для пополнения баланса переведите нужную сумму на номер:<br>
+                <span class="highlight">+7 (999) 123-45-67</span><br><br>
+                Или напишите в Telegram: <span class="highlight">@GoldDrop_Support</span><br><br>
+                После оплаты укажите ваш ID: <span class="highlight">tarkoevmm-afk</span><br>
+                Средства будут зачислены вручную в течение 5 минут.
+            </div>
+            <button class="support-close-btn" onclick="closeSupport()">Понятно, спасибо</button>
+        </div>
+    </div>
+
     <div class="modal" id="caseModal">
         <div class="modal-content">
             <h2>🎰 Открытие кейса...</h2>
@@ -125,7 +145,6 @@
     </div>
 
     <script>
-        // 30 скинов (оставляем как есть)
         const skins = [
             { name: "P250 | Sand Dune", rarity: "Обычный", color: "#b0b0b0", emoji: "🟤" },
             { name: "Galil AR | Sage Spray", rarity: "Обычный", color: "#b0b0b0", emoji: "🌿" },
@@ -161,11 +180,88 @@
 
         let balance = 100;
 
-        // Пополнение баланса
-        document.querySelectorAll('.deposit-btn').forEach(btn => {
+        // Пополнение: показываем окно поддержки
+        document.querySelectorAll('.deposit-btn, .payment-btn').forEach(btn => {
             btn.addEventListener('click', function() {
-                const amount = parseInt(this.dataset.amount);
-                balance += amount;
+                document.getElementById('supportModal').classList.add('active');
+            });
+        });
+
+        function closeSupport() {
+            document.getElementById('supportModal').classList.remove('active');
+        }
+
+        // Закрытие окна по клику вне блока
+        document.getElementById('supportModal').addEventListener('click', function(e) {
+            if (e.target === this) closeSupport();
+        });
+
+        // Открытие кейсов
+        document.querySelectorAll('.case-box').forEach(box => {
+            box.addEventListener('click', function(e) {
+                if (e.target.tagName === 'BUTTON') return;
+                const price = parseInt(this.dataset.price);
+                if (balance < price) {
+                    alert('❌ Недостаточно средств! Пополните баланс через поддержку.');
+                    return;
+                }
+                balance -= price;
                 document.getElementById('balanceDisplay').textContent = balance;
-                this.style.transform = 'scale(0.9)';
-                setTimeout(() => this.style.transform = 'scale(1)', 200);
+
+                const modal = document.getElementById('caseModal');
+                const track = document.getElementById('scrollTrack');
+                const resultImg = document.getElementById('resultImage');
+                const resultText = document.getElementById('resultText');
+
+                let items = '';
+                for (let i = 0; i < 35; i++) {
+                    const s = skins[i % skins.length];
+                    items += `<div class="scroll-item">
+                                <div class="skin-box" style="background:${s.color};">${s.emoji}</div>
+                                <div class="name">${s.name}</div>
+                                <div class="rarity" style="color:${s.color};">${s.rarity}</div>
+                             </div>`;
+                }
+                track.innerHTML = items;
+
+                const win = skins[Math.floor(Math.random() * skins.length)];
+                const itemWidth = 120 + 2;
+                const maxOffset = (35 - 4) * itemWidth;
+                const targetOffset = Math.floor(Math.random() * (maxOffset - 100)) + 100;
+
+                modal.classList.add('active');
+                resultImg.style.display = 'none';
+                resultText.textContent = '';
+
+                setTimeout(() => {
+                    track.style.transition = 'transform 6s cubic-bezier(0.1, 0.8, 0.1, 1)';
+                    track.style.transform = `translateX(-${targetOffset}px)`;
+                }, 100);
+
+                setTimeout(() => {
+                    resultImg.style.display = 'none';
+                    resultText.innerHTML = `🎉 <span style="color:${win.color};">${win.emoji} ${win.name}</span> (${win.rarity})!`;
+                }, 6500);
+            });
+        });
+
+        function closeModal() {
+            document.getElementById('caseModal').classList.remove('active');
+            document.getElementById('resultImage').classList.remove('glow');
+            document.getElementById('scrollTrack').style.transform = 'translateX(0px)';
+            document.getElementById('resultText').textContent = '';
+        }
+
+        document.getElementById('caseModal').addEventListener('click', function(e) {
+            if (e.target === this) closeModal();
+        });
+
+        document.querySelectorAll('.btn').forEach(btn => {
+            btn.addEventListener('click', function(e) {
+                e.stopPropagation();
+                this.closest('.case-box').click();
+            });
+        });
+    </script>
+</body>
+</html>
