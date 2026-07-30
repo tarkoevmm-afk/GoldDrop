@@ -23,14 +23,13 @@
         .rarity-mythical { color: #ff2d55; }
         .rarity-epic { color: #8847ff; }
 
-        /* Модальное окно */
         .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.9); z-index: 999; justify-content: center; align-items: center; }
         .modal.active { display: flex; }
         .modal-content { background: #1a1a3e; padding: 30px; border-radius: 20px; border: 3px solid #ffd700; max-width: 350px; width: 90%; text-align: center; max-height: 80vh; overflow: hidden; }
         .modal-content h2 { color: #ffd700; margin-bottom: 15px; }
 
         .scroll-container { height: 250px; overflow: hidden; border-radius: 15px; background: #0a0a1a; border: 2px solid #ffd700; margin: 15px 0; position: relative; }
-        .scroll-list { transition: transform 3s cubic-bezier(0.1, 0.7, 0.1, 1); }
+        .scroll-list { transition: transform 6s cubic-bezier(0.1, 0.8, 0.1, 1); }
         .scroll-item { display: flex; align-items: center; padding: 10px; border-bottom: 1px solid #222; background: #111; }
         .scroll-item img { width: 60px; border-radius: 10px; margin-right: 15px; }
         .scroll-item .name { color: #fff; font-size: 14px; }
@@ -38,11 +37,9 @@
 
         .big-skin { width: 180px; border-radius: 20px; border: 3px solid #ffd700; margin: 15px 0; display: none; }
         .win-text { font-size: 24px; font-weight: bold; margin: 10px 0; }
-
         .close-btn { background: #ffd700; border: none; padding: 10px 30px; font-size: 18px; font-weight: bold; border-radius: 12px; cursor: pointer; color: #000; margin-top: 15px; }
-
-        .glow { animation: glowPulse 0.8s ease-in-out 3; }
-        @keyframes glowPulse { 0% { box-shadow: 0 0 20px #ffd700; } 50% { box-shadow: 0 0 80px #ffd700; } 100% { box-shadow: 0 0 20px #ffd700; } }
+        .glow { animation: glowPulse 1s ease-in-out 3; }
+        @keyframes glowPulse { 0% { box-shadow: 0 0 20px #ffd700; } 50% { box-shadow: 0 0 100px #ffd700; } 100% { box-shadow: 0 0 20px #ffd700; } }
     </style>
 </head>
 <body>
@@ -79,9 +76,8 @@
         <div class="footer">GoldDrop — лучший сайт для открытия кейсов Standoff 2</div>
     </div>
 
-    <!-- Модальное окно -->
     <div class="modal" id="caseModal">
-        <div class="modal-content" id="modalContent">
+        <div class="modal-content">
             <h2>🎰 Открытие кейса...</h2>
             <div id="scrollContainer" class="scroll-container">
                 <div id="scrollList" class="scroll-list"></div>
@@ -119,14 +115,13 @@
                 document.getElementById('balanceDisplay').textContent = balance;
 
                 const modal = document.getElementById('caseModal');
-                const container = document.getElementById('scrollContainer');
                 const list = document.getElementById('scrollList');
                 const resultImg = document.getElementById('resultImage');
                 const resultText = document.getElementById('resultText');
 
-                // Строим список скинов (повторяем много раз для эффекта бесконечности)
+                // Строим список (30 элементов для длинной прокрутки)
                 let items = '';
-                for (let i = 0; i < 20; i++) {
+                for (let i = 0; i < 30; i++) {
                     const s = skins[i % skins.length];
                     items += `<div class="scroll-item">
                                 <img src="${s.image}">
@@ -135,26 +130,29 @@
                 }
                 list.innerHTML = items;
 
-                // Случайный выигрыш
+                // Выигрышный скин
                 const win = skins[Math.floor(Math.random() * skins.length)];
                 const itemHeight = 70;
-                const maxOffset = (20 - 3) * itemHeight;
+                const maxOffset = (30 - 3) * itemHeight;
                 const targetOffset = Math.floor(Math.random() * (maxOffset - 50)) + 50;
 
                 modal.classList.add('active');
                 resultImg.style.display = 'none';
                 resultText.textContent = '';
 
+                // Запускаем прокрутку
                 setTimeout(() => {
+                    list.style.transition = 'transform 6s cubic-bezier(0.1, 0.8, 0.1, 1)';
                     list.style.transform = `translateY(-${targetOffset}px)`;
                 }, 100);
 
+                // Показываем результат через 6.5 секунд
                 setTimeout(() => {
                     resultImg.src = win.image;
                     resultImg.style.display = 'block';
                     resultImg.classList.add('glow');
                     resultText.textContent = `🎉 ${win.name} (${win.rarity})!`;
-                }, 3500);
+                }, 6500);
             });
         });
 
