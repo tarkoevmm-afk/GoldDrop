@@ -29,12 +29,32 @@
         .modal-content h2 { color: #ffd700; margin-bottom: 15px; }
 
         /* Горизонтальный контейнер */
-        .scroll-container { width: 100%; overflow: hidden; border-radius: 15px; background: #0a0a1a; border: 2px solid #ffd700; margin: 15px 0; }
+        .scroll-container { width: 100%; overflow: hidden; border-radius: 15px; background: #0a0a1a; border: 2px solid #ffd700; margin: 15px 0; position: relative; }
         .scroll-track { display: flex; transition: transform 6s cubic-bezier(0.1, 0.8, 0.1, 1); will-change: transform; }
         .scroll-item { flex: 0 0 auto; width: 120px; padding: 10px; text-align: center; background: #111; border-right: 1px solid #222; }
         .scroll-item img { width: 80px; border-radius: 10px; margin-bottom: 5px; }
         .scroll-item .name { font-size: 12px; color: #fff; }
         .scroll-item .rarity { font-size: 10px; color: #aaa; }
+
+        /* Стрелка */
+        .arrow {
+            position: absolute;
+            top: -10px;
+            left: 50%;
+            transform: translateX(-50%);
+            font-size: 40px;
+            color: #ffd700;
+            filter: drop-shadow(0 0 20px #ffd700);
+            animation: arrowBounce 1s ease-in-out infinite;
+            z-index: 10;
+            display: none;
+            pointer-events: none;
+        }
+        .arrow.show { display: block; }
+        @keyframes arrowBounce {
+            0%, 100% { transform: translateX(-50%) translateY(0); }
+            50% { transform: translateX(-50%) translateY(8px); }
+        }
 
         .big-skin { width: 180px; border-radius: 20px; border: 3px solid #ffd700; margin: 15px 0; display: none; }
         .win-text { font-size: 24px; font-weight: bold; margin: 10px 0; }
@@ -81,6 +101,7 @@
         <div class="modal-content">
             <h2>🎰 Открытие кейса...</h2>
             <div id="scrollContainer" class="scroll-container">
+                <div class="arrow" id="arrow">▼</div>
                 <div id="scrollTrack" class="scroll-track"></div>
             </div>
             <img src="" class="big-skin" id="resultImage">
@@ -119,6 +140,7 @@
                 const track = document.getElementById('scrollTrack');
                 const resultImg = document.getElementById('resultImage');
                 const resultText = document.getElementById('resultText');
+                const arrow = document.getElementById('arrow');
 
                 // Строим горизонтальный список (30 элементов)
                 let items = '';
@@ -140,13 +162,16 @@
                 modal.classList.add('active');
                 resultImg.style.display = 'none';
                 resultText.textContent = '';
+                arrow.classList.remove('show');
 
                 setTimeout(() => {
                     track.style.transition = 'transform 6s cubic-bezier(0.1, 0.8, 0.1, 1)';
                     track.style.transform = `translateX(-${targetOffset}px)`;
                 }, 100);
 
+                // Показываем стрелку и результат через 6.5 секунд
                 setTimeout(() => {
+                    arrow.classList.add('show');
                     resultImg.src = win.image;
                     resultImg.style.display = 'block';
                     resultImg.classList.add('glow');
@@ -159,6 +184,7 @@
             document.getElementById('caseModal').classList.remove('active');
             document.getElementById('resultImage').classList.remove('glow');
             document.getElementById('scrollTrack').style.transform = 'translateX(0px)';
+            document.getElementById('arrow').classList.remove('show');
         }
 
         document.getElementById('caseModal').addEventListener('click', function(e) {
