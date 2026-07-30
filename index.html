@@ -7,7 +7,7 @@
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body { background: #0a0a1a; font-family: Arial, sans-serif; color: #fff; min-height: 100vh; display: flex; justify-content: center; align-items: center; }
-        .container { text-align: center; padding: 30px; max-width: 400px; width: 100%; }
+        .container { text-align: center; padding: 30px; max-width: 420px; width: 100%; }
         .logo { font-size: 48px; font-weight: bold; background: linear-gradient(135deg, #ffd700, #ff8c00); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
         .case-box { background: #1a1a3e; border: 2px solid #ffd700; border-radius: 20px; padding: 25px 15px; margin: 20px 0; box-shadow: 0 0 40px rgba(255,215,0,0.1); transition: 0.3s; cursor: pointer; }
         .case-box:hover { box-shadow: 0 0 60px rgba(255,215,0,0.25); transform: scale(1.02); }
@@ -16,10 +16,19 @@
         .case-box .skin-img { width: 100px; border-radius: 15px; margin: 10px 0; border: 2px solid #ffd700; }
         .btn { background: linear-gradient(135deg, #ffd700, #ff8c00); border: none; padding: 12px 35px; font-size: 18px; font-weight: bold; border-radius: 12px; cursor: pointer; color: #000; transition: 0.3s; }
         .btn:hover { transform: scale(1.05); box-shadow: 0 0 20px rgba(255,215,0,0.5); }
-        .balance { margin-top: 25px; padding: 15px; background: #111; border-radius: 10px; color: #888; font-size: 16px; border: 1px solid #222; }
-        .balance span { color: #ffd700; font-weight: bold; }
-        .footer { margin-top: 20px; font-size: 12px; color: #333; }
+        
+        .balance { margin-top: 25px; padding: 15px; background: #111; border-radius: 10px; border: 1px solid #222; }
+        .balance .row { display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px; }
+        .balance .amount { color: #ffd700; font-weight: bold; font-size: 20px; }
 
+        .deposit-btn { background: #222; border: 1px solid #ffd700; color: #ffd700; padding: 8px 16px; border-radius: 12px; font-size: 14px; font-weight: bold; cursor: pointer; transition: 0.3s; flex: 1; min-width: 60px; }
+        .deposit-btn:hover { background: #ffd700; color: #000; transform: scale(1.05); }
+
+        .payment-methods { display: flex; gap: 8px; margin-top: 10px; flex-wrap: wrap; justify-content: center; }
+        .payment-btn { background: #1a1a2e; border: 1px solid #444; border-radius: 12px; padding: 8px 16px; font-size: 13px; font-weight: bold; color: #ccc; cursor: pointer; transition: 0.3s; flex: 1; min-width: 80px; }
+        .payment-btn:hover { border-color: #ffd700; color: #ffd700; background: #222; transform: scale(1.05); }
+
+        .footer { margin-top: 20px; font-size: 12px; color: #333; }
         .rarity-common { color: #b0b0b0; }
         .rarity-uncommon { color: #5e98d9; }
         .rarity-rare { color: #4b69ff; }
@@ -39,22 +48,8 @@
         .scroll-item .name { font-size: 11px; color: #fff; }
         .scroll-item .rarity { font-size: 10px; }
 
-        .arrow {
-            position: absolute;
-            top: -5px;
-            left: 50%;
-            transform: translateX(-50%);
-            font-size: 40px;
-            color: #ffd700;
-            filter: drop-shadow(0 0 20px #ffd700);
-            z-index: 10;
-            pointer-events: none;
-            animation: arrowBounce 0.8s ease-in-out infinite;
-        }
-        @keyframes arrowBounce {
-            0%, 100% { transform: translateX(-50%) translateY(0); }
-            50% { transform: translateX(-50%) translateY(10px); }
-        }
+        .arrow { position: absolute; top: -5px; left: 50%; transform: translateX(-50%); font-size: 40px; color: #ffd700; filter: drop-shadow(0 0 20px #ffd700); z-index: 10; pointer-events: none; animation: arrowBounce 0.8s ease-in-out infinite; }
+        @keyframes arrowBounce { 0%, 100% { transform: translateX(-50%) translateY(0); } 50% { transform: translateX(-50%) translateY(10px); } }
 
         .big-skin { width: 180px; border-radius: 20px; border: 3px solid #ffd700; margin: 15px 0; display: none; }
         .win-text { font-size: 24px; font-weight: bold; margin: 10px 0; }
@@ -69,31 +64,50 @@
         <p style="margin:10px 0 5px; color:#888;">Открывай кейсы Standoff 2</p>
         <p style="font-size:12px; color:#555; margin-bottom:15px;">Нажми на кейс, чтобы открыть</p>
 
-        <div class="case-box" data-price="50" data-skin="M4 Бабулгам">
+        <div class="case-box" data-price="50">
             <h2>🔴 Кейс «Золотой Дракон»</h2>
-            <img src="" class="skin-img" style="background: #ff8000; display: flex; align-items: center; justify-content: center; font-size: 40px; color: #fff;">⭐
+            <div class="skin-img" style="background: #ff8000; display: flex; align-items: center; justify-content: center; font-size: 40px; color: #fff; height:100px;">⭐</div>
             <p>Редкость: <span class="rarity-legendary">Легендарный</span></p>
-            <p>Шанс на редкий скин: <strong>5%</strong></p>
+            <p>Шанс: <strong>5%</strong></p>
             <button class="btn">Открыть за 50 ₽</button>
         </div>
 
-        <div class="case-box" data-price="100" data-skin="AK-47 Blood Moon">
+        <div class="case-box" data-price="100">
             <h2>🔵 Кейс «Кровавая Луна»</h2>
-            <img src="" class="skin-img" style="background: #ff2d55; display: flex; align-items: center; justify-content: center; font-size: 40px; color: #fff;">🌙
+            <div class="skin-img" style="background: #ff2d55; display: flex; align-items: center; justify-content: center; font-size: 40px; color: #fff; height:100px;">🌙</div>
             <p>Редкость: <span class="rarity-mythical">Мифический</span></p>
-            <p>Шанс на редкий скин: <strong>8%</strong></p>
+            <p>Шанс: <strong>8%</strong></p>
             <button class="btn">Открыть за 100 ₽</button>
         </div>
 
-        <div class="case-box" data-price="30" data-skin="Knife Ice Phantom">
+        <div class="case-box" data-price="30">
             <h2>⚪ Кейс «Ледяной Фантом»</h2>
-            <img src="" class="skin-img" style="background: #8847ff; display: flex; align-items: center; justify-content: center; font-size: 40px; color: #fff;">❄️
+            <div class="skin-img" style="background: #8847ff; display: flex; align-items: center; justify-content: center; font-size: 40px; color: #fff; height:100px;">❄️</div>
             <p>Редкость: <span class="rarity-epic">Эпический</span></p>
-            <p>Шанс на редкий скин: <strong>3%</strong></p>
+            <p>Шанс: <strong>3%</strong></p>
             <button class="btn">Открыть за 30 ₽</button>
         </div>
 
-        <div class="balance">💰 Баланс: <span id="balanceDisplay">100</span> ₽ &nbsp;|&nbsp; 🆔 ID: <span>tarkoevmm-afk</span></div>
+        <!-- Блок баланса и пополнения -->
+        <div class="balance">
+            <div class="row">
+                <span>💰 Баланс:</span>
+                <span class="amount" id="balanceDisplay">100</span>
+                <span>₽</span>
+            </div>
+            <div style="display: flex; gap: 6px; flex-wrap: wrap; margin-top: 10px;">
+                <button class="deposit-btn" data-amount="50">+50</button>
+                <button class="deposit-btn" data-amount="100">+100</button>
+                <button class="deposit-btn" data-amount="500">+500</button>
+                <button class="deposit-btn" data-amount="1000">+1000</button>
+            </div>
+            <div class="payment-methods">
+                <button class="payment-btn" data-method="СБП">💳 СБП</button>
+                <button class="payment-btn" data-method="Карта">💳 Карта</button>
+                <button class="payment-btn" data-method="Крипта">🪙 Крипта</button>
+            </div>
+        </div>
+
         <div class="footer">GoldDrop — лучший сайт для открытия кейсов Standoff 2</div>
     </div>
 
@@ -111,9 +125,8 @@
     </div>
 
     <script>
-        // 30 скинов (дешёвые, средние, дорогие)
+        // 30 скинов (оставляем как есть)
         const skins = [
-            // 🌟 Дешёвые (Common, Uncommon)
             { name: "P250 | Sand Dune", rarity: "Обычный", color: "#b0b0b0", emoji: "🟤" },
             { name: "Galil AR | Sage Spray", rarity: "Обычный", color: "#b0b0b0", emoji: "🌿" },
             { name: "SG 553 | Army Sheen", rarity: "Обычный", color: "#b0b0b0", emoji: "🪖" },
@@ -124,8 +137,6 @@
             { name: "UMP-45 | Urban DDPAT", rarity: "Обычный", color: "#b0b0b0", emoji: "🏙️" },
             { name: "Nova | Ranger", rarity: "Обычный", color: "#b0b0b0", emoji: "🌄" },
             { name: "MP9 | Green Plaid", rarity: "Обычный", color: "#b0b0b0", emoji: "🟩" },
-
-            // 💰 Средние (Rare, Epic)
             { name: "M4A4 | Dragon King", rarity: "Редкий", color: "#4b69ff", emoji: "🐉" },
             { name: "AK-47 | Cartel", rarity: "Редкий", color: "#4b69ff", emoji: "💀" },
             { name: "AWP | Worm God", rarity: "Редкий", color: "#4b69ff", emoji: "🐛" },
@@ -136,8 +147,6 @@
             { name: "MP7 | Nemesis", rarity: "Эпический", color: "#8847ff", emoji: "😈" },
             { name: "Desert Eagle | Cobalt", rarity: "Эпический", color: "#8847ff", emoji: "🔵" },
             { name: "SSG 08 | Big Iron", rarity: "Эпический", color: "#8847ff", emoji: "🔫" },
-
-            // 💎 Дорогие (Legendary, Mythical)
             { name: "M4A4 | Бабулгам", rarity: "Легендарный", color: "#ff8000", emoji: "🔥" },
             { name: "AK-47 | Blood Moon", rarity: "Мифический", color: "#ff2d55", emoji: "🌙" },
             { name: "AWP | Dragon Lore", rarity: "Легендарный", color: "#ff8000", emoji: "🐉" },
@@ -152,71 +161,11 @@
 
         let balance = 100;
 
-        document.querySelectorAll('.case-box').forEach(box => {
-            box.addEventListener('click', function(e) {
-                if (e.target.tagName === 'BUTTON') return;
-                const price = parseInt(this.dataset.price);
-                if (balance < price) {
-                    alert('❌ Недостаточно средств! Пополни баланс.');
-                    return;
-                }
-                balance -= price;
+        // Пополнение баланса
+        document.querySelectorAll('.deposit-btn').forEach(btn => {
+            btn.addEventListener('click', function() {
+                const amount = parseInt(this.dataset.amount);
+                balance += amount;
                 document.getElementById('balanceDisplay').textContent = balance;
-
-                const modal = document.getElementById('caseModal');
-                const track = document.getElementById('scrollTrack');
-                const resultImg = document.getElementById('resultImage');
-                const resultText = document.getElementById('resultText');
-
-                let items = '';
-                for (let i = 0; i < 35; i++) {
-                    const s = skins[i % skins.length];
-                    items += `<div class="scroll-item">
-                                <div class="skin-box" style="background:${s.color};">${s.emoji}</div>
-                                <div class="name">${s.name}</div>
-                                <div class="rarity" style="color:${s.color};">${s.rarity}</div>
-                             </div>`;
-                }
-                track.innerHTML = items;
-
-                const win = skins[Math.floor(Math.random() * skins.length)];
-                const itemWidth = 120 + 2;
-                const maxOffset = (35 - 4) * itemWidth;
-                const targetOffset = Math.floor(Math.random() * (maxOffset - 100)) + 100;
-
-                modal.classList.add('active');
-                resultImg.style.display = 'none';
-                resultText.textContent = '';
-
-                setTimeout(() => {
-                    track.style.transition = 'transform 6s cubic-bezier(0.1, 0.8, 0.1, 1)';
-                    track.style.transform = `translateX(-${targetOffset}px)`;
-                }, 100);
-
-                setTimeout(() => {
-                    resultImg.style.display = 'none';
-                    resultText.innerHTML = `🎉 <span style="color:${win.color};">${win.emoji} ${win.name}</span> (${win.rarity})!`;
-                }, 6500);
-            });
-        });
-
-        function closeModal() {
-            document.getElementById('caseModal').classList.remove('active');
-            document.getElementById('resultImage').classList.remove('glow');
-            document.getElementById('scrollTrack').style.transform = 'translateX(0px)';
-            document.getElementById('resultText').textContent = '';
-        }
-
-        document.getElementById('caseModal').addEventListener('click', function(e) {
-            if (e.target === this) closeModal();
-        });
-
-        document.querySelectorAll('.btn').forEach(btn => {
-            btn.addEventListener('click', function(e) {
-                e.stopPropagation();
-                this.closest('.case-box').click();
-            });
-        });
-    </script>
-</body>
-</html>
+                this.style.transform = 'scale(0.9)';
+                setTimeout(() => this.style.transform = 'scale(1)', 200);
