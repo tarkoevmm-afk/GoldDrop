@@ -35,7 +35,6 @@
         .scroll-item .name { font-size: 12px; color: #fff; }
         .scroll-item .rarity { font-size: 10px; color: #aaa; }
 
-        /* Стрелка ВСЕГДА видна */
         .arrow {
             position: absolute;
             top: -5px;
@@ -57,7 +56,7 @@
         .win-text { font-size: 24px; font-weight: bold; margin: 10px 0; }
         .close-btn { background: #ffd700; border: none; padding: 10px 30px; font-size: 18px; font-weight: bold; border-radius: 12px; cursor: pointer; color: #000; margin-top: 15px; }
         .glow { animation: glowPulse 1s ease-in-out 3; }
-:        @keyframes glowPulse { 0%  { box-shadow: 0 0 20px #ffd700; } 50% { box-shadow: 0 0 100px #ffd700; } 100% { box-shadow0 0 20px #ffd700; } }
+        @keyframes glowPulse { 0% { box-shadow: 0 0 20px #ffd700; } 50% { box-shadow: 0 0 100px #ffd700; } 100% { box-shadow: 0 0 20px #ffd700; } }
     </style>
 </head>
 <body>
@@ -66,25 +65,25 @@
         <p style="margin:10px 0 5px; color:#888;">Открывай кейсы Standoff 2</p>
         <p style="font-size:12px; color:#555; margin-bottom:15px;">Нажми на кейс, чтобы открыть</p>
 
-        <div class="case-box" data-price="50" data-skin="M4 Бабулгам" data-image="IMG_1311.png">
+        <div class="case-box" data-price="50" data-skin="M4 Бабулгам" data-image="https://i.ibb.co/3z7vFgB/knife.png">
             <h2>🔴 Кейс «Золотой Дракон»</h2>
-            <img src="IMG_1311.png" class="skin-img">
+            <img src="https://i.ibb.co/3z7vFgB/knife.png" class="skin-img">
             <p>Редкость: <span class="rarity-legendary">Легендарный</span></p>
             <p>Шанс: <strong>5%</strong></p>
             <button class="btn">Открыть за 50 ₽</button>
         </div>
 
-        <div class="case-box" data-price="100" data-skin="AK-47 Blood Moon" data-image="IMG_1311.png">
+        <div class="case-box" data-price="100" data-skin="AK-47 Blood Moon" data-image="https://i.ibb.co/4Y5P9vK/ak47.png">
             <h2>🔵 Кейс «Кровавая Луна»</h2>
-            <img src="IMG_1311.png" class="skin-img">
+            <img src="https://i.ibb.co/4Y5P9vK/ak47.png" class="skin-img">
             <p>Редкость: <span class="rarity-mythical">Мифический</span></p>
             <p>Шанс: <strong>8%</strong></p>
             <button class="btn">Открыть за 100 ₽</button>
         </div>
 
-        <div class="case-box" data-price="30" data-skin="Knife Ice Phantom" data-image="IMG_1311.png">
+        <div class="case-box" data-price="30" data-skin="Knife Ice Phantom" data-image="https://i.ibb.co/7tX0jCw/knife2.png">
             <h2>⚪ Кейс «Ледяной Фантом»</h2>
-            <img src="IMG_1311.png" class="skin-img">
+            <img src="https://i.ibb.co/7tX0jCw/knife2.png" class="skin-img">
             <p>Редкость: <span class="rarity-epic">Эпический</span></p>
             <p>Шанс: <strong>3%</strong></p>
             <button class="btn">Открыть за 30 ₽</button>
@@ -98,7 +97,6 @@
         <div class="modal-content">
             <h2>🎰 Открытие кейса...</h2>
             <div id="scrollContainer" class="scroll-container">
-                <!-- Стрелка ВСЕГДА сверху -->
                 <div class="arrow" id="arrow">▼</div>
                 <div id="scrollTrack" class="scroll-track"></div>
             </div>
@@ -110,15 +108,15 @@
 
     <script>
         const skins = [
-            { name: "M4 Бабулгам", rarity: "Легендарный", image: "IMG_1311.png" },
-            { name: "AK-47 Blood Moon", rarity: "Мифический", image: "IMG_1311.png" },
-            { name: "Knife Ice Phantom", rarity: "Эпический", image: "IMG_1311.png" },
-            { name: "AWP Dragon Lore", rarity: "Легендарный", image: "IMG_1311.png" },
-            { name: "Desert Eagle Blaze", rarity: "Мифический", image: "IMG_1311.png" },
-            { name: "USP-S Kill Confirmed", rarity: "Эпический", image: "IMG_1311.png" },
-            { name: "M4A1-S Hot Rod", rarity: "Легендарный", image: "IMG_1311.png" },
-            { name: "SSG 08 Death Strike", rarity: "Мифический", image: "IMG_1311.png" },
-            { name: "Glock-18 Water Elemental", rarity: "Эпический", image: "IMG_1311.png" }
+            { name: "M4 Бабулгам", rarity: "Легендарный", image: "https://i.ibb.co/3z7vFgB/knife.png" },
+            { name: "AK-47 Blood Moon", rarity: "Мифический", image: "https://i.ibb.co/4Y5P9vK/ak47.png" },
+            { name: "Knife Ice Phantom", rarity: "Эпический", image: "https://i.ibb.co/7tX0jCw/knife2.png" },
+            { name: "AWP Dragon Lore", rarity: "Легендарный", image: "https://i.ibb.co/3z7vFgB/knife.png" },
+            { name: "Desert Eagle Blaze", rarity: "Мифический", image: "https://i.ibb.co/4Y5P9vK/ak47.png" },
+            { name: "USP-S Kill Confirmed", rarity: "Эпический", image: "https://i.ibb.co/7tX0jCw/knife2.png" },
+            { name: "M4A1-S Hot Rod", rarity: "Легендарный", image: "https://i.ibb.co/3z7vFgB/knife.png" },
+            { name: "SSG 08 Death Strike", rarity: "Мифический", image: "https://i.ibb.co/4Y5P9vK/ak47.png" },
+            { name: "Glock-18 Water Elemental", rarity: "Эпический", image: "https://i.ibb.co/7tX0jCw/knife2.png" }
         ];
 
         let balance = 100;
@@ -139,7 +137,6 @@
                 const resultImg = document.getElementById('resultImage');
                 const resultText = document.getElementById('resultText');
 
-                // Строим список
                 let items = '';
                 for (let i = 0; i < 30; i++) {
                     const s = skins[i % skins.length];
@@ -159,8 +156,6 @@
                 modal.classList.add('active');
                 resultImg.style.display = 'none';
                 resultText.textContent = '';
-
-                // Стрелка уже видна (она всегда на месте)
 
                 setTimeout(() => {
                     track.style.transition = 'transform 6s cubic-bezier(0.1, 0.8, 0.1, 1)';
