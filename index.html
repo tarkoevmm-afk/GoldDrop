@@ -43,6 +43,9 @@
         .btn-sell { background: #ff2d55; border: none; color: #fff; padding: 4px 12px; border-radius: 8px; font-size: 11px; cursor: pointer; transition: 0.3s; margin-top: 5px; }
         .btn-sell:hover { transform: scale(1.05); }
 
+        .btn-support { background: #222; border: 1px solid #ffd700; color: #ffd700; padding: 8px 20px; border-radius: 10px; cursor: pointer; transition: 0.3s; font-weight: bold; margin: 5px; }
+        .btn-support:hover { background: #ffd700; color: #000; }
+
         /* ===== АПГРЕЙД ===== */
         .upgrade-slots { display: grid; grid-template-columns: repeat(5, 1fr); gap: 8px; margin: 15px 0; }
         .slot { background: #111; border: 2px dashed #444; border-radius: 12px; aspect-ratio: 1; display: flex; align-items: center; justify-content: center; font-size: 24px; cursor: pointer; transition: 0.3s; }
@@ -83,6 +86,33 @@
         .footer { margin-top: 20px; font-size: 11px; color: #333; }
         .rarity-common { color: #b0b0b0; } .rarity-uncommon { color: #5e98d9; } .rarity-rare { color: #4b69ff; } .rarity-epic { color: #8847ff; } .rarity-legendary { color: #ff8000; } .rarity-mythical { color: #ff2d55; }
 
+        /* ===== САПЁР ===== */
+        .sapper-grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 6px; margin: 15px auto; max-width: 300px; }
+        .sapper-cell { background: #1a1a3e; border: 2px solid #444; border-radius: 8px; aspect-ratio: 1; display: flex; align-items: center; justify-content: center; font-size: 20px; font-weight: bold; cursor: pointer; transition: 0.3s; color: #fff; }
+        .sapper-cell:hover { border-color: #ffd700; transform: scale(1.05); }
+        .sapper-cell.revealed { background: #222; border-color: #555; cursor: default; }
+        .sapper-cell.revealed:hover { transform: none; }
+        .sapper-cell.bomb { background: #ff2d55; border-color: #ff2d55; }
+        .sapper-cell.safe { background: #1a5a2e; border-color: #4b69ff; }
+
+        .sapper-bet { display: flex; gap: 10px; flex-wrap: wrap; justify-content: center; margin: 10px 0; align-items: center; }
+        .sapper-bet input { background: #111; border: 1px solid #444; border-radius: 10px; padding: 8px 12px; color: #fff; font-size: 16px; width: 100px; text-align: center; }
+        .sapper-bet input:focus { border-color: #ffd700; outline: none; }
+
+        .sapper-difficulty { display: flex; gap: 10px; flex-wrap: wrap; justify-content: center; margin: 10px 0; }
+        .sapper-difficulty button { background: #222; border: 1px solid #ff2d55; color: #ff2d55; padding: 8px 16px; border-radius: 10px; cursor: pointer; transition: 0.3s; font-weight: bold; }
+        .sapper-difficulty button:hover { background: #ff2d55; color: #000; }
+        .sapper-difficulty button.active { background: #ff2d55; color: #000; }
+
+        .sapper-actions { display: flex; gap: 10px; justify-content: center; margin: 10px 0; flex-wrap: wrap; }
+        .sapper-actions .btn-take { background: linear-gradient(135deg, #4b69ff, #2a4bd6); color: #fff; padding: 10px 20px; font-size: 16px; font-weight: bold; border-radius: 12px; cursor: pointer; transition: 0.3s; border: none; }
+        .sapper-actions .btn-take:hover { transform: scale(1.05); box-shadow: 0 0 20px rgba(75,105,255,0.5); }
+        .sapper-actions .btn-take:disabled { opacity: 0.5; cursor: not-allowed; transform: none; }
+        .sapper-actions .btn { padding: 10px 20px; font-size: 16px; }
+
+        .sapper-balance { margin: 10px 0; padding: 10px; background: #111; border-radius: 10px; color: #888; font-size: 16px; border: 1px solid #222; }
+        .sapper-balance span { color: #ffd700; font-weight: bold; }
+
         /* ===== АНИМАЦИЯ ОТКРЫТИЯ ===== */
         .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.9); z-index: 1000; justify-content: center; align-items: center; }
         .modal.active { display: flex; }
@@ -95,6 +125,15 @@
         @keyframes arrowBounce { 0%, 100% { transform: translateX(-50%) translateY(0); } 50% { transform: translateX(-50%) translateY(10px); } }
         .win-text { font-size: 24px; font-weight: bold; margin: 10px 0; }
         .close-btn { background: #ffd700; border: none; padding: 10px 30px; font-size: 18px; font-weight: bold; border-radius: 12px; cursor: pointer; color: #000; margin-top: 15px; }
+
+        /* ===== ПОДДЕРЖКА ===== */
+        .support-modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.9); z-index: 1001; justify-content: center; align-items: center; }
+        .support-modal.active { display: flex; }
+        .support-content { background: #1a1a3e; padding: 30px; border-radius: 20px; border: 3px solid #ffd700; max-width: 380px; width: 90%; text-align: center; }
+        .support-content h2 { color: #ffd700; margin-bottom: 15px; }
+        .support-content .info { color: #aaa; font-size: 16px; line-height: 1.6; margin: 15px 0; }
+        .support-content .highlight { color: #ffd700; font-weight: bold; font-size: 18px; }
+        .support-close-btn { background: #ffd700; border: none; padding: 10px 30px; font-size: 18px; font-weight: bold; border-radius: 12px; cursor: pointer; color: #000; margin-top: 15px; }
     </style>
 </head>
 <body>
@@ -106,6 +145,7 @@
         <button class="tab-btn" data-tab="upgrade">🔧 Апгрейд</button>
         <button class="tab-btn" data-tab="profile">👤 Профиль</button>
         <button class="tab-btn" data-tab="bonus">🎁 Бонусы</button>
+        <button class="tab-btn" data-tab="sapper">💣 Сапёр</button>
     </div>
 
     <!-- ===== КЕЙСЫ ===== -->
@@ -131,10 +171,7 @@
         <div class="profile-card">
             <div class="id">🆔 ID: <span id="playerId">tarkoevmm-afk</span></div>
             <div class="balance">💰 Баланс: <span id="balanceDisplay">100</span> Gold</div>
-            <button class="btn-secondary" style="margin:5px;" onclick="addGold(50)">+50</button>
-            <button class="btn-secondary" style="margin:5px;" onclick="addGold(100)">+100</button>
-            <button class="btn-secondary" style="margin:5px;" onclick="addGold(500)">+500</button>
-            <button class="btn-secondary" style="margin:5px;" onclick="addGold(1000)">+1000</button>
+            <button class="btn-support" onclick="openSupport()">💳 Пополнить</button>
         </div>
         <h3 style="color:#ffd700; margin-top:15px;">📦 Инвентарь</h3>
         <div class="inventory-grid" id="inventoryGrid"></div>
@@ -162,7 +199,43 @@
         </div>
     </div>
 
+    <!-- ===== САПЁР ===== -->
+    <div id="tab-sapper" class="tab-content">
+        <h3 style="color:#ffd700;">💣 Сапёр</h3>
+        <p style="color:#888; font-size:14px;">Ставь голду, открывай клетки и забирай выигрыш!</p>
+        <div class="sapper-balance">💰 Ваш баланс: <span id="sapperBalanceDisplay">100</span> Gold</div>
+        <div class="sapper-bet">
+            <input type="number" id="sapperBetInput" placeholder="10" min="1" step="1">
+            <span style="color:#888;">Gold</span>
+        </div>
+        <div class="sapper-difficulty" id="sapperDifficulty">
+            <button data-bombs="9" class="active">9 бомб</button>
+            <button data-bombs="12">12 бомб</button>
+            <button data-bombs="15">15 бомб</button>
+            <button data-bombs="20">20 бомб</button>
+        </div>
+        <div id="sapperGrid" class="sapper-grid"></div>
+        <div id="sapperStatus" style="color:#ffd700; font-size:16px; margin:10px 0;">💰 Ставка: 10 Gold</div>
+        <div class="sapper-actions">
+            <button class="btn-take" id="sapperTakeBtn" disabled onclick="takeWin()">💰 Забрать</button>
+            <button class="btn" onclick="resetSapper()">🔄 Новая игра</button>
+        </div>
+    </div>
+
     <div class="footer">GoldDrop 2.0 — лучший портал для Standoff 2</div>
+</div>
+
+<!-- ===== ПОДДЕРЖКА ===== -->
+<div class="support-modal" id="supportModal">
+    <div class="support-content">
+        <h2>📞 Свяжитесь с поддержкой</h2>
+        <div class="info">
+            Для пополнения баланса напишите в Telegram:<br>
+            <span class="highlight">@GoldDrop_Support</span><br><br>
+            После оплаты средства будут зачислены вручную в течение 5 минут.
+        </div>
+        <button class="support-close-btn" onclick="closeSupport()">Понятно, спасибо</button>
+    </div>
 </div>
 
 <!-- ===== ПРЕВЬЮ КЕЙСА ===== -->
@@ -270,7 +343,6 @@ function openCasePreview(index) {
         `;
         list.appendChild(div);
     });
-    // Добавляем кнопку открытия
     const btn = document.createElement('button');
     btn.className = 'btn';
     btn.textContent = `🎰 Открыть за ${c.price} Gold`;
@@ -373,7 +445,6 @@ function renderInventory() {
             e.stopPropagation();
             sellSkin(index);
         });
-        // Для крафта: выбор скина в слот
         div.addEventListener('click', () => selectSkinForSlot(index));
         grid.appendChild(div);
     });
@@ -407,7 +478,6 @@ function renderUpgradeSlots() {
 function selectSkinForSlot(index) {
     const skin = inventory[index];
     if (!skin) return;
-    // Находим пустой слот
     const emptyIdx = selectedSlots.indexOf(null);
     if (emptyIdx === -1) {
         alert('❌ Все слоты заняты!');
@@ -440,7 +510,6 @@ document.getElementById('craftBtn').addEventListener('click', function() {
         alert('❌ Заполните все 10 слотов!');
         return;
     }
-    // Сгорают все скины
     const totalValue = selectedSlots.reduce((sum, s) => sum + s.price, 0);
     craftCoins += Math.floor(totalValue / 5);
     selectedSlots.fill(null);
@@ -471,12 +540,201 @@ function claimBonus(type) {
 }
 
 // ============================================================
-//  ПРОЧЕЕ
+//  ПОДДЕРЖКА
 // ============================================================
-function addGold(amount) {
-    balance += amount;
-    document.getElementById('balanceDisplay').textContent = balance;
+function openSupport() {
+    document.getElementById('supportModal').classList.add('active');
 }
+
+function closeSupport() {
+    document.getElementById('supportModal').classList.remove('active');
+}
+
+document.getElementById('supportModal').addEventListener('click', function(e) {
+    if (e.target === this) closeSupport();
+});
+
+// ============================================================
+//  САПЁР
+// ============================================================
+let sapperBet = 10;
+let sapperBombs = 9;
+let sapperGrid = [];
+let sapperRevealed = [];
+let sapperGameOver = false;
+let sapperFirstClick = true;
+let sapperCurrentWin = 0;
+let sapperOpenedCells = 0;
+
+const BASE_MULTIPLIER = 1.20;
+const STEP_MULTIPLIER = 0.20;
+const sapperMultipliers = { 9: 1.6, 12: 2.2, 15: 3.0, 20: 5.0 };
+
+function resetSapper() {
+    sapperGrid = [];
+    sapperRevealed = [];
+    sapperGameOver = false;
+    sapperFirstClick = true;
+    sapperCurrentWin = 0;
+    sapperOpenedCells = 0;
+    
+    const betInput = document.getElementById('sapperBetInput');
+    let val = parseInt(betInput.value) || 10;
+    if (val < 1) val = 1;
+    sapperBet = val;
+    betInput.placeholder = '10';
+    betInput.value = '';
+    
+    document.getElementById('sapperBalanceDisplay').textContent = balance;
+    document.getElementById('sapperStatus').textContent = `💰 Ставка: ${sapperBet} Gold | Выигрыш: 0 Gold`;
+    document.getElementById('sapperTakeBtn').disabled = true;
+    
+    document.querySelectorAll('#sapperDifficulty button').forEach(b => b.classList.remove('active'));
+    document.querySelector('#sapperDifficulty button[data-bombs="9"]').classList.add('active');
+    sapperBombs = 9;
+    
+    renderSapperGrid();
+}
+
+function renderSapperGrid() {
+    const grid = document.getElementById('sapperGrid');
+    grid.innerHTML = '';
+    for (let i = 0; i < 25; i++) {
+        const cell = document.createElement('div');
+        cell.className = 'sapper-cell';
+        cell.dataset.index = i;
+        cell.textContent = '?';
+        cell.addEventListener('click', () => sapperClick(i));
+        grid.appendChild(cell);
+    }
+    sapperGrid = new Array(25).fill(0);
+    sapperRevealed = new Array(25).fill(false);
+}
+
+function sapperClick(index) {
+    if (sapperGameOver || sapperRevealed[index]) return;
+
+    if (sapperFirstClick) {
+        sapperFirstClick = false;
+        const betInput = document.getElementById('sapperBetInput');
+        let val = parseInt(betInput.value) || 10;
+        if (val < 1) val = 1;
+        sapperBet = val;
+        betInput.placeholder = '10';
+        betInput.value = '';
+        
+        if (balance < sapperBet) {
+            alert('❌ Недостаточно Gold!');
+            sapperGameOver = true;
+            document.getElementById('sapperStatus').textContent = '❌ Недостаточно Gold!';
+            return;
+        }
+        
+        let bombsPlaced = 0;
+        while (bombsPlaced < sapperBombs) {
+            const pos = Math.floor(Math.random() * 25);
+            if (pos !== index && sapperGrid[pos] !== 1) {
+                sapperGrid[pos] = 1;
+                bombsPlaced++;
+            }
+        }
+        if (sapperGrid[index] === 1) {
+            sapperGrid[index] = 0;
+            let newPos = Math.floor(Math.random() * 25);
+            while (newPos === index || sapperGrid[newPos] === 1) {
+                newPos = Math.floor(Math.random() * 25);
+            }
+            sapperGrid[newPos] = 1;
+        }
+        
+        balance -= sapperBet;
+        document.getElementById('balanceDisplay').textContent = balance;
+        document.getElementById('sapperBalanceDisplay').textContent = balance;
+        document.getElementById('sapperTakeBtn').disabled = false;
+        document.getElementById('sapperStatus').textContent = `💰 Ставка: ${sapperBet} Gold | Выигрыш: 0 Gold`;
+    }
+
+    if (sapperGrid[index] === 1) {
+        sapperGameOver = true;
+        revealAll();
+        document.getElementById('sapperStatus').textContent = `💥 БОМБА! Проиграно ${sapperBet} Gold`;
+        document.getElementById('sapperTakeBtn').disabled = true;
+        return;
+    }
+
+    sapperRevealed[index] = true;
+    sapperOpenedCells++;
+    const cell = document.querySelector(`.sapper-cell[data-index="${index}"]`);
+    cell.classList.add('revealed', 'safe');
+    cell.textContent = '✅';
+
+    const multiplier = BASE_MULTIPLIER + (sapperOpenedCells - 1) * STEP_MULTIPLIER;
+    sapperCurrentWin = Math.round(sapperBet * multiplier);
+
+    const safeCells = sapperGrid.filter(c => c === 0).length;
+    const revealedSafe = sapperRevealed.filter((r, i) => r && sapperGrid[i] === 0).length;
+    document.getElementById('sapperStatus').textContent = `💰 Выигрыш: ${sapperCurrentWin} Gold (${revealedSafe}/${safeCells} клеток) | x${multiplier.toFixed(2)}`;
+
+    if (revealedSafe === safeCells) {
+        sapperGameOver = true;
+        const winAmount = Math.round(sapperBet * sapperMultipliers[sapperBombs]);
+        balance += winAmount;
+        document.getElementById('balanceDisplay').textContent = balance;
+        document.getElementById('sapperBalanceDisplay').textContent = balance;
+        document.getElementById('sapperStatus').textContent = `🎉 ПОБЕДА! Вы выиграли ${winAmount} Gold (x${sapperMultipliers[sapperBombs]})!`;
+        revealAll();
+        document.getElementById('sapperTakeBtn').disabled = true;
+        return;
+    }
+}
+
+function takeWin() {
+    if (sapperGameOver || sapperCurrentWin === 0) {
+        alert('❌ Нечего забирать!');
+        return;
+    }
+    balance += sapperCurrentWin;
+    document.getElementById('balanceDisplay').textContent = balance;
+    document.getElementById('sapperBalanceDisplay').textContent = balance;
+    document.getElementById('sapperStatus').textContent = `✅ Вы забрали ${sapperCurrentWin} Gold!`;
+    sapperGameOver = true;
+    revealAll();
+    document.getElementById('sapperTakeBtn').disabled = true;
+}
+
+function revealAll() {
+    document.querySelectorAll('.sapper-cell').forEach(cell => {
+        const index = parseInt(cell.dataset.index);
+        if (!sapperRevealed[index]) {
+            cell.classList.add('revealed');
+            if (sapperGrid[index] === 1) {
+                cell.classList.add('bomb');
+                cell.textContent = '💣';
+            } else {
+                cell.classList.add('safe');
+                cell.textContent = '✅';
+            }
+        }
+    });
+}
+
+document.getElementById('sapperBetInput').addEventListener('input', function() {
+    let val = parseInt(this.value) || 10;
+    if (val < 1) val = 1;
+    sapperBet = val;
+    document.getElementById('sapperStatus').textContent = `💰 Ставка: ${sapperBet} Gold | Выигрыш: 0 Gold`;
+});
+
+document.querySelectorAll('#sapperDifficulty button').forEach(btn => {
+    btn.addEventListener('click', function() {
+        if (!sapperFirstClick) return;
+        document.querySelectorAll('#sapperDifficulty button').forEach(b => b.classList.remove('active'));
+        this.classList.add('active');
+        sapperBombs = parseInt(this.dataset.bombs);
+        resetSapper();
+        document.querySelector(`#sapperDifficulty button[data-bombs="${sapperBombs}"]`).classList.add('active');
+    });
+});
 
 // ============================================================
 //  НАВИГАЦИЯ
@@ -489,6 +747,7 @@ document.querySelectorAll('.tab-btn').forEach(btn => {
         document.getElementById('tab-' + this.dataset.tab).classList.add('active');
         if (this.dataset.tab === 'profile') renderInventory();
         if (this.dataset.tab === 'upgrade') renderUpgradeSlots();
+        if (this.dataset.tab === 'sapper') resetSapper();
     });
 });
 
@@ -499,6 +758,7 @@ renderCases();
 renderInventory();
 renderUpgradeSlots();
 document.getElementById('balanceDisplay').textContent = balance;
+resetSapper();
 </script>
 </body>
 </html>
