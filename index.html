@@ -334,7 +334,7 @@
             if (e.target === this) closeModal();
         });
 
-        // ========== САПЁР (ИТОГОВЫЙ) ==========
+        // ========== САПЁР ==========
         let sapperBet = 10;
         let sapperBombs = 9;
         let sapperGrid = [];
@@ -488,7 +488,11 @@
         }
 
         function takeWin() {
-            if (sapperGameOver || sapperCurrentWin === 0) return;
+            if (sapperGameOver || sapperCurrentWin === 0) {
+                alert('❌ Нечего забирать!');
+                return;
+            }
+            // ✅ Зачисляем ТОЧНО ту сумму, которая показана на экране
             balance += sapperCurrentWin;
             document.getElementById('balanceDisplay').textContent = balance;
             document.getElementById('sapperStatus').textContent = `✅ Вы забрали ${sapperCurrentWin} Gold!`;
