@@ -40,6 +40,7 @@
             margin: 20px 0;
             box-shadow: 0 0 40px rgba(255, 215, 0, 0.1);
             transition: 0.3s;
+            cursor: pointer;
         }
         .case-box:hover {
             box-shadow: 0 0 60px rgba(255, 215, 0, 0.25);
@@ -97,20 +98,83 @@
             font-size: 12px;
             color: #333;
         }
-        .rarity-common {
-            color: #b0b0b0;
-        }
-        .rarity-rare {
-            color: #4b69ff;
-        }
-        .rarity-epic {
-            color: #8847ff;
-        }
         .rarity-legendary {
             color: #ff8000;
         }
         .rarity-mythical {
             color: #ff2d55;
+        }
+        .rarity-epic {
+            color: #8847ff;
+        }
+
+        /* Модальное окно */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.9);
+            z-index: 999;
+            justify-content: center;
+            align-items: center;
+        }
+        .modal.active {
+            display: flex;
+        }
+        .modal-content {
+            background: #1a1a3e;
+            padding: 30px;
+            border-radius: 20px;
+            border: 3px solid #ffd700;
+            max-width: 350px;
+            width: 90%;
+            text-align: center;
+        }
+        .modal-content h2 {
+            color: #ffd700;
+            margin-bottom: 15px;
+        }
+        .modal-content .big-skin {
+            width: 200px;
+            border-radius: 20px;
+            border: 3px solid #ffd700;
+            margin: 15px 0;
+        }
+        .modal-content .win-text {
+            font-size: 24px;
+            font-weight: bold;
+            margin: 10px 0;
+        }
+        .modal-content .close-btn {
+            background: #ffd700;
+            border: none;
+            padding: 10px 30px;
+            font-size: 18px;
+            font-weight: bold;
+            border-radius: 12px;
+            cursor: pointer;
+            color: #000;
+            margin-top: 15px;
+        }
+        .slot-machine {
+            font-size: 48px;
+            letter-spacing: 10px;
+            animation: spin 0.5s infinite linear;
+        }
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        .glow {
+            animation: glowPulse 0.5s ease-in-out 3;
+        }
+        @keyframes glowPulse {
+            0% { box-shadow: 0 0 20px #ffd700; }
+            50% { box-shadow: 0 0 80px #ffd700; }
+            100% { box-shadow: 0 0 20px #ffd700; }
         }
     </style>
 </head>
@@ -118,10 +182,10 @@
     <div class="container">
         <div class="logo">🎰 GoldDrop</div>
         <p style="margin:10px 0 5px; color:#888;">Открывай кейсы Standoff 2</p>
-        <p style="font-size:12px; color:#555; margin-bottom:15px;">Выигрывай скины и пополняй коллекцию</p>
+        <p style="font-size:12px; color:#555; margin-bottom:15px;">Нажми на кейс, чтобы открыть</p>
 
         <!-- Кейс 1 -->
-        <div class="case-box">
+        <div class="case-box" data-price="50" data-skin="M4 Бабулгам" data-image="IMG_1311.png">
             <h2>🔴 Кейс «Золотой Дракон»</h2>
             <img src="IMG_1311.png" class="skin-img" alt="M4 Бабулгам">
             <p>Редкость: <span class="rarity-legendary">Легендарный</span></p>
@@ -130,7 +194,7 @@
         </div>
 
         <!-- Кейс 2 -->
-        <div class="case-box">
+        <div class="case-box" data-price="100" data-skin="AK-47 Blood Moon" data-image="IMG_1311.png">
             <h2>🔵 Кейс «Кровавая Луна»</h2>
             <img src="IMG_1311.png" class="skin-img" alt="AK-47 Blood Moon">
             <p>Редкость: <span class="rarity-mythical">Мифический</span></p>
@@ -139,7 +203,7 @@
         </div>
 
         <!-- Кейс 3 -->
-        <div class="case-box">
+        <div class="case-box" data-price="30" data-skin="Knife Ice Phantom" data-image="IMG_1311.png">
             <h2>⚪ Кейс «Ледяной Фантом»</h2>
             <img src="IMG_1311.png" class="skin-img" alt="Knife Ice Phantom">
             <p>Редкость: <span class="rarity-epic">Эпический</span></p>
@@ -147,14 +211,97 @@
             <button class="btn">Открыть за 30 ₽</button>
         </div>
 
-        <!-- Баланс -->
         <div class="balance">
-            💰 Баланс: <span>100 ₽</span> &nbsp;|&nbsp; 🆔 ID: <span>tarkoevmm-afk</span>
+            💰 Баланс: <span id="balanceDisplay">100</span> ₽ &nbsp;|&nbsp; 🆔 ID: <span>tarkoevmm-afk</span>
         </div>
+        <div class="footer">GoldDrop — лучший сайт для открытия кейсов Standoff 2</div>
+    </div>
 
-        <div class="footer">
-            GoldDrop — лучший сайт для открытия кейсов Standoff 2
+    <!-- Модальное окно -->
+    <div class="modal" id="caseModal">
+        <div class="modal-content" id="modalContent">
+            <h2>🎰 Открытие кейса...</h2>
+            <div class="slot-machine" id="slotMachine">🎲🎲🎲</div>
+            <img src="" class="big-skin" id="resultImage" style="display:none;">
+            <div class="win-text" id="resultText"></div>
+            <button class="close-btn" onclick="closeModal()">Закрыть</button>
         </div>
     </div>
+
+    <script>
+        // Список скинов для выпадения
+        const skins = [
+            { name: "M4 Бабулгам", rarity: "Легендарный", image: "IMG_1311.png" },
+            { name: "AK-47 Blood Moon", rarity: "Мифический", image: "IMG_1311.png" },
+            { name: "Knife Ice Phantom", rarity: "Эпический", image: "IMG_1311.png" },
+            { name: "AWP Dragon Lore", rarity: "Легендарный", image: "IMG_1311.png" },
+            { name: "Desert Eagle Blaze", rarity: "Мифический", image: "IMG_1311.png" },
+            { name: "USP-S Kill Confirmed", rarity: "Эпический", image: "IMG_1311.png" }
+        ];
+
+        let balance = 100;
+
+        // Открытие кейса
+        document.querySelectorAll('.case-box').forEach(box => {
+            box.addEventListener('click', function(e) {
+                // Проверяем, что кликнули не по кнопке (чтобы не срабатывало дважды)
+                if (e.target.tagName === 'BUTTON') return;
+
+                const price = parseInt(this.dataset.price);
+                if (balance < price) {
+                    alert('❌ Недостаточно средств! Пополни баланс.');
+                    return;
+                }
+
+                // Списываем деньги
+                balance -= price;
+                document.getElementById('balanceDisplay').textContent = balance;
+
+                // Случайный скин
+                const winSkin = skins[Math.floor(Math.random() * skins.length)];
+                const modal = document.getElementById('caseModal');
+                const slot = document.getElementById('slotMachine');
+                const resultImg = document.getElementById('resultImage');
+                const resultText = document.getElementById('resultText');
+
+                // Показываем модалку
+                modal.classList.add('active');
+
+                // Анимация прокрутки
+                slot.style.display = 'block';
+                resultImg.style.display = 'none';
+                resultText.textContent = '';
+
+                // Через 2 секунды показываем результат
+                setTimeout(() => {
+                    slot.style.display = 'none';
+                    resultImg.style.display = 'block';
+                    resultImg.src = winSkin.image;
+                    resultImg.classList.add('glow');
+                    resultText.textContent = `🎉 ${winSkin.name} (${winSkin.rarity})!`;
+                }, 2000);
+            });
+        });
+
+        // Закрыть модалку
+        function closeModal() {
+            document.getElementById('caseModal').classList.remove('active');
+            document.getElementById('resultImage').classList.remove('glow');
+        }
+
+        // Закрытие по клику вне окна
+        document.getElementById('caseModal').addEventListener('click', function(e) {
+            if (e.target === this) closeModal();
+        });
+
+        // Обработка кнопок (чтобы открывалось и по кнопке)
+        document.querySelectorAll('.btn').forEach(btn => {
+            btn.addEventListener('click', function(e) {
+                e.stopPropagation();
+                const box = this.closest('.case-box');
+                box.click();
+            });
+        });
+    </script>
 </body>
 </html>
