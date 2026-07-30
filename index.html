@@ -25,15 +25,16 @@
 
         .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.9); z-index: 999; justify-content: center; align-items: center; }
         .modal.active { display: flex; }
-        .modal-content { background: #1a1a3e; padding: 30px; border-radius: 20px; border: 3px solid #ffd700; max-width: 350px; width: 90%; text-align: center; max-height: 80vh; overflow: hidden; }
+        .modal-content { background: #1a1a3e; padding: 30px; border-radius: 20px; border: 3px solid #ffd700; max-width: 400px; width: 90%; text-align: center; max-height: 80vh; overflow: hidden; }
         .modal-content h2 { color: #ffd700; margin-bottom: 15px; }
 
-        .scroll-container { height: 250px; overflow: hidden; border-radius: 15px; background: #0a0a1a; border: 2px solid #ffd700; margin: 15px 0; position: relative; }
-        .scroll-list { transition: transform 6s cubic-bezier(0.1, 0.8, 0.1, 1); }
-        .scroll-item { display: flex; align-items: center; padding: 10px; border-bottom: 1px solid #222; background: #111; }
-        .scroll-item img { width: 60px; border-radius: 10px; margin-right: 15px; }
-        .scroll-item .name { color: #fff; font-size: 14px; }
-        .scroll-item .rarity { font-size: 12px; }
+        /* Горизонтальный контейнер */
+        .scroll-container { width: 100%; overflow: hidden; border-radius: 15px; background: #0a0a1a; border: 2px solid #ffd700; margin: 15px 0; }
+        .scroll-track { display: flex; transition: transform 6s cubic-bezier(0.1, 0.8, 0.1, 1); will-change: transform; }
+        .scroll-item { flex: 0 0 auto; width: 120px; padding: 10px; text-align: center; background: #111; border-right: 1px solid #222; }
+        .scroll-item img { width: 80px; border-radius: 10px; margin-bottom: 5px; }
+        .scroll-item .name { font-size: 12px; color: #fff; }
+        .scroll-item .rarity { font-size: 10px; color: #aaa; }
 
         .big-skin { width: 180px; border-radius: 20px; border: 3px solid #ffd700; margin: 15px 0; display: none; }
         .win-text { font-size: 24px; font-weight: bold; margin: 10px 0; }
@@ -80,7 +81,7 @@
         <div class="modal-content">
             <h2>🎰 Открытие кейса...</h2>
             <div id="scrollContainer" class="scroll-container">
-                <div id="scrollList" class="scroll-list"></div>
+                <div id="scrollTrack" class="scroll-track"></div>
             </div>
             <img src="" class="big-skin" id="resultImage">
             <div class="win-text" id="resultText"></div>
@@ -115,38 +116,36 @@
                 document.getElementById('balanceDisplay').textContent = balance;
 
                 const modal = document.getElementById('caseModal');
-                const list = document.getElementById('scrollList');
+                const track = document.getElementById('scrollTrack');
                 const resultImg = document.getElementById('resultImage');
                 const resultText = document.getElementById('resultText');
 
-                // Строим список (30 элементов для длинной прокрутки)
+                // Строим горизонтальный список (30 элементов)
                 let items = '';
                 for (let i = 0; i < 30; i++) {
                     const s = skins[i % skins.length];
                     items += `<div class="scroll-item">
                                 <img src="${s.image}">
-                                <div><div class="name">${s.name}</div><div class="rarity" style="color:#aaa;">${s.rarity}</div></div>
+                                <div class="name">${s.name}</div>
+                                <div class="rarity">${s.rarity}</div>
                              </div>`;
                 }
-                list.innerHTML = items;
+                track.innerHTML = items;
 
-                // Выигрышный скин
                 const win = skins[Math.floor(Math.random() * skins.length)];
-                const itemHeight = 70;
-                const maxOffset = (30 - 3) * itemHeight;
-                const targetOffset = Math.floor(Math.random() * (maxOffset - 50)) + 50;
+                const itemWidth = 120 + 2;
+                const maxOffset = (30 - 4) * itemWidth;
+                const targetOffset = Math.floor(Math.random() * (maxOffset - 100)) + 100;
 
                 modal.classList.add('active');
                 resultImg.style.display = 'none';
                 resultText.textContent = '';
 
-                // Запускаем прокрутку
                 setTimeout(() => {
-                    list.style.transition = 'transform 6s cubic-bezier(0.1, 0.8, 0.1, 1)';
-                    list.style.transform = `translateY(-${targetOffset}px)`;
+                    track.style.transition = 'transform 6s cubic-bezier(0.1, 0.8, 0.1, 1)';
+                    track.style.transform = `translateX(-${targetOffset}px)`;
                 }, 100);
 
-                // Показываем результат через 6.5 секунд
                 setTimeout(() => {
                     resultImg.src = win.image;
                     resultImg.style.display = 'block';
@@ -159,7 +158,7 @@
         function closeModal() {
             document.getElementById('caseModal').classList.remove('active');
             document.getElementById('resultImage').classList.remove('glow');
-            document.getElementById('scrollList').style.transform = 'translateY(0px)';
+            document.getElementById('scrollTrack').style.transform = 'translateX(0px)';
         }
 
         document.getElementById('caseModal').addEventListener('click', function(e) {
