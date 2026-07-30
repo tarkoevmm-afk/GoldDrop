@@ -5,177 +5,44 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>GoldDrop - Кейсы Standoff 2</title>
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-        body {
-            background: #0a0a1a;
-            font-family: Arial, sans-serif;
-            color: #fff;
-            min-height: 100vh;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-        }
-        .container {
-            text-align: center;
-            padding: 30px;
-            max-width: 400px;
-            width: 100%;
-        }
-        .logo {
-            font-size: 48px;
-            font-weight: bold;
-            background: linear-gradient(135deg, #ffd700, #ff8c00);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-        }
-        .case-box {
-            background: #1a1a3e;
-            border: 2px solid #ffd700;
-            border-radius: 20px;
-            padding: 25px 15px;
-            margin: 20px 0;
-            box-shadow: 0 0 40px rgba(255, 215, 0, 0.1);
-            transition: 0.3s;
-            cursor: pointer;
-        }
-        .case-box:hover {
-            box-shadow: 0 0 60px rgba(255, 215, 0, 0.25);
-            transform: scale(1.02);
-        }
-        .case-box h2 {
-            font-size: 20px;
-            margin-bottom: 10px;
-            color: #ffd700;
-        }
-        .case-box p {
-            color: #aaa;
-            font-size: 14px;
-            margin-bottom: 15px;
-        }
-        .case-box .skin-img {
-            width: 120px;
-            border-radius: 15px;
-            margin: 10px 0;
-            border: 2px solid #ffd700;
-        }
-        .btn {
-            background: linear-gradient(135deg, #ffd700, #ff8c00);
-            border: none;
-            padding: 12px 35px;
-            font-size: 18px;
-            font-weight: bold;
-            border-radius: 12px;
-            cursor: pointer;
-            color: #000;
-            transition: 0.3s;
-        }
-        .btn:hover {
-            transform: scale(1.05);
-            box-shadow: 0 0 20px rgba(255, 215, 0, 0.5);
-        }
-        .btn:active {
-            transform: scale(0.95);
-        }
-        .balance {
-            margin-top: 25px;
-            padding: 15px;
-            background: #111;
-            border-radius: 10px;
-            color: #888;
-            font-size: 16px;
-            border: 1px solid #222;
-        }
-        .balance span {
-            color: #ffd700;
-            font-weight: bold;
-        }
-        .footer {
-            margin-top: 20px;
-            font-size: 12px;
-            color: #333;
-        }
-        .rarity-legendary {
-            color: #ff8000;
-        }
-        .rarity-mythical {
-            color: #ff2d55;
-        }
-        .rarity-epic {
-            color: #8847ff;
-        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { background: #0a0a1a; font-family: Arial, sans-serif; color: #fff; min-height: 100vh; display: flex; justify-content: center; align-items: center; }
+        .container { text-align: center; padding: 30px; max-width: 400px; width: 100%; }
+        .logo { font-size: 48px; font-weight: bold; background: linear-gradient(135deg, #ffd700, #ff8c00); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+        .case-box { background: #1a1a3e; border: 2px solid #ffd700; border-radius: 20px; padding: 25px 15px; margin: 20px 0; box-shadow: 0 0 40px rgba(255,215,0,0.1); transition: 0.3s; cursor: pointer; }
+        .case-box:hover { box-shadow: 0 0 60px rgba(255,215,0,0.25); transform: scale(1.02); }
+        .case-box h2 { font-size: 20px; margin-bottom: 10px; color: #ffd700; }
+        .case-box p { color: #aaa; font-size: 14px; margin-bottom: 15px; }
+        .case-box .skin-img { width: 120px; border-radius: 15px; margin: 10px 0; border: 2px solid #ffd700; }
+        .btn { background: linear-gradient(135deg, #ffd700, #ff8c00); border: none; padding: 12px 35px; font-size: 18px; font-weight: bold; border-radius: 12px; cursor: pointer; color: #000; transition: 0.3s; }
+        .btn:hover { transform: scale(1.05); box-shadow: 0 0 20px rgba(255,215,0,0.5); }
+        .balance { margin-top: 25px; padding: 15px; background: #111; border-radius: 10px; color: #888; font-size: 16px; border: 1px solid #222; }
+        .balance span { color: #ffd700; font-weight: bold; }
+        .footer { margin-top: 20px; font-size: 12px; color: #333; }
+        .rarity-legendary { color: #ff8000; }
+        .rarity-mythical { color: #ff2d55; }
+        .rarity-epic { color: #8847ff; }
 
         /* Модальное окно */
-        .modal {
-            display: none;
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0,0,0,0.9);
-            z-index: 999;
-            justify-content: center;
-            align-items: center;
-        }
-        .modal.active {
-            display: flex;
-        }
-        .modal-content {
-            background: #1a1a3e;
-            padding: 30px;
-            border-radius: 20px;
-            border: 3px solid #ffd700;
-            max-width: 350px;
-            width: 90%;
-            text-align: center;
-        }
-        .modal-content h2 {
-            color: #ffd700;
-            margin-bottom: 15px;
-        }
-        .modal-content .big-skin {
-            width: 200px;
-            border-radius: 20px;
-            border: 3px solid #ffd700;
-            margin: 15px 0;
-        }
-        .modal-content .win-text {
-            font-size: 24px;
-            font-weight: bold;
-            margin: 10px 0;
-        }
-        .modal-content .close-btn {
-            background: #ffd700;
-            border: none;
-            padding: 10px 30px;
-            font-size: 18px;
-            font-weight: bold;
-            border-radius: 12px;
-            cursor: pointer;
-            color: #000;
-            margin-top: 15px;
-        }
-        .slot-machine {
-            font-size: 48px;
-            letter-spacing: 10px;
-            animation: spin 0.5s infinite linear;
-        }
-        @keyframes spin {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
-        }
-        .glow {
-            animation: glowPulse 0.5s ease-in-out 3;
-        }
-        @keyframes glowPulse {
-            0% { box-shadow: 0 0 20px #ffd700; }
-            50% { box-shadow: 0 0 80px #ffd700; }
-            100% { box-shadow: 0 0 20px #ffd700; }
-        }
+        .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.9); z-index: 999; justify-content: center; align-items: center; }
+        .modal.active { display: flex; }
+        .modal-content { background: #1a1a3e; padding: 30px; border-radius: 20px; border: 3px solid #ffd700; max-width: 350px; width: 90%; text-align: center; max-height: 80vh; overflow: hidden; }
+        .modal-content h2 { color: #ffd700; margin-bottom: 15px; }
+
+        .scroll-container { height: 250px; overflow: hidden; border-radius: 15px; background: #0a0a1a; border: 2px solid #ffd700; margin: 15px 0; position: relative; }
+        .scroll-list { transition: transform 3s cubic-bezier(0.1, 0.7, 0.1, 1); }
+        .scroll-item { display: flex; align-items: center; padding: 10px; border-bottom: 1px solid #222; background: #111; }
+        .scroll-item img { width: 60px; border-radius: 10px; margin-right: 15px; }
+        .scroll-item .name { color: #fff; font-size: 14px; }
+        .scroll-item .rarity { font-size: 12px; }
+
+        .big-skin { width: 180px; border-radius: 20px; border: 3px solid #ffd700; margin: 15px 0; display: none; }
+        .win-text { font-size: 24px; font-weight: bold; margin: 10px 0; }
+
+        .close-btn { background: #ffd700; border: none; padding: 10px 30px; font-size: 18px; font-weight: bold; border-radius: 12px; cursor: pointer; color: #000; margin-top: 15px; }
+
+        .glow { animation: glowPulse 0.8s ease-in-out 3; }
+        @keyframes glowPulse { 0% { box-shadow: 0 0 20px #ffd700; } 50% { box-shadow: 0 0 80px #ffd700; } 100% { box-shadow: 0 0 20px #ffd700; } }
     </style>
 </head>
 <body>
@@ -184,36 +51,31 @@
         <p style="margin:10px 0 5px; color:#888;">Открывай кейсы Standoff 2</p>
         <p style="font-size:12px; color:#555; margin-bottom:15px;">Нажми на кейс, чтобы открыть</p>
 
-        <!-- Кейс 1 -->
         <div class="case-box" data-price="50" data-skin="M4 Бабулгам" data-image="IMG_1311.png">
             <h2>🔴 Кейс «Золотой Дракон»</h2>
-            <img src="IMG_1311.png" class="skin-img" alt="M4 Бабулгам">
+            <img src="IMG_1311.png" class="skin-img">
             <p>Редкость: <span class="rarity-legendary">Легендарный</span></p>
-            <p>Шанс выпадения: <strong>5%</strong></p>
+            <p>Шанс: <strong>5%</strong></p>
             <button class="btn">Открыть за 50 ₽</button>
         </div>
 
-        <!-- Кейс 2 -->
         <div class="case-box" data-price="100" data-skin="AK-47 Blood Moon" data-image="IMG_1311.png">
             <h2>🔵 Кейс «Кровавая Луна»</h2>
-            <img src="IMG_1311.png" class="skin-img" alt="AK-47 Blood Moon">
+            <img src="IMG_1311.png" class="skin-img">
             <p>Редкость: <span class="rarity-mythical">Мифический</span></p>
-            <p>Шанс выпадения: <strong>8%</strong></p>
+            <p>Шанс: <strong>8%</strong></p>
             <button class="btn">Открыть за 100 ₽</button>
         </div>
 
-        <!-- Кейс 3 -->
         <div class="case-box" data-price="30" data-skin="Knife Ice Phantom" data-image="IMG_1311.png">
             <h2>⚪ Кейс «Ледяной Фантом»</h2>
-            <img src="IMG_1311.png" class="skin-img" alt="Knife Ice Phantom">
+            <img src="IMG_1311.png" class="skin-img">
             <p>Редкость: <span class="rarity-epic">Эпический</span></p>
-            <p>Шанс выпадения: <strong>3%</strong></p>
+            <p>Шанс: <strong>3%</strong></p>
             <button class="btn">Открыть за 30 ₽</button>
         </div>
 
-        <div class="balance">
-            💰 Баланс: <span id="balanceDisplay">100</span> ₽ &nbsp;|&nbsp; 🆔 ID: <span>tarkoevmm-afk</span>
-        </div>
+        <div class="balance">💰 Баланс: <span id="balanceDisplay">100</span> ₽ &nbsp;|&nbsp; 🆔 ID: <span>tarkoevmm-afk</span></div>
         <div class="footer">GoldDrop — лучший сайт для открытия кейсов Standoff 2</div>
     </div>
 
@@ -221,85 +83,95 @@
     <div class="modal" id="caseModal">
         <div class="modal-content" id="modalContent">
             <h2>🎰 Открытие кейса...</h2>
-            <div class="slot-machine" id="slotMachine">🎲🎲🎲</div>
-            <img src="" class="big-skin" id="resultImage" style="display:none;">
+            <div id="scrollContainer" class="scroll-container">
+                <div id="scrollList" class="scroll-list"></div>
+            </div>
+            <img src="" class="big-skin" id="resultImage">
             <div class="win-text" id="resultText"></div>
             <button class="close-btn" onclick="closeModal()">Закрыть</button>
         </div>
     </div>
 
     <script>
-        // Список скинов для выпадения
         const skins = [
             { name: "M4 Бабулгам", rarity: "Легендарный", image: "IMG_1311.png" },
             { name: "AK-47 Blood Moon", rarity: "Мифический", image: "IMG_1311.png" },
             { name: "Knife Ice Phantom", rarity: "Эпический", image: "IMG_1311.png" },
             { name: "AWP Dragon Lore", rarity: "Легендарный", image: "IMG_1311.png" },
             { name: "Desert Eagle Blaze", rarity: "Мифический", image: "IMG_1311.png" },
-            { name: "USP-S Kill Confirmed", rarity: "Эпический", image: "IMG_1311.png" }
+            { name: "USP-S Kill Confirmed", rarity: "Эпический", image: "IMG_1311.png" },
+            { name: "M4A1-S Hot Rod", rarity: "Легендарный", image: "IMG_1311.png" },
+            { name: "SSG 08 Death Strike", rarity: "Мифический", image: "IMG_1311.png" },
+            { name: "Glock-18 Water Elemental", rarity: "Эпический", image: "IMG_1311.png" }
         ];
 
         let balance = 100;
 
-        // Открытие кейса
         document.querySelectorAll('.case-box').forEach(box => {
             box.addEventListener('click', function(e) {
-                // Проверяем, что кликнули не по кнопке (чтобы не срабатывало дважды)
                 if (e.target.tagName === 'BUTTON') return;
-
                 const price = parseInt(this.dataset.price);
                 if (balance < price) {
                     alert('❌ Недостаточно средств! Пополни баланс.');
                     return;
                 }
-
-                // Списываем деньги
                 balance -= price;
                 document.getElementById('balanceDisplay').textContent = balance;
 
-                // Случайный скин
-                const winSkin = skins[Math.floor(Math.random() * skins.length)];
                 const modal = document.getElementById('caseModal');
-                const slot = document.getElementById('slotMachine');
+                const container = document.getElementById('scrollContainer');
+                const list = document.getElementById('scrollList');
                 const resultImg = document.getElementById('resultImage');
                 const resultText = document.getElementById('resultText');
 
-                // Показываем модалку
-                modal.classList.add('active');
+                // Строим список скинов (повторяем много раз для эффекта бесконечности)
+                let items = '';
+                for (let i = 0; i < 20; i++) {
+                    const s = skins[i % skins.length];
+                    items += `<div class="scroll-item">
+                                <img src="${s.image}">
+                                <div><div class="name">${s.name}</div><div class="rarity" style="color:#aaa;">${s.rarity}</div></div>
+                             </div>`;
+                }
+                list.innerHTML = items;
 
-                // Анимация прокрутки
-                slot.style.display = 'block';
+                // Случайный выигрыш
+                const win = skins[Math.floor(Math.random() * skins.length)];
+                const itemHeight = 70;
+                const maxOffset = (20 - 3) * itemHeight;
+                const targetOffset = Math.floor(Math.random() * (maxOffset - 50)) + 50;
+
+                modal.classList.add('active');
                 resultImg.style.display = 'none';
                 resultText.textContent = '';
 
-                // Через 2 секунды показываем результат
                 setTimeout(() => {
-                    slot.style.display = 'none';
+                    list.style.transform = `translateY(-${targetOffset}px)`;
+                }, 100);
+
+                setTimeout(() => {
+                    resultImg.src = win.image;
                     resultImg.style.display = 'block';
-                    resultImg.src = winSkin.image;
                     resultImg.classList.add('glow');
-                    resultText.textContent = `🎉 ${winSkin.name} (${winSkin.rarity})!`;
-                }, 2000);
+                    resultText.textContent = `🎉 ${win.name} (${win.rarity})!`;
+                }, 3500);
             });
         });
 
-        // Закрыть модалку
         function closeModal() {
             document.getElementById('caseModal').classList.remove('active');
             document.getElementById('resultImage').classList.remove('glow');
+            document.getElementById('scrollList').style.transform = 'translateY(0px)';
         }
 
-        // Закрытие по клику вне окна
         document.getElementById('caseModal').addEventListener('click', function(e) {
             if (e.target === this) closeModal();
         });
 
-        // Обработка кнопок (чтобы открывалось и по кнопке)
         document.querySelectorAll('.btn').forEach(btn => {
             btn.addEventListener('click', function(e) {
                 e.stopPropagation();
-                const box = this.closest('.case-box');
-                box.click();
+                this.closest('.case-box').click();
             });
         });
     </script>
