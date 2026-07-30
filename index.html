@@ -334,7 +334,7 @@
             if (e.target === this) closeModal();
         });
 
-        // ========== САПЁР (ИДЕАЛЬНЫЙ) ==========
+        // ========== САПЁР (ВЫИГРЫШ ОТ ТВОЕЙ СТАВКИ) ==========
         let sapperBet = 10;
         let sapperBombs = 9;
         let sapperGrid = [];
@@ -408,6 +408,7 @@
             if (sapperFirstClick) {
                 sapperFirstClick = false;
                 
+                // ✅ Берём ставку из поля
                 const betInput = document.getElementById('sapperBetInput');
                 let val = parseInt(betInput.value) || 10;
                 if (val < 1) val = 1;
@@ -441,6 +442,7 @@
                     sapperGrid[newPos] = 1;
                 }
                 
+                // ✅ СПИСЫВАЕМ СТАВКУ
                 balance -= sapperBet;
                 document.getElementById('balanceDisplay').textContent = balance;
                 document.getElementById('sapperTakeBtn').disabled = false;
@@ -465,7 +467,7 @@
             cell.textContent = '✅';
             cell.style.color = '#4b69ff';
 
-            // РАСЧЁТ: ставка × (клетки × 0.20)
+            // ✅ ВЫИГРЫШ = СТАВКА × (клетки × 0.20)
             const multiplier = sapperOpenedCells * PER_CELL_MULTIPLIER;
             sapperCurrentWin = Math.floor(sapperBet * multiplier);
 
