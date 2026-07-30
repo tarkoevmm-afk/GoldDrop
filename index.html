@@ -64,20 +64,20 @@
         .craft-btn:hover { transform: scale(1.05); box-shadow: 0 0 30px rgba(255,215,0,0.4); }
         .craft-btn:disabled { opacity: 0.5; cursor: not-allowed; }
 
-        /* КРУГЛАЯ ШКАЛА (УВЕЛИЧЕННАЯ) */
+        /* КРУГЛАЯ ШКАЛА (СТАНДОФФ КРАФТ) */
         .circle-container { 
             position: relative; 
             width: 220px; 
             height: 220px; 
             margin: 20px auto; 
         }
-        .circle-bg { fill: none; stroke: #222; stroke-width: 14; }
+        .circle-bg { fill: none; stroke: #1a1a2e; stroke-width: 14; }
         .circle-fill { 
             fill: none; 
             stroke: url(#grad); 
             stroke-width: 14; 
             stroke-linecap: round; 
-            transition: stroke-dashoffset 1s ease; 
+            transition: stroke-dashoffset 0.5s ease; 
             transform: rotate(-90deg); 
             transform-origin: 50% 50%; 
         }
@@ -100,8 +100,9 @@
             background: #ffd700; 
             transform-origin: bottom center; 
             transform: translate(-50%, -100%) rotate(0deg); 
-            transition: transform 3.5s cubic-bezier(0.1, 0.7, 0.1, 1); 
+            transition: transform 4s cubic-bezier(0.1, 0.6, 0.1, 1); 
             box-shadow: 0 0 30px #ffd700; 
+            z-index: 5;
         }
         .arrow-handle::after { 
             content: ''; 
@@ -225,7 +226,7 @@
             </div>
         </div>
 
-        <!-- КРУГЛАЯ ШКАЛА (УВЕЛИЧЕННАЯ) -->
+        <!-- КРУГЛАЯ ШКАЛА -->
         <div class="circle-container">
             <svg width="220" height="220" viewBox="0 0 220 220">
                 <defs>
@@ -546,12 +547,13 @@ function sellSkin(index) {
 }
 
 // ============================================================
-//  АПГРЕЙД (КРУГЛАЯ СТРЕЛКА)
+//  АПГРЕЙД (СТАНДОФФ КРАФТ)
 // ============================================================
 let upgradeSlots = new Array(10).fill(null);
 let targetSkin = null;
 let bonusGold = 0;
 let isArrowSpinning = false;
+let lastResult = null;
 
 function renderUpgradeSlots() {
     const container = document.getElementById('upgradeSlots');
@@ -701,20 +703,19 @@ document.getElementById('bonusGoldInput').addEventListener('input', function() {
 
 document.getElementById('targetSkinSelect').addEventListener('change', updateUpgradeChance);
 
-// Анимация круглой стрелки (ускорение + замедление)
+// АНИМАЦИЯ СТРЕЛКИ (7-10 ОБОРОТОВ + ЗАМЕДЛЕНИЕ)
 function spinCircleArrow(finalPercent, callback) {
     const arrow = document.getElementById('arrowHandle');
     const resultDisplay = document.getElementById('arrowResult');
     resultDisplay.textContent = '...';
     
-    const startAngle = 0;
     const endAngle = (finalPercent / 100) * 360;
-    const duration = 3500;
-    const startTime = Date.now();
-    
-    // 3 дополнительных оборота для эффекта скорости
-    const extraSpins = 3;
+    // 7-10 случайных оборотов
+    const extraSpins = Math.floor(Math.random() * 4) + 7;
     const totalRotation = extraSpins * 360 + endAngle;
+    const duration = 4500 + Math.random() * 1500; // 4.5-6 секунд
+    
+    const startTime = Date.now();
     
     function animate() {
         const elapsed = Date.now() - startTime;
@@ -727,8 +728,8 @@ function spinCircleArrow(finalPercent, callback) {
         }
         
         const progress = elapsed / duration;
-        // easeOutQuart: быстро в начале, плавно в конце
-        const eased = 1 - Math.pow(1 - progress, 4);
+        // easeOutQuint: максимальное ускорение в начале, плавный стоп в конце
+        const eased = 1 - Math.pow(1 - progress, 5);
         const currentAngle = eased * totalRotation;
         arrow.style.transform = `translate(-50%, -100%) rotate(${currentAngle}deg)`;
         
@@ -763,7 +764,14 @@ document.getElementById('upgradeBtn').addEventListener('click', function() {
     document.getElementById('upgradeResult').textContent = '🎯 Апгрейд в процессе...';
     document.getElementById('upgradeResult').style.color = '#ffd700';
     
-    const resultPercent = Math.random() * 100;
+    // Генерируем результат с защитой от повторений
+    let resultPercent;
+    let attempts = 0;
+    do {
+        resultPercent = Math.random() * 100;
+        attempts++;
+    } while (lastResult !== null && Math.abs(resultPercent - lastResult) < 3 && attempts < 20);
+    lastResult = resultPercent;
     
     spinCircleArrow(resultPercent, () => {
         isArrowSpinning = false;
