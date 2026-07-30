@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>GoldDrop 2.0 - Кейсы Standoff 2</title>
     <style>
+        /* ===== ВСЕ СТИЛИ (ОСТАВЛЯЕМ ТЕ ЖЕ, МЕНЯЕМ ТОЛЬКО СТРЕЛКУ) ===== */
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body { background: #0a0a1a; font-family: 'Segoe UI', Arial, sans-serif; color: #fff; min-height: 100vh; display: flex; justify-content: center; align-items: flex-start; padding: 20px 0; }
         .container { text-align: center; padding: 20px; max-width: 480px; width: 100%; }
@@ -91,29 +92,67 @@
         .circle-center .chance-text { font-size: 32px; font-weight: bold; color: #ffd700; }
         .circle-center .chance-label { font-size: 14px; color: #888; }
 
-        .arrow-handle { 
-            position: absolute; 
-            top: 50%; 
-            left: 50%; 
-            width: 6px; 
-            height: 90px; 
-            background: #ffd700; 
-            transform-origin: bottom center; 
-            transform: translate(-50%, -100%) rotate(0deg); 
-            transition: transform 4s cubic-bezier(0.1, 0.6, 0.1, 1); 
-            box-shadow: 0 0 30px #ffd700; 
+        /* ===== НОРМАЛЬНАЯ СТРЕЛКА (НЕ БОМЖ) ===== */
+        .arrow-handle {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -100%) rotate(0deg);
+            transform-origin: bottom center;
+            transition: transform 4s cubic-bezier(0.1, 0.6, 0.1, 1);
+            width: 4px;
+            height: 90px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
             z-index: 5;
         }
-        .arrow-handle::after { 
-            content: ''; 
-            position: absolute; 
-            top: -16px; 
-            left: -16px; 
-            width: 32px; 
-            height: 32px; 
-            background: #ffd700; 
-            border-radius: 50%; 
-            box-shadow: 0 0 40px #ffd700; 
+        .arrow-center {
+            position: absolute;
+            bottom: -16px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 32px;
+            height: 32px;
+            background: radial-gradient(circle, #ffd700 30%, #ff8c00 70%, #cc7700 100%);
+            border-radius: 50%;
+            box-shadow: 0 0 40px rgba(255, 215, 0, 0.8), 0 0 80px rgba(255, 215, 0, 0.4);
+            border: 3px solid #fff8e7;
+            z-index: 6;
+        }
+        .arrow-line {
+            position: absolute;
+            bottom: 16px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 4px;
+            height: 70px;
+            background: linear-gradient(to top, #ffd700, #ffec8b);
+            box-shadow: 0 0 20px rgba(255, 215, 0, 0.5);
+            border-radius: 2px;
+        }
+        .arrow-head {
+            position: absolute;
+            bottom: 86px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 0;
+            height: 0;
+            border-left: 18px solid transparent;
+            border-right: 18px solid transparent;
+            border-bottom: 28px solid #ffd700;
+            filter: drop-shadow(0 0 20px rgba(255, 215, 0, 0.8));
+        }
+        .arrow-head::after {
+            content: '';
+            position: absolute;
+            top: 4px;
+            left: -12px;
+            width: 0;
+            height: 0;
+            border-left: 12px solid transparent;
+            border-right: 12px solid transparent;
+            border-bottom: 20px solid #ffec8b;
         }
 
         .bonus-card { background: #1a1a3e; border: 2px solid #ffd700; border-radius: 20px; padding: 20px; margin: 15px 0; }
@@ -200,7 +239,7 @@
         <div class="cases-grid" id="casesGrid"></div>
     </div>
 
-    <!-- ===== АПГРЕЙД (КРУГЛАЯ СТРЕЛКА) ===== -->
+    <!-- ===== АПГРЕЙД ===== -->
     <div id="tab-upgrade" class="tab-content">
         <h3 style="color:#ffd700;">🔧 Апгрейд скинов</h3>
         <p style="color:#888; font-size:14px;">Выбери от 1 до 10 скинов и цель для апгрейда</p>
@@ -226,7 +265,7 @@
             </div>
         </div>
 
-        <!-- КРУГЛАЯ ШКАЛА (СТАНДОФФ КРАФТ) -->
+        <!-- КРУГЛАЯ ШКАЛА С НОРМАЛЬНОЙ СТРЕЛКОЙ -->
         <div class="circle-container">
             <svg width="220" height="220" viewBox="0 0 220 220">
                 <defs>
@@ -240,7 +279,12 @@
                 <circle class="circle-fill" id="circleFill" cx="110" cy="110" r="95" 
                     stroke-dasharray="597" stroke-dashoffset="597" />
             </svg>
-            <div class="arrow-handle" id="arrowHandle"></div>
+            <!-- НОРМАЛЬНАЯ СТРЕЛКА -->
+            <div class="arrow-handle" id="arrowHandle">
+                <div class="arrow-center"></div>
+                <div class="arrow-line"></div>
+                <div class="arrow-head"></div>
+            </div>
             <div class="circle-center">
                 <div class="chance-text" id="chanceText">0%</div>
                 <div class="chance-label">Шанс</div>
@@ -351,7 +395,7 @@
 
 <script>
 // ============================================================
-//  БАЗА ДАННЫХ
+//  ВЕСЬ СКРИПТ (БЕЗ ИЗМЕНЕНИЙ — ТОТ ЖЕ, ЧТО БЫЛ)
 // ============================================================
 const skinsList = [
     { name: "P250 | Sand Dune", rarity: "Обычный", color: "#b0b0b0", emoji: "🟤", price: 10 },
@@ -388,16 +432,15 @@ const cases = [
     { name: "Бессмертный", price: 500, emoji: "⚡", chance: 5 }
 ];
 
-// ============================================================
-//  СОСТОЯНИЕ
-// ============================================================
 let balance = 100;
 let inventory = [];
 let bonusClaimed = { tg: false, daily: false, cases: false };
+let upgradeSlots = new Array(10).fill(null);
+let targetSkin = null;
+let bonusGold = 0;
+let isArrowSpinning = false;
+let lastResult = null;
 
-// ============================================================
-//  КЕЙСЫ
-// ============================================================
 function renderCases() {
     const grid = document.getElementById('casesGrid');
     grid.innerHTML = '';
@@ -509,9 +552,6 @@ function closeModal() {
     document.getElementById('resultText').textContent = '';
 }
 
-// ============================================================
-//  ИНВЕНТАРЬ
-// ============================================================
 function renderInventory() {
     const grid = document.getElementById('inventoryGrid');
     grid.innerHTML = '';
@@ -545,15 +585,6 @@ function sellSkin(index) {
     renderInventory();
     renderUpgradeInventory();
 }
-
-// ============================================================
-//  АПГРЕЙД (КРУГЛАЯ СТРЕЛКА)
-// ============================================================
-let upgradeSlots = new Array(10).fill(null);
-let targetSkin = null;
-let bonusGold = 0;
-let isArrowSpinning = false;
-let lastResult = null;
 
 function renderUpgradeSlots() {
     const container = document.getElementById('upgradeSlots');
@@ -703,7 +734,6 @@ document.getElementById('bonusGoldInput').addEventListener('input', function() {
 
 document.getElementById('targetSkinSelect').addEventListener('change', updateUpgradeChance);
 
-// АНИМАЦИЯ КРУГЛОЙ СТРЕЛКИ (8-12 ОБОРОТОВ + ТОРМОЗ)
 function spinCircleArrow(finalPercent, callback) {
     const arrow = document.getElementById('arrowHandle');
     const resultDisplay = document.getElementById('arrowResult');
@@ -737,7 +767,6 @@ function spinCircleArrow(finalPercent, callback) {
     animate();
 }
 
-// Кнопка апгрейда
 document.getElementById('upgradeBtn').addEventListener('click', function() {
     if (isArrowSpinning) return;
     
@@ -803,9 +832,6 @@ document.getElementById('upgradeBtn').addEventListener('click', function() {
     });
 });
 
-// ============================================================
-//  БОНУСЫ
-// ============================================================
 function claimBonus(type) {
     if (bonusClaimed[type]) {
         alert('❌ Бонус уже получен!');
@@ -819,9 +845,6 @@ function claimBonus(type) {
     alert(`✅ Бонус получен! +${rewards[type]} Gold`);
 }
 
-// ============================================================
-//  ПОДДЕРЖКА
-// ============================================================
 function openSupport() {
     document.getElementById('supportModal').classList.add('active');
 }
@@ -834,9 +857,6 @@ document.getElementById('supportModal').addEventListener('click', function(e) {
     if (e.target === this) closeSupport();
 });
 
-// ============================================================
-//  САПЁР
-// ============================================================
 let sapperBet = 10;
 let sapperBombs = 9;
 let sapperGrid = [];
@@ -1010,9 +1030,6 @@ document.querySelectorAll('#sapperDifficulty button').forEach(btn => {
     });
 });
 
-// ============================================================
-//  НАВИГАЦИЯ
-// ============================================================
 document.querySelectorAll('.tab-btn').forEach(btn => {
     btn.addEventListener('click', function() {
         document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
@@ -1033,9 +1050,6 @@ document.querySelectorAll('.tab-btn').forEach(btn => {
     });
 });
 
-// ============================================================
-//  ЗАПУСК
-// ============================================================
 renderCases();
 renderInventory();
 renderUpgradeSlots();
