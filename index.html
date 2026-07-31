@@ -46,6 +46,7 @@
         .auth-container .btn-auth-secondary:hover { background: #ffd700; color: #000; }
         .auth-container .error-msg { color: #ff2d55; font-size: 14px; margin: 5px 0; }
         .auth-container .success-msg { color: #4b69ff; font-size: 14px; margin: 5px 0; }
+        .auth-container .info-msg { color: #ffd700; font-size: 14px; margin: 5px 0; }
 
         .btn-logout { background: #ff2d55; color: #fff; border: none; padding: 6px 16px; border-radius: 10px; font-weight: bold; cursor: pointer; transition: 0.3s; }
         .btn-logout:hover { transform: scale(1.05); }
@@ -247,9 +248,11 @@
                     <input type="password" id="passwordInput" placeholder="Пароль (мин. 6 символов)">
                     <div id="authError" class="error-msg"></div>
                     <div id="authSuccess" class="success-msg"></div>
+                    <div id="authInfo" class="info-msg"></div>
                     <button class="btn-auth" id="registerBtn">Зарегистрироваться</button>
                     <button class="btn-auth-secondary" id="signInBtn">Войти</button>
                     <button class="btn-auth-secondary" id="resetPasswordBtn" style="margin-top:5px; border-color:#4b69ff; color:#4b69ff;">Забыли пароль?</button>
+                    <button class="btn-auth-secondary" id="resendEmailBtn" style="margin-top:5px; border-color:#ffd700; color:#ffd700; display:none;">📧 Отправить письмо повторно</button>
                 </div>
             </div>
             <button class="btn-support" onclick="openSupport()">💳 Пополнить</button>
@@ -411,18 +414,54 @@ let bonusGold = 0;
 let isArrowSpinning = false;
 let lastResult = null;
 let currentUser = null;
+let unverifiedUser = null;
+let verificationTimer = null;
 
 // ============================================================
-//  АВТОРИЗАЦИЯ (ОБЫЧНАЯ, БЕЗ ПОДТВЕРЖДЕНИЯ)
+//  АВТОРИЗАЦИЯ (С УДАЛЕНИЕМ НЕПОДТВЕРЖДЁННЫХ АККАУНТОВ)
 // ============================================================
 function updateUIForUser(user) {
     const userInfo = document.getElementById('userInfo');
     const authForm = document.getElementById('authForm');
     const playerId = document.getElementById('playerId');
+    const resendBtn = document.getElementById('resendEmailBtn');
     
     if (user) {
+        // Проверяем, подтверждена ли почта
+        if (!user.emailVerified) {
+            // Если почта не подтверждена — удаляем аккаунт через 5 минут
+            authForm.style.display = 'block';
+            userInfo.style.display = 'none';
+            document.getElementById('authInfo').textContent = '⚠️ Почта не подтверждена! Проверьте почту (включая спам). Если вы ошиблись почтой — зарегистрируйтесь заново. Аккаунт будет удалён через 5 минут.';
+            document.getElementById('authInfo').style.color = '#ffd700';
+            resendBtn.style.display = 'block';
+            
+            // Запускаем таймер на удаление
+            if (verificationTimer) clearTimeout(verificationTimer);
+            verificationTimer = setTimeout(() => {
+                if (user && !user.emailVerified) {
+                    user.delete().then(() => {
+                        document.getElementById('authInfo').textContent = '✅ Аккаунт удалён. Вы можете зарегистрироваться заново.';
+                        document.getElementById('authInfo').style.color = '#4b69ff';
+                        resendBtn.style.display = 'none';
+                        auth.signOut();
+                    }).catch(error => {
+                        console.error('Ошибка удаления:', error);
+                    });
+                }
+            }, 300000); // 5 минут
+            
+            // Сохраняем пользователя для проверки
+            unverifiedUser = user;
+            return;
+        }
+        
+        // Если почта подтверждена
         userInfo.style.display = 'flex';
         authForm.style.display = 'none';
+        resendBtn.style.display = 'none';
+        document.getElementById('authInfo').textContent = '';
+        
         const userData = loadUserData(user.uid);
         const displayName = userData?.nickname || user.displayName || user.email || 'Игрок';
         document.getElementById('userName').textContent = displayName;
@@ -437,14 +476,27 @@ function updateUIForUser(user) {
         }
         currentUser = user;
         loadUserInventory(user.uid);
+        if (verificationTimer) clearTimeout(verificationTimer);
     } else {
         userInfo.style.display = 'none';
         authForm.style.display = 'block';
         playerId.textContent = 'Гость';
         currentUser = null;
+        unverifiedUser = null;
+        resendBtn.style.display = 'none';
+        if (verificationTimer) clearTimeout(verificationTimer);
         loadGlobalData();
     }
 }
+
+// Повторная отправка письма
+document.getElementById('resendEmailBtn').addEventListener('click', () => {
+    if (unverifiedUser) {
+        unverifiedUser.sendEmailVerification();
+        document.getElementById('authInfo').textContent = '✅ Письмо отправлено повторно! Проверьте почту (включая спам).';
+        document.getElementById('authInfo').style.color = '#4b69ff';
+    }
+});
 
 function loadUserData(userId) {
     const key = `golddrop_user_${userId}`;
@@ -501,14 +553,16 @@ function updateUI() {
     renderCases();
 }
 
-// Регистрация (с отправкой уведомления на почту)
+// Регистрация (с отправкой письма и таймером на удаление)
 document.getElementById('registerBtn').addEventListener('click', () => {
     const email = document.getElementById('emailInput').value;
     const password = document.getElementById('passwordInput').value;
     const errorDiv = document.getElementById('authError');
     const successDiv = document.getElementById('authSuccess');
+    const infoDiv = document.getElementById('authInfo');
     errorDiv.textContent = '';
     successDiv.textContent = '';
+    infoDiv.textContent = '';
     
     if (!email || !password) {
         errorDiv.textContent = '❌ Введите email и пароль';
@@ -521,15 +575,13 @@ document.getElementById('registerBtn').addEventListener('click', () => {
     
     auth.createUserWithEmailAndPassword(email, password)
         .then((result) => {
-            // Отправляем уведомление о регистрации через Firebase (функция sendEmailVerification)
-            // Но она отправляет письмо для подтверждения. Мы просто показываем сообщение.
-            successDiv.textContent = '✅ Аккаунт создан! Проверьте почту для подтверждения (если письмо не пришло, проверьте спам).';
-            successDiv.style.color = '#4b69ff';
-            // Отправляем письмо для подтверждения (оно же будет уведомлением)
+            // Отправляем письмо для подтверждения
             result.user.sendEmailVerification();
-            updateUIForUser(result.user);
-            const newId = Math.floor(Math.random() * 9999999999) + 1;
-            saveUserData(result.user.uid, { playerId: newId });
+            infoDiv.textContent = `📧 Письмо отправлено на ${email}! Проверьте почту (включая папку «Спам»). Если вы ошиблись почтой — зарегистрируйтесь заново. Аккаунт будет удалён через 5 минут.`;
+            infoDiv.style.color = '#ffd700';
+            successDiv.textContent = '✅ Аккаунт создан!';
+            successDiv.style.color = '#4b69ff';
+            auth.signOut();
         })
         .catch(error => {
             errorDiv.textContent = '❌ ' + error.message;
@@ -552,6 +604,14 @@ document.getElementById('signInBtn').addEventListener('click', () => {
     
     auth.signInWithEmailAndPassword(email, password)
         .then((result) => {
+            // Проверяем, подтверждена ли почта
+            if (!result.user.emailVerified) {
+                successDiv.textContent = '⚠️ Почта не подтверждена! Проверьте почту (включая спам). Аккаунт будет удалён через 5 минут.';
+                successDiv.style.color = '#ffd700';
+                result.user.sendEmailVerification();
+                auth.signOut();
+                return;
+            }
             successDiv.textContent = '✅ Вход выполнен! Добро пожаловать!';
             successDiv.style.color = '#4b69ff';
             updateUIForUser(result.user);
