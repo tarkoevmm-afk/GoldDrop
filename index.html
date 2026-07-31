@@ -11,10 +11,43 @@
         body { background: #0a0a1a; font-family: 'Segoe UI', Arial, sans-serif; color: #fff; min-height: 100vh; display: flex; justify-content: center; align-items: flex-start; padding: 20px 0; }
         .container { text-align: center; padding: 20px; max-width: 480px; width: 100%; }
         .logo { font-size: 42px; font-weight: 900; background: linear-gradient(135deg, #ffd700, #ff8c00); -webkit-background-clip: text; -webkit-text-fill-color: transparent; margin-bottom: 15px; letter-spacing: 2px; }
-        .tabs { display: flex; gap: 6px; margin: 15px 0; background: #1a1a2e; border-radius: 15px; padding: 5px; border: 1px solid #222; flex-wrap: wrap; justify-content: center; }
-        .tab-btn { background: transparent; border: none; color: #888; padding: 8px 12px; font-size: 13px; font-weight: bold; cursor: pointer; border-radius: 12px; flex: 1; min-width: 55px; transition: 0.3s; }
-        .tab-btn.active { background: #ffd700; color: #000; box-shadow: 0 0 20px rgba(255,215,0,0.3); }
-        .tab-btn:hover { color: #fff; }
+        
+        /* ===== ВКЛАДКИ ПО ЦЕНТРУ И БОЛЬШИЕ ===== */
+        .tabs {
+            display: flex;
+            gap: 8px;
+            margin: 15px auto;
+            background: #1a1a2e;
+            border-radius: 18px;
+            padding: 6px;
+            border: 1px solid #2a2a4a;
+            justify-content: center;
+            max-width: 440px;
+        }
+        .tab-btn {
+            background: transparent;
+            border: none;
+            color: #888;
+            padding: 12px 16px;
+            font-size: 15px;
+            font-weight: bold;
+            cursor: pointer;
+            border-radius: 14px;
+            flex: 1;
+            min-width: 60px;
+            transition: 0.3s;
+            text-align: center;
+        }
+        .tab-btn.active {
+            background: #ffd700;
+            color: #000;
+            box-shadow: 0 0 30px rgba(255,215,0,0.4);
+            transform: scale(1.05);
+        }
+        .tab-btn:hover {
+            color: #fff;
+            background: rgba(255,215,0,0.1);
+        }
         .tab-content { display: none; }
         .tab-content.active { display: block; }
         
@@ -234,6 +267,7 @@
 <div class="container">
     <div class="logo">🎰 GoldDrop 4.0</div>
 
+    <!-- ===== ВКЛАДКИ ПО ЦЕНТРУ (БОЛЬШИЕ) ===== -->
     <div class="tabs">
         <button class="tab-btn active" data-tab="cases">🏠 Кейсы</button>
         <button class="tab-btn" data-tab="upgrade">🔧 Апгрейд</button>
@@ -573,9 +607,11 @@ function saveUserData(userId, data) {
 function getOrCreatePlayerId(user) {
     const userId = user.uid;
     const data = loadUserData(userId);
+    // ✅ ЕСЛИ ID УЖЕ ЕСТЬ — ВОЗВРАЩАЕМ ЕГО (НЕ СОЗДАЁМ НОВЫЙ!)
     if (data && data.playerId) {
         return data.playerId;
     }
+    // Если нет — создаём новый
     const newId = Math.floor(Math.random() * 9999999999) + 1;
     saveUserData(userId, { 
         playerId: newId, 
@@ -1576,6 +1612,7 @@ console.log('📌 Всего кейсов:',
 );
 console.log('📌 Всего скинов:', skinsList.length);
 console.log('🎯 Аватарки 200×200 для ряда "Проклятый остров" добавлены!');
+console.log('✅ ID теперь НЕ МЕНЯЕТСЯ при повторном входе!');
 </script>
 </body>
 </html>
