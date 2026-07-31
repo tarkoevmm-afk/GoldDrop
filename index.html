@@ -21,6 +21,7 @@
         .tab-content { display: none; }
         .tab-content.active { display: block; }
 
+        /* ===== КЕЙСЫ ===== */
         .cases-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin: 15px 0; }
         .case-card { background: #1a1a3e; border: 2px solid #ffd700; border-radius: 15px; padding: 12px 8px; cursor: pointer; transition: 0.3s; }
         .case-card:hover { transform: scale(1.03); box-shadow: 0 0 30px rgba(255,215,0,0.2); }
@@ -29,6 +30,7 @@
         .case-card .price { font-size: 12px; color: #888; }
         .case-card .chance { font-size: 11px; color: #555; }
 
+        /* ===== ПРОФИЛЬ ===== */
         .profile-card { background: #1a1a3e; border: 2px solid #ffd700; border-radius: 20px; padding: 20px; margin: 15px 0; }
         .profile-card .id { color: #888; font-size: 14px; }
         .profile-card .id span { color: #ffd700; font-weight: bold; }
@@ -230,6 +232,7 @@
         <div class="profile-card">
             <div class="id">🆔 ID: <span id="playerId">Гость</span></div>
             <div class="balance">💰 Баланс: <span id="balanceDisplay">100</span> Gold</div>
+            <!-- АВТОРИЗАЦИЯ -->
             <div id="authSection">
                 <div id="userInfo" style="display:none;" class="user-info">
                     <img id="userAvatar" class="user-avatar" src="" alt="Avatar">
@@ -237,7 +240,7 @@
                     <button id="logoutBtn" class="btn-logout">Выйти</button>
                 </div>
                 <button id="googleLoginBtn" class="btn-google">
-                    <img src="https://cdn.jsdelivr.net/npm/simple-icons@v9/icons/google.svg" alt="Google">
+                    <img src="https://cdn.jsdelivr.net/npm/simple-icons@v9/icons/google.svg" alt="Google" style="width:20px;height:20px;">
                     Войти через Google
                 </button>
             </div>
@@ -332,7 +335,7 @@
 
 <script>
 // ============================================================
-//  🔑 ТВОИ КЛЮЧИ FIREBASE (ВСТАВЛЕНЫ)
+//  🔑 ТВОИ КЛЮЧИ FIREBASE
 // ============================================================
 const firebaseConfig = {
   apiKey: "AIzaSyDkV_vNvALn0tFOUXWSUTL6aO",
@@ -671,10 +674,10 @@ function clearUpgradeSlot(index) {
     renderUpgradeInventory();
 }
 
-function selectSkinForUpgrade(indexskin) return;
-    const) {
+function selectSkinForUpgrade(index) {
     const skin = inventory[index];
-    if (! emptyIdx = upgradeSlots.indexOf(null);
+    if (!skin) return;
+    const emptyIdx = upgradeSlots.indexOf(null);
     if (emptyIdx === -1) {
         alert('❌ Все слоты заняты!');
         return;
