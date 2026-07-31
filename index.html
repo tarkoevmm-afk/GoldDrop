@@ -11,15 +11,12 @@
         body { background: #0a0a1a; font-family: 'Segoe UI', Arial, sans-serif; color: #fff; min-height: 100vh; display: flex; justify-content: center; align-items: flex-start; padding: 20px 0; }
         .container { text-align: center; padding: 20px; max-width: 480px; width: 100%; }
         .logo { font-size: 42px; font-weight: 900; background: linear-gradient(135deg, #ffd700, #ff8c00); -webkit-background-clip: text; -webkit-text-fill-color: transparent; margin-bottom: 15px; letter-spacing: 2px; }
-        
         .tabs { display: flex; gap: 6px; margin: 15px 0; background: #1a1a2e; border-radius: 15px; padding: 5px; border: 1px solid #222; flex-wrap: wrap; justify-content: center; }
         .tab-btn { background: transparent; border: none; color: #888; padding: 8px 12px; font-size: 13px; font-weight: bold; cursor: pointer; border-radius: 12px; flex: 1; min-width: 55px; transition: 0.3s; }
         .tab-btn.active { background: #ffd700; color: #000; box-shadow: 0 0 20px rgba(255,215,0,0.3); }
         .tab-btn:hover { color: #fff; }
-
         .tab-content { display: none; }
         .tab-content.active { display: block; }
-
         .cases-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin: 15px 0; }
         .case-card { background: #1a1a3e; border: 2px solid #ffd700; border-radius: 15px; padding: 12px 8px; cursor: pointer; transition: 0.3s; }
         .case-card:hover { transform: scale(1.03); box-shadow: 0 0 30px rgba(255,215,0,0.2); }
@@ -27,16 +24,13 @@
         .case-card .name { font-size: 13px; color: #ffd700; margin: 5px 0; font-weight: bold; }
         .case-card .price { font-size: 12px; color: #888; }
         .case-card .chance { font-size: 11px; color: #555; }
-
         .profile-card { background: #1a1a3e; border: 2px solid #ffd700; border-radius: 20px; padding: 20px; margin: 15px 0; }
         .profile-card .id { color: #888; font-size: 14px; }
         .profile-card .id span { color: #ffd700; font-weight: bold; }
         .profile-card .balance { font-size: 22px; color: #ffd700; margin: 10px 0; }
-
         .user-info { display: flex; align-items: center; justify-content: center; gap: 15px; margin: 10px 0; flex-wrap: wrap; }
         .user-avatar { width: 50px; height: 50px; border-radius: 50%; border: 2px solid #ffd700; }
         .user-name { font-size: 16px; color: #fff; font-weight: bold; }
-
         .auth-container { background: #111; padding: 20px; border-radius: 15px; border: 1px solid #333; margin: 15px 0; }
         .auth-container input { width: 100%; padding: 12px; margin: 8px 0; background: #0a0a1a; border: 1px solid #444; border-radius: 10px; color: #fff; font-size: 16px; }
         .auth-container input:focus { border-color: #ffd700; outline: none; }
@@ -46,57 +40,44 @@
         .auth-container .btn-auth-secondary:hover { background: #ffd700; color: #000; }
         .auth-container .error-msg { color: #ff2d55; font-size: 14px; margin: 5px 0; }
         .auth-container .success-msg { color: #4b69ff; font-size: 14px; margin: 5px 0; }
-        .auth-container .info-msg { color: #ffd700; font-size: 14px; margin: 5px 0; }
-
         .btn-logout { background: #ff2d55; color: #fff; border: none; padding: 6px 16px; border-radius: 10px; font-weight: bold; cursor: pointer; transition: 0.3s; }
         .btn-logout:hover { transform: scale(1.05); }
-
         .btn-support { background: #222; border: 1px solid #ffd700; color: #ffd700; padding: 8px 20px; border-radius: 10px; cursor: pointer; transition: 0.3s; font-weight: bold; margin: 5px; }
         .btn-support:hover { background: #ffd700; color: #000; }
-
         .inventory-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin: 15px 0; }
         .inv-item { background: #111; border: 1px solid #444; border-radius: 12px; padding: 10px; text-align: center; transition: 0.3s; cursor: pointer; }
         .inv-item .emoji { font-size: 28px; }
         .inv-item .name { font-size: 11px; color: #aaa; }
         .inv-item .rarity { font-size: 10px; }
         .inv-item .price { font-size: 11px; color: #ffd700; margin-top: 3px; }
-
         .btn-sell { background: #ff2d55; border: none; color: #fff; padding: 4px 12px; border-radius: 8px; font-size: 11px; cursor: pointer; transition: 0.3s; margin-top: 5px; }
         .btn-sell:hover { transform: scale(1.05); }
-
         .upgrade-slots { display: grid; grid-template-columns: repeat(5, 1fr); gap: 8px; margin: 15px 0; max-width: 400px; margin-left: auto; margin-right: auto; }
         .upgrade-slot { background: #111; border: 2px dashed #444; border-radius: 12px; aspect-ratio: 1; display: flex; align-items: center; justify-content: center; font-size: 24px; cursor: pointer; transition: 0.3s; position: relative; }
         .upgrade-slot.filled { border: 2px solid #ffd700; background: #1a1a3e; }
         .upgrade-slot:hover { border-color: #ffd700; }
         .upgrade-slot .remove-btn { position: absolute; top: -8px; right: -8px; background: #ff2d55; border-radius: 50%; width: 20px; height: 20px; font-size: 12px; display: flex; align-items: center; justify-content: center; cursor: pointer; border: none; color: #fff; }
-
         .upgrade-arrow { font-size: 24px; color: #ffd700; animation: arrowPulse 1s ease-in-out infinite; margin: 10px 0; }
         @keyframes arrowPulse { 0%, 100% { opacity: 0.3; transform: translateY(0); } 50% { opacity: 1; transform: translateY(5px); } }
-
         .upgrade-target { margin: 15px 0; }
         .upgrade-target select { background: #111; border: 1px solid #444; color: #fff; padding: 10px; border-radius: 10px; width: 100%; }
-
         .upgrade-gold { margin: 15px 0; }
         .upgrade-gold input[type="range"] { width: 100%; accent-color: #ffd700; background: #222; height: 6px; border-radius: 3px; }
         .upgrade-gold input[type="number"] { background: #111; border: 1px solid #444; color: #fff; padding: 8px; border-radius: 10px; width: 80px; text-align: center; }
-
         .craft-btn { background: linear-gradient(135deg, #ffd700, #ff8c00); border: none; padding: 12px 30px; font-size: 16px; font-weight: bold; border-radius: 12px; cursor: pointer; color: #000; transition: 0.3s; margin: 10px 0; }
         .craft-btn:hover { transform: scale(1.05); box-shadow: 0 0 30px rgba(255,215,0,0.4); }
         .craft-btn:disabled { opacity: 0.5; cursor: not-allowed; }
-
         .circle-container { position: relative; width: 220px; height: 220px; margin: 20px auto; }
         .circle-bg { fill: none; stroke: #1a1a2e; stroke-width: 14; }
         .circle-fill { fill: none; stroke: url(#grad); stroke-width: 14; stroke-linecap: round; transition: stroke-dashoffset 0.5s ease; transform: rotate(-90deg); transform-origin: 50% 50%; }
         .circle-center { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); text-align: center; }
         .circle-center .chance-text { font-size: 32px; font-weight: bold; color: #ffd700; }
         .circle-center .chance-label { font-size: 14px; color: #888; }
-
         .arrow-handle { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -100%) rotate(0deg); transform-origin: bottom center; transition: transform 4s cubic-bezier(0.1, 0.6, 0.1, 1); width: 4px; height: 90px; display: flex; flex-direction: column; align-items: center; z-index: 5; }
         .arrow-center { position: absolute; bottom: -16px; left: 50%; transform: translateX(-50%); width: 32px; height: 32px; background: radial-gradient(circle, #ffd700 30%, #ff8c00 70%, #cc7700 100%); border-radius: 50%; box-shadow: 0 0 40px rgba(255, 215, 0, 0.8), 0 0 80px rgba(255, 215, 0, 0.4); border: 3px solid #fff8e7; z-index: 6; }
         .arrow-line { position: absolute; bottom: 16px; left: 50%; transform: translateX(-50%); width: 4px; height: 70px; background: linear-gradient(to top, #ffd700, #ffec8b); box-shadow: 0 0 20px rgba(255, 215, 0, 0.5); border-radius: 2px; }
         .arrow-head { position: absolute; bottom: 86px; left: 50%; transform: translateX(-50%); width: 0; height: 0; border-left: 18px solid transparent; border-right: 18px solid transparent; border-bottom: 28px solid #ffd700; filter: drop-shadow(0 0 20px rgba(255, 215, 0, 0.8)); }
         .arrow-head::after { content: ''; position: absolute; top: 4px; left: -12px; width: 0; height: 0; border-left: 12px solid transparent; border-right: 12px solid transparent; border-bottom: 20px solid #ffec8b; }
-
         .bonus-card { background: #1a1a3e; border: 2px solid #ffd700; border-radius: 20px; padding: 20px; margin: 15px 0; }
         .bonus-card .task { display: flex; justify-content: space-between; align-items: center; padding: 10px 0; border-bottom: 1px solid #222; }
         .bonus-card .task:last-child { border-bottom: none; }
@@ -105,7 +86,6 @@
         .btn-claim { background: #ffd700; border: none; padding: 6px 16px; border-radius: 10px; font-weight: bold; cursor: pointer; color: #000; transition: 0.3s; }
         .btn-claim:hover { transform: scale(1.05); }
         .btn-claim:disabled { opacity: 0.4; cursor: not-allowed; }
-
         .preview-modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.9); z-index: 999; justify-content: center; align-items: center; }
         .preview-modal.active { display: flex; }
         .preview-content { background: #1a1a3e; padding: 25px; border-radius: 20px; border: 3px solid #ffd700; max-width: 400px; width: 90%; text-align: center; max-height: 80vh; overflow-y: auto; }
@@ -114,7 +94,6 @@
         .preview-content .skin-item .name { color: #fff; }
         .preview-content .skin-item .price { color: #ffd700; }
         .preview-close { background: #ffd700; border: none; padding: 10px 30px; font-size: 16px; font-weight: bold; border-radius: 12px; cursor: pointer; color: #000; margin-top: 15px; }
-
         .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.9); z-index: 1000; justify-content: center; align-items: center; }
         .modal.active { display: flex; }
         .modal-content { background: #1a1a3e; padding: 30px; border-radius: 20px; border: 3px solid #ffd700; max-width: 400px; width: 90%; text-align: center; }
@@ -126,7 +105,6 @@
         @keyframes arrowBounce { 0%, 100% { transform: translateX(-50%) translateY(0); } 50% { transform: translateX(-50%) translateY(10px); } }
         .win-text { font-size: 24px; font-weight: bold; margin: 10px 0; }
         .close-btn { background: #ffd700; border: none; padding: 10px 30px; font-size: 18px; font-weight: bold; border-radius: 12px; cursor: pointer; color: #000; margin-top: 15px; }
-
         .support-modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.9); z-index: 1001; justify-content: center; align-items: center; }
         .support-modal.active { display: flex; }
         .support-content { background: #1a1a3e; padding: 30px; border-radius: 20px; border: 3px solid #ffd700; max-width: 380px; width: 90%; text-align: center; }
@@ -134,7 +112,6 @@
         .support-content .info { color: #aaa; font-size: 16px; line-height: 1.6; margin: 15px 0; }
         .support-content .highlight { color: #ffd700; font-weight: bold; font-size: 18px; }
         .support-close-btn { background: #ffd700; border: none; padding: 10px 30px; font-size: 18px; font-weight: bold; border-radius: 12px; cursor: pointer; color: #000; margin-top: 15px; }
-
         .sapper-grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 6px; margin: 15px auto; max-width: 300px; }
         .sapper-cell { background: #1a1a3e; border: 2px solid #444; border-radius: 8px; aspect-ratio: 1; display: flex; align-items: center; justify-content: center; font-size: 20px; font-weight: bold; cursor: pointer; transition: 0.3s; color: #fff; }
         .sapper-cell:hover { border-color: #ffd700; transform: scale(1.05); }
@@ -142,24 +119,19 @@
         .sapper-cell.revealed:hover { transform: none; }
         .sapper-cell.bomb { background: #ff2d55; border-color: #ff2d55; }
         .sapper-cell.safe { background: #1a5a2e; border-color: #4b69ff; }
-
         .sapper-bet { display: flex; gap: 10px; flex-wrap: wrap; justify-content: center; margin: 10px 0; align-items: center; }
         .sapper-bet input { background: #111; border: 1px solid #444; border-radius: 10px; padding: 8px 12px; color: #fff; font-size: 16px; width: 100px; text-align: center; }
-
         .sapper-difficulty { display: flex; gap: 10px; flex-wrap: wrap; justify-content: center; margin: 10px 0; }
         .sapper-difficulty button { background: #222; border: 1px solid #ff2d55; color: #ff2d55; padding: 8px 16px; border-radius: 10px; cursor: pointer; transition: 0.3s; font-weight: bold; }
         .sapper-difficulty button:hover { background: #ff2d55; color: #000; }
         .sapper-difficulty button.active { background: #ff2d55; color: #000; }
-
         .sapper-actions { display: flex; gap: 10px; justify-content: center; margin: 10px 0; flex-wrap: wrap; }
         .sapper-actions .btn-take { background: linear-gradient(135deg, #4b69ff, #2a4bd6); color: #fff; padding: 10px 20px; font-size: 16px; font-weight: bold; border-radius: 12px; cursor: pointer; transition: 0.3s; border: none; }
         .sapper-actions .btn-take:hover { transform: scale(1.05); box-shadow: 0 0 20px rgba(75,105,255,0.5); }
         .sapper-actions .btn-take:disabled { opacity: 0.5; cursor: not-allowed; transform: none; }
         .sapper-actions .btn { padding: 10px 20px; font-size: 16px; }
-
         .sapper-balance { margin: 10px 0; padding: 10px; background: #111; border-radius: 10px; color: #888; font-size: 16px; border: 1px solid #222; }
         .sapper-balance span { color: #ffd700; font-weight: bold; }
-
         .footer { margin-top: 20px; font-size: 11px; color: #333; }
         .rarity-common { color: #b0b0b0; } .rarity-uncommon { color: #5e98d9; } .rarity-rare { color: #4b69ff; } .rarity-epic { color: #8847ff; } .rarity-legendary { color: #ff8000; } .rarity-mythical { color: #ff2d55; }
     </style>
@@ -248,11 +220,9 @@
                     <input type="password" id="passwordInput" placeholder="Пароль (мин. 6 символов)">
                     <div id="authError" class="error-msg"></div>
                     <div id="authSuccess" class="success-msg"></div>
-                    <div id="authInfo" class="info-msg"></div>
                     <button class="btn-auth" id="registerBtn">Зарегистрироваться</button>
                     <button class="btn-auth-secondary" id="signInBtn">Войти</button>
                     <button class="btn-auth-secondary" id="resetPasswordBtn" style="margin-top:5px; border-color:#4b69ff; color:#4b69ff;">Забыли пароль?</button>
-                    <button class="btn-auth-secondary" id="resendEmailBtn" style="margin-top:5px; border-color:#ffd700; color:#ffd700; display:none;">📧 Отправить письмо повторно</button>
                 </div>
             </div>
             <button class="btn-support" onclick="openSupport()">💳 Пополнить</button>
@@ -414,85 +384,10 @@ let bonusGold = 0;
 let isArrowSpinning = false;
 let lastResult = null;
 let currentUser = null;
-let unverifiedUser = null;
-let verificationTimer = null;
 
 // ============================================================
-//  АВТОРИЗАЦИЯ (С УДАЛЕНИЕМ НЕПОДТВЕРЖДЁННЫХ АККАУНТОВ)
+//  РАБОТА С ПОЛЬЗОВАТЕЛЕМ (ИСПРАВЛЕННАЯ — ID НЕ МЕНЯЕТСЯ)
 // ============================================================
-function updateUIForUser(user) {
-    const userInfo = document.getElementById('userInfo');
-    const authForm = document.getElementById('authForm');
-    const playerId = document.getElementById('playerId');
-    const resendBtn = document.getElementById('resendEmailBtn');
-    
-    if (user) {
-        // Проверяем, подтверждена ли почта
-        if (!user.emailVerified) {
-            authForm.style.display = 'block';
-            userInfo.style.display = 'none';
-            document.getElementById('authInfo').textContent = '⚠️ Почта не подтверждена! Проверьте почту (включая спам). Если вы ошиблись почтой — зарегистрируйтесь заново. Аккаунт будет удалён через 5 минут.';
-            document.getElementById('authInfo').style.color = '#ffd700';
-            resendBtn.style.display = 'block';
-            
-            if (verificationTimer) clearTimeout(verificationTimer);
-            verificationTimer = setTimeout(() => {
-                if (user && !user.emailVerified) {
-                    user.delete().then(() => {
-                        document.getElementById('authInfo').textContent = '✅ Аккаунт удалён. Вы можете зарегистрироваться заново.';
-                        document.getElementById('authInfo').style.color = '#4b69ff';
-                        resendBtn.style.display = 'none';
-                        auth.signOut();
-                    }).catch(error => {
-                        console.error('Ошибка удаления:', error);
-                    });
-                }
-            }, 300000);
-            
-            unverifiedUser = user;
-            return;
-        }
-        
-        userInfo.style.display = 'flex';
-        authForm.style.display = 'none';
-        resendBtn.style.display = 'none';
-        document.getElementById('authInfo').textContent = '';
-        
-        const userData = loadUserData(user.uid);
-        const displayName = userData?.nickname || user.displayName || user.email || 'Игрок';
-        document.getElementById('userName').textContent = displayName;
-        document.getElementById('userAvatar').src = 'https://ui-avatars.com/api/?name=' + encodeURIComponent(displayName);
-        
-        if (userData && userData.playerId) {
-            playerId.textContent = userData.playerId;
-        } else {
-            const newId = Math.floor(Math.random() * 9999999999) + 1;
-            playerId.textContent = newId;
-            saveUserData(user.uid, { playerId: newId });
-        }
-        currentUser = user;
-        loadUserInventory(user.uid);
-        if (verificationTimer) clearTimeout(verificationTimer);
-    } else {
-        userInfo.style.display = 'none';
-        authForm.style.display = 'block';
-        playerId.textContent = 'Гость';
-        currentUser = null;
-        unverifiedUser = null;
-        resendBtn.style.display = 'none';
-        if (verificationTimer) clearTimeout(verificationTimer);
-        loadGlobalData();
-    }
-}
-
-// Повторная отправка письма
-document.getElementById('resendEmailBtn').addEventListener('click', () => {
-    if (unverifiedUser) {
-        unverifiedUser.sendEmailVerification();
-        document.getElementById('authInfo').textContent = '✅ Письмо отправлено повторно! Проверьте почту (включая спам).';
-        document.getElementById('authInfo').style.color = '#4b69ff';
-    }
-});
 
 function loadUserData(userId) {
     const key = `golddrop_user_${userId}`;
@@ -504,6 +399,54 @@ function saveUserData(userId, data) {
     const key = `golddrop_user_${userId}`;
     const existing = loadUserData(userId) || {};
     localStorage.setItem(key, JSON.stringify({ ...existing, ...data }));
+}
+
+function getOrCreatePlayerId(user) {
+    const userId = user.uid;
+    const data = loadUserData(userId);
+    
+    // ✅ Если ID уже есть — возвращаем его (НЕ СОЗДАЁМ НОВЫЙ!)
+    if (data && data.playerId) {
+        return data.playerId;
+    }
+    
+    // Если нет — создаём новый
+    const newId = Math.floor(Math.random() * 9999999999) + 1;
+    saveUserData(userId, { 
+        playerId: newId, 
+        balance: 100, 
+        inventory: [], 
+        bonusClaimed: { tg: false, daily: false, cases: false } 
+    });
+    return newId;
+}
+
+function updateUIForUser(user) {
+    const userInfo = document.getElementById('userInfo');
+    const authForm = document.getElementById('authForm');
+    const playerId = document.getElementById('playerId');
+    
+    if (user) {
+        userInfo.style.display = 'flex';
+        authForm.style.display = 'none';
+        
+        const displayName = user.displayName || user.email || 'Игрок';
+        document.getElementById('userName').textContent = displayName;
+        document.getElementById('userAvatar').src = 'https://ui-avatars.com/api/?name=' + encodeURIComponent(displayName);
+        
+        // ✅ ФИКС: ID всегда один для одного аккаунта
+        const playerIdValue = getOrCreatePlayerId(user);
+        playerId.textContent = playerIdValue;
+        
+        currentUser = user;
+        loadUserInventory(user.uid);
+    } else {
+        userInfo.style.display = 'none';
+        authForm.style.display = 'block';
+        playerId.textContent = 'Гость';
+        currentUser = null;
+        loadGlobalData();
+    }
 }
 
 function loadUserInventory(userId) {
@@ -535,6 +478,10 @@ function loadGlobalData() {
 }
 
 function saveGlobalData() {
+    if (currentUser) {
+        saveUserInventory();
+        return;
+    }
     const key = 'golddrop_guest';
     const data = { balance, inventory, bonusClaimed };
     localStorage.setItem(key, JSON.stringify(data));
@@ -549,16 +496,18 @@ function updateUI() {
     renderCases();
 }
 
+// ============================================================
+//  АВТОРИЗАЦИЯ (С ПОДТВЕРЖДЕНИЕМ ПОЧТЫ)
+// ============================================================
+
 // Регистрация
 document.getElementById('registerBtn').addEventListener('click', () => {
     const email = document.getElementById('emailInput').value;
     const password = document.getElementById('passwordInput').value;
     const errorDiv = document.getElementById('authError');
     const successDiv = document.getElementById('authSuccess');
-    const infoDiv = document.getElementById('authInfo');
     errorDiv.textContent = '';
     successDiv.textContent = '';
-    infoDiv.textContent = '';
     
     if (!email || !password) {
         errorDiv.textContent = '❌ Введите email и пароль';
@@ -571,12 +520,10 @@ document.getElementById('registerBtn').addEventListener('click', () => {
     
     auth.createUserWithEmailAndPassword(email, password)
         .then((result) => {
-            result.user.sendEmailVerification();
-            infoDiv.textContent = `📧 Письмо отправлено на ${email}! Проверьте почту (включая папку «Спам»). Если вы ошиблись почтой — зарегистрируйтесь заново. Аккаунт будет удалён через 5 минут.`;
-            infoDiv.style.color = '#ffd700';
-            successDiv.textContent = '✅ Аккаунт создан!';
+            successDiv.textContent = '✅ Аккаунт создан! Проверьте почту для подтверждения (если письмо не пришло, проверьте спам).';
             successDiv.style.color = '#4b69ff';
-            auth.signOut();
+            result.user.sendEmailVerification();
+            updateUIForUser(result.user);
         })
         .catch(error => {
             errorDiv.textContent = '❌ ' + error.message;
@@ -599,10 +546,10 @@ document.getElementById('signInBtn').addEventListener('click', () => {
     
     auth.signInWithEmailAndPassword(email, password)
         .then((result) => {
+            // Проверяем, подтверждена ли почта
             if (!result.user.emailVerified) {
-                successDiv.textContent = '⚠️ Почта не подтверждена! Проверьте почту (включая спам). Аккаунт будет удалён через 5 минут.';
-                successDiv.style.color = '#ffd700';
-                result.user.sendEmailVerification();
+                errorDiv.textContent = '⚠️ Подтвердите почту! Проверьте письмо (спам тоже).';
+                errorDiv.style.color = '#ffd700';
                 auth.signOut();
                 return;
             }
@@ -667,8 +614,9 @@ auth.onAuthStateChanged(user => {
 });
 
 // ============================================================
-//  КЕЙСЫ, ИНВЕНТАРЬ, АПГРЕЙД, САПЁР (БЕЗ ИЗМЕНЕНИЙ)
+//  ВСЕ ОСТАЛЬНЫЕ ФУНКЦИИ (КЕЙСЫ, АПГРЕЙД, САПЁР, БОНУСЫ)
 // ============================================================
+
 function renderCases() {
     const grid = document.getElementById('casesGrid');
     grid.innerHTML = '';
@@ -1303,18 +1251,8 @@ document.getElementById('balanceDisplay').textContent = balance;
 resetSapper();
 loadGlobalData();
 
-// ============================================================
-//  ПРОВЕРКА ПОДТВЕРЖДЕНИЯ ПОЧТЫ ПРИ ЗАГРУЗКЕ
-// ============================================================
-// Если пользователь перешёл по ссылке из письма, он попадёт на сайт
-// и мы автоматически обновим его статус
-auth.onAuthStateChanged(user => {
-    if (user && user.emailVerified) {
-        updateUIForUser(user);
-        document.getElementById('authSuccess').textContent = '✅ Почта подтверждена! Добро пожаловать!';
-        document.getElementById('authSuccess').style.color = '#4b69ff';
-    }
-});
+console.log('✅ GoldDrop 4.0 загружен!');
+console.log('📌 ID теперь привязан к аккаунту и НЕ МЕНЯЕТСЯ при повторном входе.');
 </script>
 </body>
 </html>
