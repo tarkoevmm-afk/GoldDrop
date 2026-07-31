@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>GoldDrop 4.0 - Кейсы Standoff 2</title>
+    <title>GoldDrop 4.0 - BullDrop Кейсы</title>
     <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
     <style>
@@ -379,41 +379,170 @@ firebase.initializeApp(firebaseConfig);
 const auth = firebase.auth();
 
 // ============================================================
-//  БАЗА ДАННЫХ (СКИНЫ И КЕЙСЫ)
+//  ВСЕ СКИНЫ BULLDROP (31 ШТУКА) С ЦЕНАМИ
 // ============================================================
 const skinsList = [
-    { name: "P250 | Sand Dune", rarity: "Обычный", color: "#b0b0b0", emoji: "🟤", price: 10 },
-    { name: "Galil AR | Sage Spray", rarity: "Обычный", color: "#b0b0b0", emoji: "🌿", price: 12 },
-    { name: "MP7 | Forest DDPAT", rarity: "Обычный", color: "#b0b0b0", emoji: "🌲", price: 15 },
-    { name: "FAMAS | Colony IV", rarity: "Обычный", color: "#b0b0b0", emoji: "🏛️", price: 15 },
-    { name: "M4A4 | Dragon King", rarity: "Редкий", color: "#4b69ff", emoji: "🐉", price: 30 },
-    { name: "AK-47 | Cartel", rarity: "Редкий", color: "#4b69ff", emoji: "💀", price: 35 },
-    { name: "AWP | Worm God", rarity: "Редкий", color: "#4b69ff", emoji: "🐛", price: 40 },
-    { name: "USP-S | Orion", rarity: "Редкий", color: "#4b69ff", emoji: "🌟", price: 45 },
-    { name: "MP7 | Nemesis", rarity: "Эпический", color: "#8847ff", emoji: "😈", price: 70 },
-    { name: "Desert Eagle | Cobalt", rarity: "Эпический", color: "#8847ff", emoji: "🔵", price: 75 },
-    { name: "M4A4 | Бабулгам", rarity: "Легендарный", color: "#ff8000", emoji: "🔥", price: 120 },
-    { name: "AK-47 | Blood Moon", rarity: "Мифический", color: "#ff2d55", emoji: "🌙", price: 200 },
-    { name: "AWP | Dragon Lore", rarity: "Легендарный", color: "#ff8000", emoji: "🐉", price: 250 },
-    { name: "★ Нож | Ice Phantom", rarity: "Эпический", color: "#8847ff", emoji: "❄️", price: 150 }
+    // === ОБЫЧНЫЕ (Common) — 4-14 Gold ===
+    { name: "P250 | Bull Horn", rarity: "Обычный", color: "#b0b0b0", emoji: "🟤", price: 4 },
+    { name: "Galil AR | Bull Rider", rarity: "Обычный", color: "#b0b0b0", emoji: "🟤", price: 7 },
+    { name: "MP7 | Bullseye", rarity: "Обычный", color: "#b0b0b0", emoji: "🟤", price: 9 },
+    { name: "FAMAS | Bull Charge", rarity: "Обычный", color: "#b0b0b0", emoji: "🟤", price: 11 },
+    { name: "M4A4 | Bull Market", rarity: "Обычный", color: "#b0b0b0", emoji: "🟤", price: 14 },
+    
+    // === НЕОБЫЧНЫЕ (Uncommon) — 19-34 Gold ===
+    { name: "USP-S | Bull Guardian", rarity: "Необычный", color: "#5e98d9", emoji: "🔵", price: 19 },
+    { name: "Desert Eagle | Bull Stomp", rarity: "Необычный", color: "#5e98d9", emoji: "🔵", price: 24 },
+    { name: "AK-47 | Bull Rage", rarity: "Необычный", color: "#5e98d9", emoji: "🔵", price: 29 },
+    { name: "AWP | Bull Hunter", rarity: "Необычный", color: "#5e98d9", emoji: "🔵", price: 34 },
+    
+    // === РЕДКИЕ (Rare) — 39-59 Gold ===
+    { name: "MP7 | Bull Demon", rarity: "Редкий", color: "#4b69ff", emoji: "🟣", price: 39 },
+    { name: "M4A1-S | Bull Phantom", rarity: "Редкий", color: "#4b69ff", emoji: "🟣", price: 44 },
+    { name: "SSG 08 | Bull Ghost", rarity: "Редкий", color: "#4b69ff", emoji: "🟣", price: 49 },
+    { name: "P90 | Bull Night", rarity: "Редкий", color: "#4b69ff", emoji: "🟣", price: 54 },
+    { name: "AK-47 | Bull Predator", rarity: "Редкий", color: "#4b69ff", emoji: "🟣", price: 59 },
+    
+    // === ЭПИЧЕСКИЕ (Epic) — 69-119 Gold ===
+    { name: "Desert Eagle | Bull Inferno", rarity: "Эпический", color: "#8847ff", emoji: "🔮", price: 69 },
+    { name: "M4A4 | Bull Dragon", rarity: "Эпический", color: "#8847ff", emoji: "🔮", price: 84 },
+    { name: "AWP | Bull Strike", rarity: "Эпический", color: "#8847ff", emoji: "🔮", price: 99 },
+    { name: "AK-47 | Bull Tyrant", rarity: "Эпический", color: "#8847ff", emoji: "🔮", price: 119 },
+    
+    // === ЛЕГЕНДАРНЫЕ (Legendary) — 149-349 Gold ===
+    { name: "★ Нож | Bull Slayer", rarity: "Легендарный", color: "#ff8000", emoji: "🗡️", price: 149 },
+    { name: "M4A4 | Bull King", rarity: "Легендарный", color: "#ff8000", emoji: "👑", price: 179 },
+    { name: "AK-47 | Bull Emperor", rarity: "Легендарный", color: "#ff8000", emoji: "👑", price: 219 },
+    { name: "AWP | Bull Fury", rarity: "Легендарный", color: "#ff8000", emoji: "🔥", price: 279 },
+    { name: "★ Нож | Bull Dozer", rarity: "Легендарный", color: "#ff8000", emoji: "⚙️", price: 349 },
+    
+    // === МИФИЧЕСКИЕ (Mythical) — 399-799 Gold ===
+    { name: "★ Нож | Bull Reaper", rarity: "Мифический", color: "#ff2d55", emoji: "💀", price: 399 },
+    { name: "AK-47 | Bull God", rarity: "Мифический", color: "#ff2d55", emoji: "⚡", price: 499 },
+    { name: "AWP | Bull Eternity", rarity: "Мифический", color: "#ff2d55", emoji: "♾️", price: 649 },
+    { name: "★ Нож | Bull Excalibur", rarity: "Мифический", color: "#ff2d55", emoji: "⚔️", price: 799 },
+    
+    // === ТОПОВЫЕ (Ultra Rare) — 999-2499 Gold ===
+    { name: "★ Нож | Bull Diamond", rarity: "Топовый", color: "#ffd700", emoji: "💎", price: 999 },
+    { name: "AK-47 | Bull Supreme", rarity: "Топовый", color: "#ffd700", emoji: "👑", price: 1499 },
+    { name: "★ Нож | Bull Celestial", rarity: "Топовый", color: "#ffd700", emoji: "🌌", price: 1999 },
+    { name: "AWP | Bull Divine", rarity: "Топовый", color: "#ffd700", emoji: "✨", price: 2499 }
 ];
 
+// ============================================================
+//  ВСЕ КЕЙСЫ BULLDROP (100 ШТУК) С ЦЕНАМИ НА 1 МЕНЬШЕ
+// ============================================================
 const cases = [
-    { name: "Пыльный Шторм", price: 10, emoji: "🌪️", chance: 7 },
-    { name: "Лесной Призрак", price: 15, emoji: "🌿", chance: 7 },
-    { name: "Стальной Осколок", price: 20, emoji: "⚔️", chance: 7 },
-    { name: "Теневой Бандит", price: 25, emoji: "🔪", chance: 7 },
-    { name: "Ржавый Центурион", price: 30, emoji: "🛡️", chance: 7 },
-    { name: "Небесный Дракон", price: 50, emoji: "🐉", chance: 5 },
-    { name: "Ледяной Фантом", price: 70, emoji: "❄️", chance: 5 },
-    { name: "Кровавый Рассвет", price: 85, emoji: "🌅", chance: 5 },
-    { name: "Золотой Тигр", price: 100, emoji: "🐯", chance: 5 },
-    { name: "Изумрудный Ужас", price: 150, emoji: "💎", chance: 5 },
-    { name: "Адский Пламень", price: 200, emoji: "🔥", chance: 5 },
-    { name: "Теневой Лорд", price: 250, emoji: "👑", chance: 5 },
-    { name: "Космический Странник", price: 350, emoji: "🚀", chance: 5 },
-    { name: "Драконья Ярость", price: 450, emoji: "🐲", chance: 5 },
-    { name: "Бессмертный", price: 500, emoji: "⚡", chance: 5 }
+    // Базовые кейсы (49-159 Gold)
+    { name: "Бычий Гнев", price: 49, emoji: "🐂", chance: 8 },
+    { name: "Золотой Телец", price: 59, emoji: "🐃", chance: 8 },
+    { name: "Теневой Бык", price: 69, emoji: "🌑", chance: 8 },
+    { name: "Ледяной Рог", price: 79, emoji: "❄️", chance: 8 },
+    { name: "Огненный Копыт", price: 89, emoji: "🔥", chance: 7 },
+    { name: "Стальной Копыт", price: 99, emoji: "⚙️", chance: 7 },
+    { name: "Кровавый Рог", price: 109, emoji: "🩸", chance: 7 },
+    { name: "Призрачный Бык", price: 119, emoji: "👻", chance: 7 },
+    { name: "Громовой Телец", price: 129, emoji: "⛈️", chance: 7 },
+    { name: "Изумрудный Рог", price: 139, emoji: "💚", chance: 7 },
+    { name: "Сапфировый Копыт", price: 149, emoji: "💙", chance: 6 },
+    { name: "Рубиновый Бык", price: 159, emoji: "❤️", chance: 6 },
+
+    // Средние кейсы (169-349 Gold)
+    { name: "Драконий Рог", price: 169, emoji: "🐉", chance: 6 },
+    { name: "Феникс Копыт", price: 179, emoji: "🔥", chance: 6 },
+    { name: "Теневой Рог", price: 189, emoji: "🌑", chance: 6 },
+    { name: "Космический Бык", price: 199, emoji: "🚀", chance: 6 },
+    { name: "Лунный Телец", price: 209, emoji: "🌙", chance: 5 },
+    { name: "Солнечный Бык", price: 219, emoji: "☀️", chance: 5 },
+    { name: "Звёздный Рог", price: 229, emoji: "⭐", chance: 5 },
+    { name: "Адский Бык", price: 239, emoji: "👿", chance: 5 },
+    { name: "Райский Телец", price: 249, emoji: "😇", chance: 5 },
+    { name: "Водный Рог", price: 259, emoji: "🌊", chance: 5 },
+    { name: "Земной Копыт", price: 269, emoji: "🌍", chance: 5 },
+    { name: "Воздушный Бык", price: 279, emoji: "🌪️", chance: 5 },
+    { name: "Огненный Телец", price: 289, emoji: "🔥", chance: 5 },
+    { name: "Ледяный Бык", price: 299, emoji: "❄️", chance: 5 },
+    { name: "Грозовой Рог", price: 309, emoji: "⚡", chance: 4 },
+    { name: "Каменный Копыт", price: 319, emoji: "🪨", chance: 4 },
+    { name: "Железный Бык", price: 329, emoji: "🛡️", chance: 4 },
+    { name: "Бронзовый Рог", price: 339, emoji: "🥉", chance: 4 },
+    { name: "Серебряный Копыт", price: 349, emoji: "🥈", chance: 4 },
+
+    // Дорогие кейсы (359-599 Gold)
+    { name: "Золотой Рог", price: 359, emoji: "🥇", chance: 4 },
+    { name: "Платиновый Бык", price: 369, emoji: "💎", chance: 4 },
+    { name: "Алмазный Телец", price: 379, emoji: "💎", chance: 4 },
+    { name: "Изумрудный Бык", price: 389, emoji: "💚", chance: 4 },
+    { name: "Сапфировый Бык", price: 399, emoji: "💙", chance: 4 },
+    { name: "Рубиновый Рог", price: 409, emoji: "❤️", chance: 4 },
+    { name: "Топасовый Копыт", price: 419, emoji: "🧡", chance: 4 },
+    { name: "Аметистовый Бык", price: 429, emoji: "💜", chance: 4 },
+    { name: "Ониксовый Рог", price: 439, emoji: "⚫", chance: 4 },
+    { name: "Жемчужный Телец", price: 449, emoji: "🤍", chance: 4 },
+    { name: "Янтарный Бык", price: 459, emoji: "🟠", chance: 4 },
+    { name: "Коралловый Рог", price: 469, emoji: "🪸", chance: 4 },
+    { name: "Нефритовый Копыт", price: 479, emoji: "🟢", chance: 4 },
+    { name: "Лазурный Бык", price: 489, emoji: "🔵", chance: 4 },
+    { name: "Пурпурный Телец", price: 499, emoji: "🟣", chance: 3 },
+    { name: "Розовый Рог", price: 509, emoji: "🩷", chance: 3 },
+    { name: "Чёрный Бык", price: 519, emoji: "⬛", chance: 3 },
+    { name: "Белый Телец", price: 529, emoji: "⬜", chance: 3 },
+    { name: "Серый Рог", price: 539, emoji: "🔘", chance: 3 },
+
+    // Очень дорогие кейсы (549-999 Gold)
+    { name: "Мифический Рог", price: 549, emoji: "⚡", chance: 3 },
+    { name: "Легендарный Копыт", price: 559, emoji: "🏆", chance: 3 },
+    { name: "Эпический Бык", price: 569, emoji: "🔮", chance: 3 },
+    { name: "Драконий Бык", price: 579, emoji: "🐉", chance: 3 },
+    { name: "Феникс Бык", price: 589, emoji: "🔥", chance: 3 },
+    { name: "Космический Рог", price: 599, emoji: "🚀", chance: 3 },
+    { name: "Галактический Телец", price: 619, emoji: "🌌", chance: 3 },
+    { name: "Туманный Бык", price: 639, emoji: "🌫️", chance: 3 },
+    { name: "Радужный Рог", price: 659, emoji: "🌈", chance: 3 },
+    { name: "Звёздный Бык", price: 679, emoji: "⭐", chance: 3 },
+    { name: "Планетарный Телец", price: 699, emoji: "🪐", chance: 3 },
+    { name: "Солнечный Рог", price: 719, emoji: "☀️", chance: 3 },
+    { name: "Лунный Бык", price: 739, emoji: "🌙", chance: 3 },
+    { name: "Теневой Телец", price: 759, emoji: "🌑", chance: 3 },
+    { name: "Световой Рог", price: 779, emoji: "✨", chance: 3 },
+    { name: "Хаотичный Копыт", price: 799, emoji: "🔥", chance: 3 },
+    { name: "Порядковый Бык", price: 819, emoji: "⚖️", chance: 3 },
+    { name: "Вечный Рог", price: 839, emoji: "♾️", chance: 3 },
+    { name: "Бесконечный Телец", price: 859, emoji: "∞", chance: 3 },
+    { name: "Абсолютный Бык", price: 879, emoji: "👑", chance: 3 },
+
+    // Топовые кейсы (899-2499 Gold)
+    { name: "Бог Быков", price: 899, emoji: "⚡", chance: 2 },
+    { name: "Император Рогов", price: 949, emoji: "👑", chance: 2 },
+    { name: "Король Копыт", price: 999, emoji: "🏆", chance: 2 },
+    { name: "Властелин Телцов", price: 1049, emoji: "👾", chance: 2 },
+    { name: "Повелитель Быков", price: 1099, emoji: "🔥", chance: 2 },
+    { name: "Царь Рогов", price: 1149, emoji: "⚔️", chance: 2 },
+    { name: "Легенда Копыт", price: 1199, emoji: "🏅", chance: 2 },
+    { name: "Миф Телцов", price: 1249, emoji: "📜", chance: 2 },
+    { name: "Эпос Быков", price: 1299, emoji: "📖", chance: 2 },
+    { name: "Сага Рогов", price: 1349, emoji: "⚔️", chance: 2 },
+    { name: "Космический Телец", price: 1399, emoji: "🚀", chance: 2 },
+    { name: "Галактический Рог", price: 1449, emoji: "🌌", chance: 2 },
+    { name: "Бесконечный Копыт", price: 1499, emoji: "∞", chance: 2 },
+    { name: "Вечный Бык", price: 1599, emoji: "⏳", chance: 2 },
+    { name: "Абсолютный Рог", price: 1699, emoji: "💎", chance: 2 },
+    { name: "Высший Телец", price: 1799, emoji: "👑", chance: 2 },
+    { name: "Божественный Бык", price: 1899, emoji: "✨", chance: 2 },
+    { name: "Священный Рог", price: 1999, emoji: "⛪", chance: 1.5 },
+    { name: "Бессмертный Копыт", price: 2199, emoji: "♾️", chance: 1.5 },
+    { name: "Вечный Телец", price: 2499, emoji: "🕊️", chance: 1.5 },
+
+    // Ультра-редкие кейсы (2999-9999 Gold)
+    { name: "Первобытный Бык", price: 2999, emoji: "🦴", chance: 1 },
+    { name: "Древний Рог", price: 3499, emoji: "🏛️", chance: 1 },
+    { name: "Изначальный Телец", price: 3999, emoji: "🌋", chance: 1 },
+    { name: "Хаос Рогов", price: 4499, emoji: "🌀", chance: 1 },
+    { name: "Порядок Копыт", price: 4999, emoji: "⚖️", chance: 1 },
+    { name: "Баланс Быков", price: 5499, emoji: "☯️", chance: 1 },
+    { name: "Бесконечность Телцов", price: 5999, emoji: "∞", chance: 1 },
+    { name: "Бездна Рогов", price: 6999, emoji: "🕳️", chance: 0.8 },
+    { name: "Нирвана Копыт", price: 7999, emoji: "☸️", chance: 0.8 },
+    { name: "Апокалипсис Быков", price: 9999, emoji: "💀", chance: 0.5 }
 ];
 
 // ============================================================
@@ -449,12 +578,10 @@ function getOrCreatePlayerId(user) {
     const userId = user.uid;
     const data = loadUserData(userId);
     
-    // ✅ Если ID уже есть — возвращаем его (НЕ СОЗДАЁМ НОВЫЙ!)
     if (data && data.playerId) {
         return data.playerId;
     }
     
-    // Если нет — создаём новый
     const newId = Math.floor(Math.random() * 9999999999) + 1;
     saveUserData(userId, { 
         playerId: newId, 
@@ -478,14 +605,12 @@ function updateUIForUser(user) {
         document.getElementById('userName').textContent = displayName;
         document.getElementById('userAvatar').src = 'https://ui-avatars.com/api/?name=' + encodeURIComponent(displayName);
         
-        // ✅ ФИКС: ID всегда один для одного аккаунта
         const playerIdValue = getOrCreatePlayerId(user);
         playerId.textContent = playerIdValue;
         
         currentUser = user;
         loadUserInventory(user.uid);
         
-        // Добавляем админ-кнопку
         addAdminButtonIfNeeded(playerIdValue);
     } else {
         userInfo.style.display = 'none';
@@ -548,7 +673,6 @@ function updateUI() {
 //  АВТОРИЗАЦИЯ (С ПОДТВЕРЖДЕНИЕМ ПОЧТЫ)
 // ============================================================
 
-// Регистрация
 document.getElementById('registerBtn').addEventListener('click', () => {
     const email = document.getElementById('emailInput').value;
     const password = document.getElementById('passwordInput').value;
@@ -578,7 +702,6 @@ document.getElementById('registerBtn').addEventListener('click', () => {
         });
 });
 
-// Вход
 document.getElementById('signInBtn').addEventListener('click', () => {
     const email = document.getElementById('emailInput').value;
     const password = document.getElementById('passwordInput').value;
@@ -594,7 +717,6 @@ document.getElementById('signInBtn').addEventListener('click', () => {
     
     auth.signInWithEmailAndPassword(email, password)
         .then((result) => {
-            // Проверяем, подтверждена ли почта
             if (!result.user.emailVerified) {
                 errorDiv.textContent = '⚠️ Подтвердите почту! Проверьте письмо (спам тоже).';
                 errorDiv.style.color = '#ffd700';
@@ -610,7 +732,6 @@ document.getElementById('signInBtn').addEventListener('click', () => {
         });
 });
 
-// Восстановление пароля
 document.getElementById('resetPasswordBtn').addEventListener('click', () => {
     const email = document.getElementById('emailInput').value;
     const errorDiv = document.getElementById('authError');
@@ -631,7 +752,6 @@ document.getElementById('resetPasswordBtn').addEventListener('click', () => {
         });
 });
 
-// Смена пароля
 document.getElementById('changePasswordBtn').addEventListener('click', () => {
     if (!currentUser) {
         alert('❌ Вы не авторизованы!');
@@ -651,7 +771,6 @@ document.getElementById('changePasswordBtn').addEventListener('click', () => {
     }
 });
 
-// Выход
 document.getElementById('logoutBtn').addEventListener('click', () => {
     auth.signOut();
     saveGlobalData();
@@ -666,7 +785,6 @@ auth.onAuthStateChanged(user => {
 //  АДМИН-ПАНЕЛЬ
 // ============================================================
 
-// 👑 ТВОЙ ID
 const ADMIN_ID = "830585813";
 
 function isAdmin(playerId) {
@@ -700,7 +818,6 @@ function removeAdminButton() {
     if (oldBtn) oldBtn.remove();
 }
 
-// Закрытие админ-панели
 document.getElementById('adminCloseBtn').addEventListener('click', () => {
     document.getElementById('adminModal').classList.remove('active');
 });
@@ -709,7 +826,6 @@ document.getElementById('adminModal').addEventListener('click', function(e) {
     if (e.target === this) this.classList.remove('active');
 });
 
-// Добавление Gold
 document.getElementById('adminAddBtn').addEventListener('click', function() {
     const playerId = document.getElementById('adminPlayerId').value.trim();
     const amount = parseInt(document.getElementById('adminAmount').value);
@@ -731,7 +847,6 @@ document.getElementById('adminAddBtn').addEventListener('click', function() {
     let found = false;
     let targetBalance = 0;
     
-    // Ищем во всех пользовательских данных
     for (let i = 0; i < localStorage.length; i++) {
         const key = localStorage.key(i);
         if (key && key.startsWith('golddrop_user_')) {
@@ -743,7 +858,6 @@ document.getElementById('adminAddBtn').addEventListener('click', function() {
                     found = true;
                     targetBalance = data.balance;
                     
-                    // Сохраняем историю
                     const historyKey = `golddrop_history_${playerId}`;
                     const history = JSON.parse(localStorage.getItem(historyKey)) || [];
                     history.push({
@@ -753,7 +867,6 @@ document.getElementById('adminAddBtn').addEventListener('click', function() {
                     });
                     localStorage.setItem(historyKey, JSON.stringify(history));
                     
-                    // Обновляем интерфейс
                     if (currentUser) {
                         const currentData = loadUserData(currentUser.uid);
                         if (currentData && currentData.playerId && currentData.playerId.toString() === playerId) {
@@ -764,11 +877,10 @@ document.getElementById('adminAddBtn').addEventListener('click', function() {
                     }
                     break;
                 }
-            } catch (e) { /* игнорируем */ }
+            } catch (e) { }
         }
     }
     
-    // Если не нашли — ищем в гостевых
     if (!found) {
         const guestData = localStorage.getItem('golddrop_guest');
         if (guestData) {
@@ -789,7 +901,7 @@ document.getElementById('adminAddBtn').addEventListener('click', function() {
                     });
                     localStorage.setItem(historyKey, JSON.stringify(history));
                 }
-            } catch (e) { /* игнорируем */ }
+            } catch (e) { }
         }
     }
     
@@ -806,7 +918,6 @@ document.getElementById('adminAddBtn').addEventListener('click', function() {
     }
 });
 
-// Показать историю
 document.getElementById('adminHistoryBtn').addEventListener('click', function() {
     const list = document.getElementById('adminHistoryList');
     const playerId = document.getElementById('adminPlayerId').value.trim();
@@ -1473,7 +1584,8 @@ loadGlobalData();
 
 console.log('✅ GoldDrop 4.0 загружен!');
 console.log('👑 Твой ID администратора:', ADMIN_ID);
-console.log('📌 ID привязан к аккаунту и НЕ МЕНЯЕТСЯ при повторном входе.');
+console.log('📌 Всего кейсов:', cases.length);
+console.log('📌 Всего скинов:', skinsList.length);
 </script>
 </body>
 </html>
