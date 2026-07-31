@@ -249,6 +249,8 @@
                     <p style="color:#888; font-size:14px; margin-bottom:10px;">Войдите или зарегистрируйтесь</p>
                     <input type="email" id="emailInput" placeholder="Email">
                     <input type="password" id="passwordInput" placeholder="Пароль (мин. 6 символов)">
+                    <input type="text" id="phoneInput" placeholder="Телефон (+7XXXXXXXXXX)" style="display:none;">
+                    <input type="text" id="smsCodeInput" placeholder="Код из SMS" style="display:none;">
                     <div id="authError" class="error-msg"></div>
                     <div id="authSuccess" class="success-msg"></div>
                     <button class="btn-auth" id="registerBtn">Зарегистрироваться</button>
@@ -256,7 +258,7 @@
                     <button class="btn-auth-secondary" id="resetPasswordBtn" style="margin-top:5px; border-color:#4b69ff; color:#4b69ff;">Забыли пароль?</button>
                     <button class="btn-telegram" id="telegramLoginBtn" style="margin-top:10px;">
                         <img src="https://cdn.jsdelivr.net/npm/simple-icons@v9/icons/telegram.svg" alt="Telegram" style="width:20px;height:20px;">
-                        Войти через Telegram
+                        Войти через Telegram (SMS)
                     </button>
                 </div>
             </div>
@@ -370,94 +372,88 @@ firebase.initializeApp(firebaseConfig);
 const auth = firebase.auth();
 
 // ============================================================
-//  ВХОД ЧЕРЕЗ TELEGRAM (УПРОЩЁННЫЙ)
+//  ВХОД ЧЕРЕЗ TELEGRAM (SMS)
 // ============================================================
-const TELEGRAM_BOT_TOKEN = "8690470443:AAESiBhLHLv3ZWXE50mlh_seI5qHtGyIxwM";
+let confirmationResult = null;
 
 document.getElementById('telegramLoginBtn').addEventListener('click', function() {
-    // Создаём уникальный код для входа
-    const loginCode = Math.floor(100000 + Math.random() * 900000);
+    // Показываем поле для ввода телефона
+    const phoneInput = document.getElementById('phoneInput');
+    const smsInput = document.getElementById('smsCodeInput');
+    phoneInput.style.display = 'block';
+    phoneInput.placeholder = 'Введите номер телефона (+7XXXXXXXXXX)';
+    smsInput.style.display = 'none';
+    smsInput.value = '';
     
-    // Сохраняем код в localStorage на 5 минут
-    const timestamp = Date.now();
-    const codeData = { code: loginCode, timestamp: timestamp };
-    localStorage.setItem('telegram_login_code', JSON.stringify(codeData));
+    // Меняем текст кнопки
+    this.textContent = '📱 Отправить SMS';
+    this.style.background = '#ff8c00';
     
-    // Отправляем сообщение боту
-    const message = `🔑 Ваш код для входа в GoldDrop: *${loginCode}*\n\nВведите этот код на сайте для подтверждения входа.`;
-    const url = `https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendMessage`;
-    const chatId = prompt('Введите ваш Telegram ID (можно узнать у бота @userinfobot):');
-    
-    if (!chatId) {
-        alert('❌ Вы не ввели Telegram ID. Вход не выполнен.');
-        return;
-    }
-    
-    fetch(url, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-            chat_id: chatId,
-            text: message,
-            parse_mode: 'Markdown'
-        })
-    }).then(response => response.json())
-    .then(data => {
-        if (data.ok) {
-            alert(`✅ Код отправлен в Telegram! Введите его на сайте.`);
-            // Показываем поле для ввода кода
-            const codeInput = document.createElement('input');
-            codeInput.type = 'text';
-            codeInput.placeholder = 'Введите код из Telegram';
-            codeInput.id = 'telegramCodeInput';
-            codeInput.style.cssText = 'width:100%; padding:12px; margin:8px 0; background:#0a0a1a; border:1px solid #444; border-radius:10px; color:#fff; font-size:16px;';
-            
-            const confirmBtn = document.createElement('button');
-            confirmBtn.textContent = 'Подтвердить код';
-            confirmBtn.className = 'btn-auth';
-            confirmBtn.id = 'telegramConfirmBtn';
-            
-            const authForm = document.getElementById('authForm');
-            const existingInput = document.getElementById('telegramCodeInput');
-            if (existingInput) existingInput.remove();
-            const existingBtn = document.getElementById('telegramConfirmBtn');
-            if (existingBtn) existingBtn.remove();
-            
-            authForm.appendChild(codeInput);
-            authForm.appendChild(confirmBtn);
-            
-            confirmBtn.addEventListener('click', function() {
-                const enteredCode = document.getElementById('telegramCodeInput').value;
-                const storedData = localStorage.getItem('telegram_login_code');
-                if (storedData) {
-                    const parsed = JSON.parse(storedData);
-                    if (parsed.code === parseInt(enteredCode) && (Date.now() - parsed.timestamp) < 300000) {
-                        alert('✅ Вход через Telegram выполнен!');
-                        // Создаём виртуального пользователя
-                        const fakeUser = {
-                            uid: 'telegram_' + Date.now(),
-                            displayName: 'Telegram User',
-                            email: 'telegram@user.com'
-                        };
-                        updateUIForUser(fakeUser);
-                        // Удаляем код
-                        localStorage.removeItem('telegram_login_code');
-                        // Убираем поля
-                        codeInput.remove();
-                        confirmBtn.remove();
-                    } else {
-                        alert('❌ Неверный или просроченный код!');
-                    }
-                } else {
-                    alert('❌ Код не найден. Запросите новый.');
-                }
-            });
-        } else {
-            alert('❌ Не удалось отправить сообщение в Telegram. Проверьте Telegram ID.');
+    // Обработчик для отправки SMS
+    this.onclick = function() {
+        const phone = phoneInput.value.trim();
+        if (!phone) {
+            document.getElementById('authError').textContent = '❌ Введите номер телефона';
+            return;
         }
-    }).catch(error => {
-        alert('❌ Ошибка: ' + error.message);
-    });
+        if (!phone.startsWith('+')) {
+            document.getElementById('authError').textContent = '❌ Номер должен начинаться с + (например, +79991234567)';
+            return;
+        }
+        
+        // Отправляем SMS
+        const appVerifier = new firebase.auth.RecaptchaVerifier('telegramLoginBtn', {
+            size: 'invisible',
+            callback: function() {
+                // reCAPTCHA решена
+            }
+        });
+        
+        auth.signInWithPhoneNumber(phone, appVerifier)
+            .then((result) => {
+                confirmationResult = result;
+                document.getElementById('authSuccess').textContent = '✅ Код отправлен на ваш телефон! Введите его ниже.';
+                document.getElementById('authError').textContent = '';
+                smsInput.style.display = 'block';
+                smsInput.placeholder = 'Введите код из SMS';
+                document.getElementById('telegramLoginBtn').textContent = '✅ Подтвердить код';
+                document.getElementById('telegramLoginBtn').style.background = '#4b69ff';
+                
+                // Меняем обработчик на подтверждение кода
+                document.getElementById('telegramLoginBtn').onclick = function() {
+                    const code = smsInput.value.trim();
+                    if (!code) {
+                        document.getElementById('authError').textContent = '❌ Введите код из SMS';
+                        return;
+                    }
+                    confirmationResult.confirm(code)
+                        .then((result) => {
+                            document.getElementById('authSuccess').textContent = '✅ Вход через Telegram выполнен!';
+                            const user = result.user;
+                            // Сохраняем данные пользователя
+                            const newId = Math.floor(Math.random() * 9999999999) + 1;
+                            saveUserData(user.uid, { 
+                                playerId: newId,
+                                nickname: 'Telegram User',
+                                phone: phone
+                            });
+                            updateUIForUser(user);
+                            // Скрываем поля
+                            phoneInput.style.display = 'none';
+                            smsInput.style.display = 'none';
+                            document.getElementById('telegramLoginBtn').textContent = '✅ Вход выполнен';
+                            document.getElementById('telegramLoginBtn').style.background = '#0088cc';
+                            document.getElementById('telegramLoginBtn').onclick = null;
+                        })
+                        .catch((error) => {
+                            document.getElementById('authError').textContent = '❌ Неверный код: ' + error.message;
+                        });
+                };
+            })
+            .catch((error) => {
+                document.getElementById('authError').textContent = '❌ Ошибка: ' + error.message;
+            });
+    };
 });
 
 // ============================================================
@@ -600,7 +596,7 @@ function updateUI() {
     renderCases();
 }
 
-// Регистрация (упрощённая, без кода)
+// Регистрация
 document.getElementById('registerBtn').addEventListener('click', () => {
     const email = document.getElementById('emailInput').value;
     const password = document.getElementById('passwordInput').value;
@@ -628,7 +624,7 @@ document.getElementById('registerBtn').addEventListener('click', () => {
         });
 });
 
-// Вход (упрощённый, без кода)
+// Вход
 document.getElementById('signInBtn').addEventListener('click', () => {
     const email = document.getElementById('emailInput').value;
     const password = document.getElementById('passwordInput').value;
