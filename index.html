@@ -429,14 +429,12 @@ function updateUIForUser(user) {
     if (user) {
         // Проверяем, подтверждена ли почта
         if (!user.emailVerified) {
-            // Если почта не подтверждена — удаляем аккаунт через 5 минут
             authForm.style.display = 'block';
             userInfo.style.display = 'none';
             document.getElementById('authInfo').textContent = '⚠️ Почта не подтверждена! Проверьте почту (включая спам). Если вы ошиблись почтой — зарегистрируйтесь заново. Аккаунт будет удалён через 5 минут.';
             document.getElementById('authInfo').style.color = '#ffd700';
             resendBtn.style.display = 'block';
             
-            // Запускаем таймер на удаление
             if (verificationTimer) clearTimeout(verificationTimer);
             verificationTimer = setTimeout(() => {
                 if (user && !user.emailVerified) {
@@ -449,14 +447,12 @@ function updateUIForUser(user) {
                         console.error('Ошибка удаления:', error);
                     });
                 }
-            }, 300000); // 5 минут
+            }, 300000);
             
-            // Сохраняем пользователя для проверки
             unverifiedUser = user;
             return;
         }
         
-        // Если почта подтверждена
         userInfo.style.display = 'flex';
         authForm.style.display = 'none';
         resendBtn.style.display = 'none';
@@ -553,7 +549,7 @@ function updateUI() {
     renderCases();
 }
 
-// Регистрация (с отправкой письма и таймером на удаление)
+// Регистрация
 document.getElementById('registerBtn').addEventListener('click', () => {
     const email = document.getElementById('emailInput').value;
     const password = document.getElementById('passwordInput').value;
@@ -575,7 +571,6 @@ document.getElementById('registerBtn').addEventListener('click', () => {
     
     auth.createUserWithEmailAndPassword(email, password)
         .then((result) => {
-            // Отправляем письмо для подтверждения
             result.user.sendEmailVerification();
             infoDiv.textContent = `📧 Письмо отправлено на ${email}! Проверьте почту (включая папку «Спам»). Если вы ошиблись почтой — зарегистрируйтесь заново. Аккаунт будет удалён через 5 минут.`;
             infoDiv.style.color = '#ffd700';
@@ -604,7 +599,6 @@ document.getElementById('signInBtn').addEventListener('click', () => {
     
     auth.signInWithEmailAndPassword(email, password)
         .then((result) => {
-            // Проверяем, подтверждена ли почта
             if (!result.user.emailVerified) {
                 successDiv.textContent = '⚠️ Почта не подтверждена! Проверьте почту (включая спам). Аккаунт будет удалён через 5 минут.';
                 successDiv.style.color = '#ffd700';
@@ -1308,6 +1302,19 @@ updateUpgradeChance();
 document.getElementById('balanceDisplay').textContent = balance;
 resetSapper();
 loadGlobalData();
+
+// ============================================================
+//  ПРОВЕРКА ПОДТВЕРЖДЕНИЯ ПОЧТЫ ПРИ ЗАГРУЗКЕ
+// ============================================================
+// Если пользователь перешёл по ссылке из письма, он попадёт на сайт
+// и мы автоматически обновим его статус
+auth.onAuthStateChanged(user => {
+    if (user && user.emailVerified) {
+        updateUIForUser(user);
+        document.getElementById('authSuccess').textContent = '✅ Почта подтверждена! Добро пожаловать!';
+        document.getElementById('authSuccess').style.color = '#4b69ff';
+    }
+});
 </script>
 </body>
 </html>
