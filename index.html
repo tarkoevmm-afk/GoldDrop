@@ -4,7 +4,6 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>GoldDrop 4.0 - Кейсы Standoff 2</title>
-    <!-- Firebase SDK -->
     <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
     <style>
@@ -240,7 +239,7 @@
         <div class="profile-card">
             <div class="id">🆔 ID: <span id="playerId">Гость</span></div>
             <div class="balance">💰 Баланс: <span id="balanceDisplay">100</span> Gold</div>
-            <!-- АВТОРИЗАЦИЯ ПО КОДУ -->
+            <!-- АВТОРИЗАЦИЯ ЧЕРЕЗ ССЫЛКУ -->
             <div id="authSection">
                 <div id="userInfo" style="display:none;" class="user-info">
                     <img id="userAvatar" class="user-avatar" src="" alt="Avatar">
@@ -253,8 +252,6 @@
                     <input type="password" id="passwordInput" placeholder="Пароль (мин. 6 символов)">
                     <div id="authError" class="error-msg"></div>
                     <div id="authSuccess" class="success-msg"></div>
-                    <input type="text" id="codeInput" placeholder="Код из письма" style="display:none;">
-                    <button class="btn-auth" id="loginBtn" style="display:none;">Подтвердить код</button>
                     <button class="btn-auth" id="registerBtn">Зарегистрироваться</button>
                     <button class="btn-auth-secondary" id="signInBtn">Войти</button>
                     <button class="btn-auth-secondary" id="resetPasswordBtn" style="margin-top:5px; border-color:#4b69ff; color:#4b69ff;">Забыли пароль?</button>
@@ -374,13 +371,6 @@ firebase.initializeApp(firebaseConfig);
 const auth = firebase.auth();
 
 // ============================================================
-//  ГЕНЕРАЦИЯ ЦИФРОВОГО ID
-// ============================================================
-function generatePlayerId() {
-    return Math.floor(Math.random() * 9999999999) + 1;
-}
-
-// ============================================================
 //  БАЗА ДАННЫХ (СКИНЫ И КЕЙСЫ)
 // ============================================================
 const skinsList = [
@@ -430,10 +420,9 @@ let bonusGold = 0;
 let isArrowSpinning = false;
 let lastResult = null;
 let currentUser = null;
-let confirmationResult = null;
 
 // ============================================================
-//  АВТОРИЗАЦИЯ (С КОДОМ)
+//  АВТОРИЗАЦИЯ (ВХОД ПО ССЫЛКЕ)
 // ============================================================
 function updateUIForUser(user) {
     const userInfo = document.getElementById('userInfo');
@@ -449,7 +438,7 @@ function updateUIForUser(user) {
         if (userData && userData.playerId) {
             playerId.textContent = userData.playerId;
         } else {
-            const newId = generatePlayerId();
+            const newId = Math.floor(Math.random() * 9999999999) + 1;
             playerId.textContent = newId;
             saveUserData(user.uid, { playerId: newId });
         }
@@ -460,21 +449,8 @@ function updateUIForUser(user) {
         authForm.style.display = 'block';
         playerId.textContent = 'Гость';
         currentUser = null;
-        resetAuthForm();
         loadGlobalData();
     }
-}
-
-function resetAuthForm() {
-    document.getElementById('emailInput').value = '';
-    document.getElementById('passwordInput').value = '';
-    document.getElementById('codeInput').value = '';
-    document.getElementById('codeInput').style.display = 'none';
-    document.getElementById('loginBtn').style.display = 'none';
-    document.getElementById('registerBtn').style.display = 'block';
-    document.getElementById('signInBtn').style.display = 'block';
-    document.getElementById('authError').textContent = '';
-    document.getElementById('authSuccess').textContent = '';
 }
 
 function loadUserData(userId) {
@@ -532,30 +508,6 @@ function updateUI() {
     renderCases();
 }
 
-// Отправка кода подтверждения
-function sendCode(email, password) {
-    const errorDiv = document.getElementById('authError');
-    const successDiv = document.getElementById('authSuccess');
-    
-    // Временное сохранение пароля для регистрации
-    window._tempPassword = password;
-    
-    // Отправляем код через Email Link (но мы перехватываем и используем как код)
-    auth.sendSignInLinkToEmail(email, {
-        url: window.location.href,
-        handleCodeInApp: true
-    }).then(() => {
-        successDiv.textContent = '✅ 6-значный код отправлен на почту! Введите его ниже.';
-        document.getElementById('codeInput').style.display = 'block';
-        document.getElementById('loginBtn').style.display = 'block';
-        document.getElementById('registerBtn').style.display = 'none';
-        document.getElementById('signInBtn').style.display = 'none';
-        document.getElementById('authError').textContent = '';
-    }).catch(error => {
-        errorDiv.textContent = '❌ ' + error.message;
-    });
-}
-
 // Регистрация
 document.getElementById('registerBtn').addEventListener('click', () => {
     const email = document.getElementById('emailInput').value;
@@ -571,65 +523,56 @@ document.getElementById('registerBtn').addEventListener('click', () => {
         errorDiv.textContent = '❌ Пароль должен быть минимум 6 символов';
         return;
     }
-    sendCode(email, password);
+    
+    // Отправляем ссылку на почту
+    auth.sendSignInLinkToEmail(email, {
+        url: window.location.href,
+        handleCodeInApp: true
+    }).then(() => {
+        document.getElementById('authSuccess').textContent = '✅ Ссылка для входа отправлена на почту! Перейдите по ней.';
+        document.getElementById('authError').textContent = '';
+    }).catch(error => {
+        errorDiv.textContent = '❌ ' + error.message;
+    });
 });
 
 // Вход
 document.getElementById('signInBtn').addEventListener('click', () => {
     const email = document.getElementById('emailInput').value;
-    const password = document.getElementById('passwordInput').value;
     const errorDiv = document.getElementById('authError');
     errorDiv.textContent = '';
     
-    if (!email || !password) {
-        errorDiv.textContent = '❌ Введите email и пароль';
+    if (!email) {
+        errorDiv.textContent = '❌ Введите email';
         return;
     }
-    sendCode(email, password);
+    
+    // Отправляем ссылку на почту
+    auth.sendSignInLinkToEmail(email, {
+        url: window.location.href,
+        handleCodeInApp: true
+    }).then(() => {
+        document.getElementById('authSuccess').textContent = '✅ Ссылка для входа отправлена на почту! Перейдите по ней.';
+        document.getElementById('authError').textContent = '';
+    }).catch(error => {
+        errorDiv.textContent = '❌ ' + error.message;
+    });
 });
 
-// Подтверждение кода
-document.getElementById('loginBtn').addEventListener('click', () => {
-    const code = document.getElementById('codeInput').value;
-    const email = document.getElementById('emailInput').value;
-    const password = window._tempPassword || document.getElementById('passwordInput').value;
-    const errorDiv = document.getElementById('authError');
-    const successDiv = document.getElementById('authSuccess');
-    errorDiv.textContent = '';
-    
-    if (!code) {
-        errorDiv.textContent = '❌ Введите код из письма';
-        return;
+// Обработка входа по ссылке (при переходе)
+if (auth.isSignInWithEmailLink(window.location.href)) {
+    let email = window.prompt('Введите email для входа:');
+    if (email) {
+        auth.signInWithEmailLink(email, window.location.href)
+            .then((result) => {
+                document.getElementById('authSuccess').textContent = '✅ Вход выполнен!';
+                updateUIForUser(result.user);
+            })
+            .catch(error => {
+                document.getElementById('authError').textContent = '❌ Ошибка: ' + error.message;
+            });
     }
-    
-    // Для Firebase мы используем signInWithEmailLink, но код нужно ввести вручную
-    // Firebase сам отправит код, но мы его не видим, поэтому делаем так:
-    // Сначала пытаемся войти с паролем, если аккаунт существует
-    // Иначе создаём новый
-    
-    auth.signInWithEmailAndPassword(email, password)
-        .then(() => {
-            // Если вошли, значит аккаунт уже есть
-            successDiv.textContent = '✅ Вход выполнен!';
-            resetAuthForm();
-            updateUIForUser(auth.currentUser);
-        })
-        .catch(() => {
-            // Если аккаунта нет, создаём
-            auth.createUserWithEmailAndPassword(email, password)
-                .then((result) => {
-                    successDiv.textContent = '✅ Аккаунт создан!';
-                    resetAuthForm();
-                    updateUIForUser(result.user);
-                    // Сохраняем ID
-                    const newId = generatePlayerId();
-                    saveUserData(result.user.uid, { playerId: newId });
-                })
-                .catch(error => {
-                    errorDiv.textContent = '❌ ' + error.message;
-                });
-        });
-});
+}
 
 // Восстановление пароля
 document.getElementById('resetPasswordBtn').addEventListener('click', () => {
@@ -688,17 +631,7 @@ auth.onAuthStateChanged(user => {
 });
 
 // ============================================================
-//  КЕЙСЫ, ИНВЕНТАРЬ, АПГРЕЙД, САПЁР (БЕЗ ИЗМЕНЕНИЙ)
-// ============================================================
-// ... (весь остальной код без изменений)
-
-// ============================================================
-//  ЗАПУСК
-// ============================================================
-loadGlobalData();
-
-// ============================================================
-//  ВСЕ ФУНКЦИИ КЕЙСОВ, ИНВЕНТАРЯ, АПГРЕЙДА, САПЁРА
+//  КЕЙСЫ (весь остальной код идентичен предыдущему)
 // ============================================================
 function renderCases() {
     const grid = document.getElementById('casesGrid');
