@@ -1,27 +1,327 @@
 <!DOCTYPE html>
-<html>
+<html lang="ru">
 <head>
-<meta charset="UTF-8">
-<title>GoldDrop НОВЫЙ</title>
-<style>
-body{background:#0a0a1a;color:#fff;font-family:sans-serif;text-align:center;padding:20px}
-.logo{font-size:42px;font-weight:900;background:linear-gradient(135deg,#ffd700,#ff8c00);-webkit-background-clip:text;-webkit-text-fill-color:transparent}
-.cases{display:grid;grid-template-columns:repeat(2,1fr);gap:16px;max-width:480px;margin:auto}
-.case{background:#1a1a3e;border:2px solid #ffd700;border-radius:20px;padding:16px}
-.case img{width:200px;height:200px;object-fit:contain;border-radius:16px;display:block;margin:auto}
-.case .name{color:#fff;margin:5px 0}
-.case .price{color:#ffd700}
-</style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GoldDrop 4.0 - Кейсы Standoff 2</title>
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { background: #0a0a1a; font-family: 'Segoe UI', Arial, sans-serif; color: #fff; min-height: 100vh; display: flex; justify-content: center; align-items: flex-start; padding: 20px 0; }
+        .container { text-align: center; padding: 20px; max-width: 480px; width: 100%; }
+        .logo { font-size: 42px; font-weight: 900; background: linear-gradient(135deg, #ffd700, #ff8c00); -webkit-background-clip: text; -webkit-text-fill-color: transparent; margin-bottom: 15px; letter-spacing: 2px; }
+        
+        .tabs { display: flex; gap: 6px; margin: 15px 0; background: #1a1a2e; border-radius: 15px; padding: 5px; border: 1px solid #222; flex-wrap: wrap; justify-content: center; }
+        .tab-btn { background: transparent; border: none; color: #888; padding: 8px 12px; font-size: 13px; font-weight: bold; cursor: pointer; border-radius: 12px; flex: 1; min-width: 55px; transition: 0.3s; }
+        .tab-btn.active { background: #ffd700; color: #000; box-shadow: 0 0 20px rgba(255,215,0,0.3); }
+        .tab-btn:hover { color: #fff; }
+
+        .tab-content { display: none; }
+        .tab-content.active { display: block; }
+
+        .cases-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin: 15px 0; }
+        .case-card { background: #1a1a3e; border: 2px solid #ffd700; border-radius: 15px; padding: 12px 8px; cursor: pointer; transition: 0.3s; }
+        .case-card:hover { transform: scale(1.03); box-shadow: 0 0 30px rgba(255,215,0,0.2); }
+        .case-card .emoji { font-size: 32px; }
+        .case-card .name { font-size: 13px; color: #ffd700; margin: 5px 0; font-weight: bold; }
+        .case-card .price { font-size: 12px; color: #888; }
+        .case-card .chance { font-size: 11px; color: #555; }
+
+        .profile-card { background: #1a1a3e; border: 2px solid #ffd700; border-radius: 20px; padding: 20px; margin: 15px 0; }
+        .profile-card .id { color: #888; font-size: 14px; }
+        .profile-card .id span { color: #ffd700; font-weight: bold; }
+        .profile-card .balance { font-size: 22px; color: #ffd700; margin: 10px 0; }
+
+        .user-info { display: flex; align-items: center; justify-content: center; gap: 15px; margin: 10px 0; flex-wrap: wrap; }
+        .user-avatar { width: 50px; height: 50px; border-radius: 50%; border: 2px solid #ffd700; }
+        .user-name { font-size: 16px; color: #fff; font-weight: bold; }
+
+        .auth-container { background: #111; padding: 20px; border-radius: 15px; border: 1px solid #333; margin: 15px 0; }
+        .auth-container input { width: 100%; padding: 12px; margin: 8px 0; background: #0a0a1a; border: 1px solid #444; border-radius: 10px; color: #fff; font-size: 16px; }
+        .auth-container input:focus { border-color: #ffd700; outline: none; }
+        .auth-container .btn-auth { background: linear-gradient(135deg, #ffd700, #ff8c00); border: none; padding: 12px; font-size: 16px; font-weight: bold; border-radius: 12px; cursor: pointer; color: #000; transition: 0.3s; width: 100%; margin: 5px 0; }
+        .auth-container .btn-auth:hover { transform: scale(1.02); }
+        .auth-container .btn-auth-secondary { background: #222; border: 1px solid #ffd700; color: #ffd700; padding: 10px; font-size: 14px; font-weight: bold; border-radius: 12px; cursor: pointer; transition: 0.3s; width: 100%; margin: 5px 0; }
+        .auth-container .btn-auth-secondary:hover { background: #ffd700; color: #000; }
+        .auth-container .error-msg { color: #ff2d55; font-size: 14px; margin: 5px 0; }
+        .auth-container .success-msg { color: #4b69ff; font-size: 14px; margin: 5px 0; }
+        .auth-container .info-msg { color: #ffd700; font-size: 14px; margin: 5px 0; }
+
+        .btn-logout { background: #ff2d55; color: #fff; border: none; padding: 6px 16px; border-radius: 10px; font-weight: bold; cursor: pointer; transition: 0.3s; }
+        .btn-logout:hover { transform: scale(1.05); }
+
+        .btn-support { background: #222; border: 1px solid #ffd700; color: #ffd700; padding: 8px 20px; border-radius: 10px; cursor: pointer; transition: 0.3s; font-weight: bold; margin: 5px; }
+        .btn-support:hover { background: #ffd700; color: #000; }
+
+        .btn-admin { background: #ff2d55; color: #fff; border: none; padding: 8px 20px; border-radius: 10px; cursor: pointer; font-weight: bold; margin: 5px; }
+        .btn-admin:hover { transform: scale(1.05); box-shadow: 0 0 20px rgba(255,45,85,0.5); }
+
+        .inventory-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin: 15px 0; }
+        .inv-item { background: #111; border: 1px solid #444; border-radius: 12px; padding: 10px; text-align: center; transition: 0.3s; cursor: pointer; }
+        .inv-item .emoji { font-size: 28px; }
+        .inv-item .name { font-size: 11px; color: #aaa; }
+        .inv-item .rarity { font-size: 10px; }
+        .inv-item .price { font-size: 11px; color: #ffd700; margin-top: 3px; }
+
+        .btn-sell { background: #ff2d55; border: none; color: #fff; padding: 4px 12px; border-radius: 8px; font-size: 11px; cursor: pointer; transition: 0.3s; margin-top: 5px; }
+        .btn-sell:hover { transform: scale(1.05); }
+
+        .upgrade-slots { display: grid; grid-template-columns: repeat(5, 1fr); gap: 8px; margin: 15px 0; max-width: 400px; margin-left: auto; margin-right: auto; }
+        .upgrade-slot { background: #111; border: 2px dashed #444; border-radius: 12px; aspect-ratio: 1; display: flex; align-items: center; justify-content: center; font-size: 24px; cursor: pointer; transition: 0.3s; position: relative; }
+        .upgrade-slot.filled { border: 2px solid #ffd700; background: #1a1a3e; }
+        .upgrade-slot:hover { border-color: #ffd700; }
+        .upgrade-slot .remove-btn { position: absolute; top: -8px; right: -8px; background: #ff2d55; border-radius: 50%; width: 20px; height: 20px; font-size: 12px; display: flex; align-items: center; justify-content: center; cursor: pointer; border: none; color: #fff; }
+
+        .upgrade-arrow { font-size: 24px; color: #ffd700; animation: arrowPulse 1s ease-in-out infinite; margin: 10px 0; }
+        @keyframes arrowPulse { 0%, 100% { opacity: 0.3; transform: translateY(0); } 50% { opacity: 1; transform: translateY(5px); } }
+
+        .upgrade-target { margin: 15px 0; }
+        .upgrade-target select { background: #111; border: 1px solid #444; color: #fff; padding: 10px; border-radius: 10px; width: 100%; }
+
+        .upgrade-gold { margin: 15px 0; }
+        .upgrade-gold input[type="range"] { width: 100%; accent-color: #ffd700; background: #222; height: 6px; border-radius: 3px; }
+        .upgrade-gold input[type="number"] { background: #111; border: 1px solid #444; color: #fff; padding: 8px; border-radius: 10px; width: 80px; text-align: center; }
+
+        .craft-btn { background: linear-gradient(135deg, #ffd700, #ff8c00); border: none; padding: 12px 30px; font-size: 16px; font-weight: bold; border-radius: 12px; cursor: pointer; color: #000; transition: 0.3s; margin: 10px 0; }
+        .craft-btn:hover { transform: scale(1.05); box-shadow: 0 0 30px rgba(255,215,0,0.4); }
+        .craft-btn:disabled { opacity: 0.5; cursor: not-allowed; }
+
+        .circle-container { position: relative; width: 220px; height: 220px; margin: 20px auto; }
+        .circle-bg { fill: none; stroke: #1a1a2e; stroke-width: 14; }
+        .circle-fill { fill: none; stroke: url(#grad); stroke-width: 14; stroke-linecap: round; transition: stroke-dashoffset 0.5s ease; transform: rotate(-90deg); transform-origin: 50% 50%; }
+        .circle-center { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); text-align: center; }
+        .circle-center .chance-text { font-size: 32px; font-weight: bold; color: #ffd700; }
+        .circle-center .chance-label { font-size: 14px; color: #888; }
+
+        .arrow-handle { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -100%) rotate(0deg); transform-origin: bottom center; transition: transform 4s cubic-bezier(0.1, 0.6, 0.1, 1); width: 4px; height: 90px; display: flex; flex-direction: column; align-items: center; z-index: 5; }
+        .arrow-center { position: absolute; bottom: -16px; left: 50%; transform: translateX(-50%); width: 32px; height: 32px; background: radial-gradient(circle, #ffd700 30%, #ff8c00 70%, #cc7700 100%); border-radius: 50%; box-shadow: 0 0 40px rgba(255, 215, 0, 0.8), 0 0 80px rgba(255, 215, 0, 0.4); border: 3px solid #fff8e7; z-index: 6; }
+        .arrow-line { position: absolute; bottom: 16px; left: 50%; transform: translateX(-50%); width: 4px; height: 70px; background: linear-gradient(to top, #ffd700, #ffec8b); box-shadow: 0 0 20px rgba(255, 215, 0, 0.5); border-radius: 2px; }
+        .arrow-head { position: absolute; bottom: 86px; left: 50%; transform: translateX(-50%); width: 0; height: 0; border-left: 18px solid transparent; border-right: 18px solid transparent; border-bottom: 28px solid #ffd700; filter: drop-shadow(0 0 20px rgba(255, 215, 0, 0.8)); }
+        .arrow-head::after { content: ''; position: absolute; top: 4px; left: -12px; width: 0; height: 0; border-left: 12px solid transparent; border-right: 12px solid transparent; border-bottom: 20px solid #ffec8b; }
+
+        .bonus-card { background: #1a1a3e; border: 2px solid #ffd700; border-radius: 20px; padding: 20px; margin: 15px 0; }
+        .bonus-card .task { display: flex; justify-content: space-between; align-items: center; padding: 10px 0; border-bottom: 1px solid #222; }
+        .bonus-card .task:last-child { border-bottom: none; }
+        .bonus-card .task .desc { font-size: 14px; color: #ccc; }
+        .bonus-card .task .reward { font-size: 14px; color: #ffd700; }
+        .btn-claim { background: #ffd700; border: none; padding: 6px 16px; border-radius: 10px; font-weight: bold; cursor: pointer; color: #000; transition: 0.3s; }
+        .btn-claim:hover { transform: scale(1.05); }
+        .btn-claim:disabled { opacity: 0.4; cursor: not-allowed; }
+
+        .preview-modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.9); z-index: 999; justify-content: center; align-items: center; }
+        .preview-modal.active { display: flex; }
+        .preview-content { background: #1a1a3e; padding: 25px; border-radius: 20px; border: 3px solid #ffd700; max-width: 400px; width: 90%; text-align: center; max-height: 80vh; overflow-y: auto; }
+        .preview-content h2 { color: #ffd700; margin-bottom: 15px; }
+        .preview-content .skin-item { display: flex; justify-content: space-between; padding: 8px 0; border-bottom: 1px solid #222; }
+        .preview-content .skin-item .name { color: #fff; }
+        .preview-content .skin-item .price { color: #ffd700; }
+        .preview-close { background: #ffd700; border: none; padding: 10px 30px; font-size: 16px; font-weight: bold; border-radius: 12px; cursor: pointer; color: #000; margin-top: 15px; }
+
+        .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.9); z-index: 1000; justify-content: center; align-items: center; }
+        .modal.active { display: flex; }
+        .modal-content { background: #1a1a3e; padding: 30px; border-radius: 20px; border: 3px solid #ffd700; max-width: 400px; width: 90%; text-align: center; }
+        .scroll-container { width: 100%; overflow: hidden; border-radius: 15px; background: #0a0a1a; border: 2px solid #ffd700; margin: 15px 0; position: relative; }
+        .scroll-track { display: flex; transition: transform 6s cubic-bezier(0.1, 0.8, 0.1, 1); will-change: transform; }
+        .scroll-item { flex: 0 0 auto; width: 120px; padding: 10px; text-align: center; background: #111; border-right: 1px solid #222; }
+        .scroll-item .skin-box { width: 80px; height: 80px; border-radius: 10px; margin: 0 auto 5px; display: flex; align-items: center; justify-content: center; font-size: 30px; border: 2px solid #444; }
+        .arrow { position: absolute; top: -5px; left: 50%; transform: translateX(-50%); font-size: 40px; color: #ffd700; filter: drop-shadow(0 0 20px #ffd700); z-index: 10; pointer-events: none; animation: arrowBounce 0.8s ease-in-out infinite; }
+        @keyframes arrowBounce { 0%, 100% { transform: translateX(-50%) translateY(0); } 50% { transform: translateX(-50%) translateY(10px); } }
+        .win-text { font-size: 24px; font-weight: bold; margin: 10px 0; }
+        .close-btn { background: #ffd700; border: none; padding: 10px 30px; font-size: 18px; font-weight: bold; border-radius: 12px; cursor: pointer; color: #000; margin-top: 15px; }
+
+        .support-modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.9); z-index: 1001; justify-content: center; align-items: center; }
+        .support-modal.active { display: flex; }
+        .support-content { background: #1a1a3e; padding: 30px; border-radius: 20px; border: 3px solid #ffd700; max-width: 380px; width: 90%; text-align: center; }
+        .support-content h2 { color: #ffd700; margin-bottom: 15px; }
+        .support-content .info { color: #aaa; font-size: 16px; line-height: 1.6; margin: 15px 0; }
+        .support-content .highlight { color: #ffd700; font-weight: bold; font-size: 18px; }
+        .support-close-btn { background: #ffd700; border: none; padding: 10px 30px; font-size: 18px; font-weight: bold; border-radius: 12px; cursor: pointer; color: #000; margin-top: 15px; }
+
+        .sapper-grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 6px; margin: 15px auto; max-width: 300px; }
+        .sapper-cell { background: #1a1a3e; border: 2px solid #444; border-radius: 8px; aspect-ratio: 1; display: flex; align-items: center; justify-content: center; font-size: 20px; font-weight: bold; cursor: pointer; transition: 0.3s; color: #fff; }
+        .sapper-cell:hover { border-color: #ffd700; transform: scale(1.05); }
+        .sapper-cell.revealed { background: #222; border-color: #555; cursor: default; }
+        .sapper-cell.revealed:hover { transform: none; }
+        .sapper-cell.bomb { background: #ff2d55; border-color: #ff2d55; }
+        .sapper-cell.safe { background: #1a5a2e; border-color: #4b69ff; }
+
+        .sapper-bet { display: flex; gap: 10px; flex-wrap: wrap; justify-content: center; margin: 10px 0; align-items: center; }
+        .sapper-bet input { background: #111; border: 1px solid #444; border-radius: 10px; padding: 8px 12px; color: #fff; font-size: 16px; width: 100px; text-align: center; }
+
+        .sapper-difficulty { display: flex; gap: 10px; flex-wrap: wrap; justify-content: center; margin: 10px 0; }
+        .sapper-difficulty button { background: #222; border: 1px solid #ff2d55; color: #ff2d55; padding: 8px 16px; border-radius: 10px; cursor: pointer; transition: 0.3s; font-weight: bold; }
+        .sapper-difficulty button:hover { background: #ff2d55; color: #000; }
+        .sapper-difficulty button.active { background: #ff2d55; color: #000; }
+
+        .sapper-actions { display: flex; gap: 10px; justify-content: center; margin: 10px 0; flex-wrap: wrap; }
+        .sapper-actions .btn-take { background: linear-gradient(135deg, #4b69ff, #2a4bd6); color: #fff; padding: 10px 20px; font-size: 16px; font-weight: bold; border-radius: 12px; cursor: pointer; transition: 0.3s; border: none; }
+        .sapper-actions .btn-take:hover { transform: scale(1.05); box-shadow: 0 0 20px rgba(75,105,255,0.5); }
+        .sapper-actions .btn-take:disabled { opacity: 0.5; cursor: not-allowed; transform: none; }
+        .sapper-actions .btn { padding: 10px 20px; font-size: 16px; }
+
+        .sapper-balance { margin: 10px 0; padding: 10px; background: #111; border-radius: 10px; color: #888; font-size: 16px; border: 1px solid #222; }
+        .sapper-balance span { color: #ffd700; font-weight: bold; }
+
+        .footer { margin-top: 20px; font-size: 11px; color: #333; }
+        .rarity-common { color: #b0b0b0; } .rarity-uncommon { color: #5e98d9; } .rarity-rare { color: #4b69ff; } .rarity-epic { color: #8847ff; } .rarity-legendary { color: #ff8000; } .rarity-mythical { color: #ff2d55; }
+    </style>
 </head>
 <body>
-<div class="logo">🎰 GoldDrop 4.0 — НОВЫЙ</div>
-<div class="cases">
-<div class="case"><img src="https://i.ibb.co/39LSMCG1/IMG-1403.jpg"><div class="name">Райское извержение</div><div class="price">💰 19 Gold</div></div>
-<div class="case"><img src="https://i.ibb.co/CpY181tP/IMG-1405.jpg"><div class="name">Розовый оазис</div><div class="price">💰 39 Gold</div></div>
-<div class="case"><img src="https://i.ibb.co/bgbRGBz5/IMG-1406.jpg"><div class="name">Гавайский отдых</div><div class="price">💰 59 Gold</div></div>
-<div class="case"><img src="https://i.ibb.co/xKkFh1qt/IMG-1408.jpg"><div class="name">Ядовитая флора</div><div class="price">💰 99 Gold</div></div>
-<div class="case"><img src="https://i.ibb.co/WvTnTsbw/IMG-1409.jpg"><div class="name">Тропическое наслаждение</div><div class="price">💰 199 Gold</div></div>
-<div class="case"><img src="https://i.ibb.co/Q7gZhgtz/IMG-1410.jpg"><div class="name">Гнев тики</div><div class="price">💰 399 Gold</div></div>
+<div class="container">
+    <div class="logo">🎰 GoldDrop 4.0</div>
+
+    <div class="tabs">
+        <button class="tab-btn active" data-tab="cases">🏠 Кейсы</button>
+        <button class="tab-btn" data-tab="upgrade">🔧 Апгрейд</button>
+        <button class="tab-btn" data-tab="profile">👤 Профиль</button>
+        <button class="tab-btn" data-tab="bonus">🎁 Бонусы</button>
+        <button class="tab-btn" data-tab="sapper">💣 Сапёр</button>
+    </div>
+
+    <!-- ===== КЕЙСЫ ===== -->
+    <div id="tab-cases" class="tab-content active">
+        <div class="cases-grid" id="casesGrid"></div>
+    </div>
+
+    <!-- ===== АПГРЕЙД ===== -->
+    <div id="tab-upgrade" class="tab-content">
+        <h3 style="color:#ffd700;">🔧 Апгрейд скинов</h3>
+        <p style="color:#888; font-size:14px;">Выбери от 1 до 10 скинов и цель для апгрейда</p>
+        <div class="upgrade-arrow" id="upgradeArrow">▼ Выберите скины ▼</div>
+        <div class="upgrade-slots" id="upgradeSlots"></div>
+        <p style="color:#888; font-size:14px; margin-top:15px;">Твой инвентарь:</p>
+        <div class="inventory-grid" id="upgradeInventory" style="grid-template-columns: repeat(3, 1fr);"></div>
+        <div class="upgrade-target">
+            <p style="color:#888; font-size:14px;">🎯 Выбери целевой скин:</p>
+            <select id="targetSkinSelect"></select>
+        </div>
+        <div class="upgrade-gold">
+            <p style="color:#888; font-size:14px;">💰 Добавь Gold к шансу:</p>
+            <input type="range" id="bonusGoldSlider" min="0" max="1000" value="0" step="10">
+            <div style="display: flex; justify-content: center; align-items: center; gap: 10px; margin-top: 8px;">
+                <input type="number" id="bonusGoldInput" value="0" min="0" step="10" style="width:100px;">
+                <span style="color:#888;">Gold</span>
+                <span style="color:#888; font-size:12px;">(+<span id="bonusChanceDisplay">0</span>%)</span>
+            </div>
+        </div>
+        <div class="circle-container">
+            <svg width="220" height="220" viewBox="0 0 220 220">
+                <defs>
+                    <linearGradient id="grad" x1="0%" y1="0%" x2="100%" y2="0%">
+                        <stop offset="0%" style="stop-color:#ff2d55;stop-opacity:1" />
+                        <stop offset="50%" style="stop-color:#ffd700;stop-opacity:1" />
+                        <stop offset="100%" style="stop-color:#4b69ff;stop-opacity:1" />
+                    </linearGradient>
+                </defs>
+                <circle class="circle-bg" cx="110" cy="110" r="95" />
+                <circle class="circle-fill" id="circleFill" cx="110" cy="110" r="95" stroke-dasharray="597" stroke-dashoffset="597" />
+            </svg>
+            <div class="arrow-handle" id="arrowHandle">
+                <div class="arrow-center"></div>
+                <div class="arrow-line"></div>
+                <div class="arrow-head"></div>
+            </div>
+            <div class="circle-center">
+                <div class="chance-text" id="chanceText">0%</div>
+                <div class="chance-label">Шанс</div>
+            </div>
+        </div>
+        <div style="display: flex; justify-content: space-between; margin-top: 10px; font-size: 14px; color: #888;">
+            <span>Результат: <span id="arrowResult" style="color:#ffd700;">—</span></span>
+        </div>
+        <button class="craft-btn" id="upgradeBtn" disabled>🔮 Апгрейд</button>
+        <div id="upgradeResult" style="margin-top:15px; font-size:18px;"></div>
+    </div>
+
+    <!-- ===== ПРОФИЛЬ ===== -->
+    <div id="tab-profile" class="tab-content">
+        <div class="profile-card">
+            <div class="id">🆔 ID: <span id="playerId">Гость</span></div>
+            <div class="balance">💰 Баланс: <span id="balanceDisplay">100</span> Gold</div>
+            <div id="authSection">
+                <div id="userInfo" style="display:none;" class="user-info">
+                    <img id="userAvatar" class="user-avatar" src="" alt="Avatar">
+                    <span id="userName" class="user-name"></span>
+                    <button id="logoutBtn" class="btn-logout">Выйти</button>
+                </div>
+                <div id="authForm" class="auth-container">
+                    <p style="color:#888; font-size:14px; margin-bottom:10px;">Войдите или зарегистрируйтесь</p>
+                    <input type="email" id="emailInput" placeholder="Email">
+                    <input type="password" id="passwordInput" placeholder="Пароль (мин. 6 символов)">
+                    <div id="authError" class="error-msg"></div>
+                    <div id="authSuccess" class="success-msg"></div>
+                    <div id="authInfo" class="info-msg"></div>
+                    <button class="btn-auth" id="registerBtn">Зарегистрироваться</button>
+                    <button class="btn-auth-secondary" id="signInBtn">Войти</button>
+                    <button class="btn-auth-secondary" id="resetPasswordBtn" style="margin-top:5px; border-color:#4b69ff; color:#4b69ff;">Забыли пароль?</button>
+                    <button class="btn-auth-secondary" id="resendEmailBtn" style="margin-top:5px; border-color:#ffd700; color:#ffd700; display:none;">📧 Отправить письмо повторно</button>
+                </div>
+            </div>
+            <button class="btn-support" onclick="openSupport()">💳 Пополнить</button>
+            <button id="changePasswordBtn" class="btn-support" style="margin: 5px; background: #4b69ff; color: #fff; border: none; padding: 8px 20px; border-radius: 10px; cursor: pointer; font-weight: bold;">
+                🔑 Сменить пароль
+            </button>
+        </div>
+        <h3 style="color:#ffd700; margin-top:15px;">📦 Инвентарь</h3>
+        <div class="inventory-grid" id="inventoryGrid"></div>
+    </div>
+
+    <!-- ===== БОНУСЫ ===== -->
+    <div id="tab-bonus" class="tab-content">
+        <div class="bonus-card">
+            <h3 style="color:#ffd700;">🎁 Ежедневные бонусы</h3>
+            <div class="task">
+                <span class="desc">📢 Подписаться на Telegram-канал</span>
+                <span class="reward">+50 Gold</span>
+                <button class="btn-claim" onclick="claimBonus('tg')">Получить</button>
+            </div>
+            <div class="task">
+                <span class="desc">⭐ Зайти на сайт 3 дня подряд</span>
+                <span class="reward">+100 Gold</span>
+                <button class="btn-claim" onclick="claimBonus('daily')">Получить</button>
+            </div>
+            <div class="task">
+                <span class="desc">🔥 Открыть 5 кейсов</span>
+                <span class="reward">+200 Gold</span>
+                <button class="btn-claim" onclick="claimBonus('cases')">Получить</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- ===== САПЁР ===== -->
+    <div id="tab-sapper" class="tab-content">
+        <h3 style="color:#ffd700;">💣 Сапёр</h3>
+        <p style="color:#888; font-size:14px;">Ставь голду, открывай клетки и забирай выигрыш!</p>
+        <div class="sapper-balance">💰 Ваш баланс: <span id="sapperBalanceDisplay">100</span> Gold</div>
+        <div class="sapper-bet">
+            <input type="number" id="sapperBetInput" placeholder="10" min="1" step="1">
+            <span style="color:#888;">Gold</span>
+        </div>
+        <div class="sapper-difficulty" id="sapperDifficulty">
+            <button data-bombs="9" class="active">9 бомб</button>
+            <button data-bombs="12">12 бомб</button>
+            <button data-bombs="15">15 бомб</button>
+            <button data-bombs="20">20 бомб</button>
+        </div>
+        <div id="sapperGrid" class="sapper-grid"></div>
+        <div id="sapperStatus" style="color:#ffd700; font-size:16px; margin:10px 0;">💰 Ставка: 10 Gold</div>
+        <div class="sapper-actions">
+            <button class="btn-take" id="sapperTakeBtn" disabled onclick="takeWin()">💰 Забрать</button>
+            <button class="btn" onclick="resetSapper()">🔄 Новая игра</button>
+        </div>
+    </div>
+
+    <div class="footer">GoldDrop 4.0 — лучший портал для Standoff 2</div>
 </div>
-</body>
-</html>
+
+<!-- ===== ПОДДЕРЖКА ===== -->
+<div class="support-modal" id="supportModal">
+    <div class="support-content">
+        <h2>📞 Свяжитесь с поддержкой</h2>
+        <div class="info">
+            Для пополнения баланса напишите в Telegram:<br>
+            <span class="highlight">@GoldDrop_Support</span><br><br>
+            После оплаты средства будут зачислены вручную в течение 5 минут.
+        </div>
+        <button class="support-close-btn" onclick="closeSupport()">Понят
