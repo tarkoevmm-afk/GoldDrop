@@ -413,7 +413,7 @@ let lastResult = null;
 let currentUser = null;
 
 // ============================================================
-//  АВТОРИЗАЦИЯ
+//  АВТОРИЗАЦИЯ (ОБЫЧНАЯ, БЕЗ ПОДТВЕРЖДЕНИЯ)
 // ============================================================
 function updateUIForUser(user) {
     const userInfo = document.getElementById('userInfo');
@@ -501,7 +501,7 @@ function updateUI() {
     renderCases();
 }
 
-// Регистрация
+// Регистрация (с отправкой уведомления на почту)
 document.getElementById('registerBtn').addEventListener('click', () => {
     const email = document.getElementById('emailInput').value;
     const password = document.getElementById('passwordInput').value;
@@ -521,7 +521,12 @@ document.getElementById('registerBtn').addEventListener('click', () => {
     
     auth.createUserWithEmailAndPassword(email, password)
         .then((result) => {
-            successDiv.textContent = '✅ Аккаунт создан! Добро пожаловать!';
+            // Отправляем уведомление о регистрации через Firebase (функция sendEmailVerification)
+            // Но она отправляет письмо для подтверждения. Мы просто показываем сообщение.
+            successDiv.textContent = '✅ Аккаунт создан! Проверьте почту для подтверждения (если письмо не пришло, проверьте спам).';
+            successDiv.style.color = '#4b69ff';
+            // Отправляем письмо для подтверждения (оно же будет уведомлением)
+            result.user.sendEmailVerification();
             updateUIForUser(result.user);
             const newId = Math.floor(Math.random() * 9999999999) + 1;
             saveUserData(result.user.uid, { playerId: newId });
@@ -548,6 +553,7 @@ document.getElementById('signInBtn').addEventListener('click', () => {
     auth.signInWithEmailAndPassword(email, password)
         .then((result) => {
             successDiv.textContent = '✅ Вход выполнен! Добро пожаловать!';
+            successDiv.style.color = '#4b69ff';
             updateUIForUser(result.user);
         })
         .catch(error => {
