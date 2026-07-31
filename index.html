@@ -54,9 +54,6 @@
         .btn-support { background: #222; border: 1px solid #ffd700; color: #ffd700; padding: 8px 20px; border-radius: 10px; cursor: pointer; transition: 0.3s; font-weight: bold; margin: 5px; }
         .btn-support:hover { background: #ffd700; color: #000; }
 
-        .btn-admin { background: #ff2d55; color: #fff; border: none; padding: 8px 20px; border-radius: 10px; cursor: pointer; font-weight: bold; margin: 5px; }
-        .btn-admin:hover { transform: scale(1.05); box-shadow: 0 0 20px rgba(255,45,85,0.5); }
-
         .inventory-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin: 15px 0; }
         .inv-item { background: #111; border: 1px solid #444; border-radius: 12px; padding: 10px; text-align: center; transition: 0.3s; cursor: pointer; }
         .inv-item .emoji { font-size: 28px; }
@@ -324,4 +321,1000 @@
             <span class="highlight">@GoldDrop_Support</span><br><br>
             После оплаты средства будут зачислены вручную в течение 5 минут.
         </div>
-        <button class="support-close-btn" onclick="closeSupport()">Понят
+        <button class="support-close-btn" onclick="closeSupport()">Понятно, спасибо</button>
+    </div>
+</div>
+
+<!-- ===== ПРЕВЬЮ КЕЙСА ===== -->
+<div class="preview-modal" id="previewModal">
+    <div class="preview-content">
+        <h2 id="previewTitle">📦 Кейс</h2>
+        <div id="previewList"></div>
+        <button class="preview-close" onclick="closePreview()">Закрыть</button>
+    </div>
+</div>
+
+<!-- ===== МОДАЛКА ОТКРЫТИЯ ===== -->
+<div class="modal" id="caseModal">
+    <div class="modal-content">
+        <h2>🎰 Открытие кейса...</h2>
+        <div class="scroll-container">
+            <div class="arrow" id="arrow">▼</div>
+            <div class="scroll-track" id="scrollTrack"></div>
+        </div>
+        <div class="win-text" id="resultText"></div>
+        <button class="close-btn" onclick="closeModal()">Закрыть</button>
+    </div>
+</div>
+
+<script>
+// ============================================================
+//  КЛЮЧИ FIREBASE
+// ============================================================
+const firebaseConfig = {
+    apiKey: "AIzaSyDkV_vNvAln0tFOUXWSUTl6aOTftRz7DHU",
+    authDomain: "golddroppp.firebaseapp.com",
+    projectId: "golddroppp",
+    storageBucket: "golddroppp.firebasestorage.app",
+    messagingSenderId: "938800668444",
+    appId: "1:938800668444:web:41f82ac2ec7f3c5c03a4d9",
+    measurementId: "G-CGNW2HX952"
+};
+
+firebase.initializeApp(firebaseConfig);
+const auth = firebase.auth();
+
+// ============================================================
+//  БАЗА ДАННЫХ (СКИНЫ И КЕЙСЫ)
+// ============================================================
+const skinsList = [
+    { name: "P250 | Sand Dune", rarity: "Обычный", color: "#b0b0b0", emoji: "🟤", price: 10 },
+    { name: "Galil AR | Sage Spray", rarity: "Обычный", color: "#b0b0b0", emoji: "🌿", price: 12 },
+    { name: "MP7 | Forest DDPAT", rarity: "Обычный", color: "#b0b0b0", emoji: "🌲", price: 15 },
+    { name: "FAMAS | Colony IV", rarity: "Обычный", color: "#b0b0b0", emoji: "🏛️", price: 15 },
+    { name: "M4A4 | Dragon King", rarity: "Редкий", color: "#4b69ff", emoji: "🐉", price: 30 },
+    { name: "AK-47 | Cartel", rarity: "Редкий", color: "#4b69ff", emoji: "💀", price: 35 },
+    { name: "AWP | Worm God", rarity: "Редкий", color: "#4b69ff", emoji: "🐛", price: 40 },
+    { name: "USP-S | Orion", rarity: "Редкий", color: "#4b69ff", emoji: "🌟", price: 45 },
+    { name: "MP7 | Nemesis", rarity: "Эпический", color: "#8847ff", emoji: "😈", price: 70 },
+    { name: "Desert Eagle | Cobalt", rarity: "Эпический", color: "#8847ff", emoji: "🔵", price: 75 },
+    { name: "M4A4 | Бабулгам", rarity: "Легендарный", color: "#ff8000", emoji: "🔥", price: 120 },
+    { name: "AK-47 | Blood Moon", rarity: "Мифический", color: "#ff2d55", emoji: "🌙", price: 200 },
+    { name: "AWP | Dragon Lore", rarity: "Легендарный", color: "#ff8000", emoji: "🐉", price: 250 },
+    { name: "★ Нож | Ice Phantom", rarity: "Эпический", color: "#8847ff", emoji: "❄️", price: 150 }
+];
+
+const cases = [
+    { name: "Пыльный Шторм", price: 10, emoji: "🌪️", chance: 7 },
+    { name: "Лесной Призрак", price: 15, emoji: "🌿", chance: 7 },
+    { name: "Стальной Осколок", price: 20, emoji: "⚔️", chance: 7 },
+    { name: "Теневой Бандит", price: 25, emoji: "🔪", chance: 7 },
+    { name: "Ржавый Центурион", price: 30, emoji: "🛡️", chance: 7 },
+    { name: "Небесный Дракон", price: 50, emoji: "🐉", chance: 5 },
+    { name: "Ледяной Фантом", price: 70, emoji: "❄️", chance: 5 },
+    { name: "Кровавый Рассвет", price: 85, emoji: "🌅", chance: 5 },
+    { name: "Золотой Тигр", price: 100, emoji: "🐯", chance: 5 },
+    { name: "Изумрудный Ужас", price: 150, emoji: "💎", chance: 5 },
+    { name: "Адский Пламень", price: 200, emoji: "🔥", chance: 5 },
+    { name: "Теневой Лорд", price: 250, emoji: "👑", chance: 5 },
+    { name: "Космический Странник", price: 350, emoji: "🚀", chance: 5 },
+    { name: "Драконья Ярость", price: 450, emoji: "🐲", chance: 5 },
+    { name: "Бессмертный", price: 500, emoji: "⚡", chance: 5 }
+];
+
+// ============================================================
+//  СОСТОЯНИЕ
+// ============================================================
+let balance = 100;
+let inventory = [];
+let bonusClaimed = { tg: false, daily: false, cases: false };
+let upgradeSlots = new Array(10).fill(null);
+let targetSkin = null;
+let bonusGold = 0;
+let isArrowSpinning = false;
+let lastResult = null;
+let currentUser = null;
+let unverifiedUser = null;
+let verificationTimer = null;
+
+// ============================================================
+//  АВТОРИЗАЦИЯ (С УДАЛЕНИЕМ НЕПОДТВЕРЖДЁННЫХ АККАУНТОВ)
+// ============================================================
+function updateUIForUser(user) {
+    const userInfo = document.getElementById('userInfo');
+    const authForm = document.getElementById('authForm');
+    const playerId = document.getElementById('playerId');
+    const resendBtn = document.getElementById('resendEmailBtn');
+    
+    if (user) {
+        // Проверяем, подтверждена ли почта
+        if (!user.emailVerified) {
+            authForm.style.display = 'block';
+            userInfo.style.display = 'none';
+            document.getElementById('authInfo').textContent = '⚠️ Почта не подтверждена! Проверьте почту (включая спам). Если вы ошиблись почтой — зарегистрируйтесь заново. Аккаунт будет удалён через 5 минут.';
+            document.getElementById('authInfo').style.color = '#ffd700';
+            resendBtn.style.display = 'block';
+            
+            if (verificationTimer) clearTimeout(verificationTimer);
+            verificationTimer = setTimeout(() => {
+                if (user && !user.emailVerified) {
+                    user.delete().then(() => {
+                        document.getElementById('authInfo').textContent = '✅ Аккаунт удалён. Вы можете зарегистрироваться заново.';
+                        document.getElementById('authInfo').style.color = '#4b69ff';
+                        resendBtn.style.display = 'none';
+                        auth.signOut();
+                    }).catch(error => {
+                        console.error('Ошибка удаления:', error);
+                    });
+                }
+            }, 300000);
+            
+            unverifiedUser = user;
+            return;
+        }
+        
+        userInfo.style.display = 'flex';
+        authForm.style.display = 'none';
+        resendBtn.style.display = 'none';
+        document.getElementById('authInfo').textContent = '';
+        
+        const userData = loadUserData(user.uid);
+        const displayName = userData?.nickname || user.displayName || user.email || 'Игрок';
+        document.getElementById('userName').textContent = displayName;
+        document.getElementById('userAvatar').src = 'https://ui-avatars.com/api/?name=' + encodeURIComponent(displayName);
+        
+        if (userData && userData.playerId) {
+            playerId.textContent = userData.playerId;
+        } else {
+            const newId = Math.floor(Math.random() * 9999999999) + 1;
+            playerId.textContent = newId;
+            saveUserData(user.uid, { playerId: newId });
+        }
+        currentUser = user;
+        loadUserInventory(user.uid);
+        if (verificationTimer) clearTimeout(verificationTimer);
+    } else {
+        userInfo.style.display = 'none';
+        authForm.style.display = 'block';
+        playerId.textContent = 'Гость';
+        currentUser = null;
+        unverifiedUser = null;
+        resendBtn.style.display = 'none';
+        if (verificationTimer) clearTimeout(verificationTimer);
+        loadGlobalData();
+    }
+}
+
+// Повторная отправка письма
+document.getElementById('resendEmailBtn').addEventListener('click', () => {
+    if (unverifiedUser) {
+        unverifiedUser.sendEmailVerification();
+        document.getElementById('authInfo').textContent = '✅ Письмо отправлено повторно! Проверьте почту (включая спам).';
+        document.getElementById('authInfo').style.color = '#4b69ff';
+    }
+});
+
+function loadUserData(userId) {
+    const key = `golddrop_user_${userId}`;
+    const data = localStorage.getItem(key);
+    return data ? JSON.parse(data) : null;
+}
+
+function saveUserData(userId, data) {
+    const key = `golddrop_user_${userId}`;
+    const existing = loadUserData(userId) || {};
+    localStorage.setItem(key, JSON.stringify({ ...existing, ...data }));
+}
+
+function loadUserInventory(userId) {
+    const data = loadUserData(userId);
+    if (data) {
+        balance = data.balance || 100;
+        inventory = data.inventory || [];
+        bonusClaimed = data.bonusClaimed || { tg: false, daily: false, cases: false };
+    }
+    updateUI();
+}
+
+function saveUserInventory() {
+    if (!currentUser) return;
+    const data = { balance, inventory, bonusClaimed };
+    saveUserData(currentUser.uid, data);
+}
+
+function loadGlobalData() {
+    const key = 'golddrop_guest';
+    const data = localStorage.getItem(key);
+    if (data) {
+        const parsed = JSON.parse(data);
+        balance = parsed.balance || 100;
+        inventory = parsed.inventory || [];
+        bonusClaimed = parsed.bonusClaimed || { tg: false, daily: false, cases: false };
+    }
+    updateUI();
+}
+
+function saveGlobalData() {
+    const key = 'golddrop_guest';
+    const data = { balance, inventory, bonusClaimed };
+    localStorage.setItem(key, JSON.stringify(data));
+}
+
+function updateUI() {
+    document.getElementById('balanceDisplay').textContent = balance;
+    document.getElementById('sapperBalanceDisplay').textContent = balance;
+    renderInventory();
+    renderUpgradeInventory();
+    renderUpgradeSlots();
+    renderCases();
+}
+
+// Регистрация
+document.getElementById('registerBtn').addEventListener('click', () => {
+    const email = document.getElementById('emailInput').value;
+    const password = document.getElementById('passwordInput').value;
+    const errorDiv = document.getElementById('authError');
+    const successDiv = document.getElementById('authSuccess');
+    const infoDiv = document.getElementById('authInfo');
+    errorDiv.textContent = '';
+    successDiv.textContent = '';
+    infoDiv.textContent = '';
+    
+    if (!email || !password) {
+        errorDiv.textContent = '❌ Введите email и пароль';
+        return;
+    }
+    if (password.length < 6) {
+        errorDiv.textContent = '❌ Пароль должен быть минимум 6 символов';
+        return;
+    }
+    
+    auth.createUserWithEmailAndPassword(email, password)
+        .then((result) => {
+            result.user.sendEmailVerification();
+            infoDiv.textContent = `📧 Письмо отправлено на ${email}! Проверьте почту (включая папку «Спам»). Если вы ошиблись почтой — зарегистрируйтесь заново. Аккаунт будет удалён через 5 минут.`;
+            infoDiv.style.color = '#ffd700';
+            successDiv.textContent = '✅ Аккаунт создан!';
+            successDiv.style.color = '#4b69ff';
+            auth.signOut();
+        })
+        .catch(error => {
+            errorDiv.textContent = '❌ ' + error.message;
+        });
+});
+
+// Вход
+document.getElementById('signInBtn').addEventListener('click', () => {
+    const email = document.getElementById('emailInput').value;
+    const password = document.getElementById('passwordInput').value;
+    const errorDiv = document.getElementById('authError');
+    const successDiv = document.getElementById('authSuccess');
+    errorDiv.textContent = '';
+    successDiv.textContent = '';
+    
+    if (!email || !password) {
+        errorDiv.textContent = '❌ Введите email и пароль';
+        return;
+    }
+    
+    auth.signInWithEmailAndPassword(email, password)
+        .then((result) => {
+            if (!result.user.emailVerified) {
+                successDiv.textContent = '⚠️ Почта не подтверждена! Проверьте почту (включая спам). Аккаунт будет удалён через 5 минут.';
+                successDiv.style.color = '#ffd700';
+                result.user.sendEmailVerification();
+                auth.signOut();
+                return;
+            }
+            successDiv.textContent = '✅ Вход выполнен! Добро пожаловать!';
+            successDiv.style.color = '#4b69ff';
+            updateUIForUser(result.user);
+        })
+        .catch(error => {
+            errorDiv.textContent = '❌ ' + error.message;
+        });
+});
+
+// Восстановление пароля
+document.getElementById('resetPasswordBtn').addEventListener('click', () => {
+    const email = document.getElementById('emailInput').value;
+    const errorDiv = document.getElementById('authError');
+    errorDiv.textContent = '';
+    
+    if (!email) {
+        errorDiv.textContent = '❌ Введите email';
+        return;
+    }
+    
+    auth.sendPasswordResetEmail(email)
+        .then(() => {
+            errorDiv.textContent = '✅ Письмо для сброса пароля отправлено на ' + email;
+            errorDiv.style.color = '#4b69ff';
+        })
+        .catch(error => {
+            errorDiv.textContent = '❌ ' + error.message;
+        });
+});
+
+// Смена пароля
+document.getElementById('changePasswordBtn').addEventListener('click', () => {
+    if (!currentUser) {
+        alert('❌ Вы не авторизованы!');
+        return;
+    }
+    const newPassword = prompt('Введите новый пароль (минимум 6 символов):');
+    if (newPassword && newPassword.length >= 6) {
+        currentUser.updatePassword(newPassword)
+            .then(() => {
+                alert('✅ Пароль успешно изменён!');
+            })
+            .catch(error => {
+                alert('❌ Ошибка: ' + error.message);
+            });
+    } else {
+        alert('❌ Пароль должен быть минимум 6 символов');
+    }
+});
+
+// Выход
+document.getElementById('logoutBtn').addEventListener('click', () => {
+    auth.signOut();
+    saveGlobalData();
+});
+
+auth.onAuthStateChanged(user => {
+    updateUIForUser(user);
+});
+
+// ============================================================
+//  КЕЙСЫ, ИНВЕНТАРЬ, АПГРЕЙД, САПЁР (БЕЗ ИЗМЕНЕНИЙ)
+// ============================================================
+function renderCases() {
+    const grid = document.getElementById('casesGrid');
+    grid.innerHTML = '';
+    cases.forEach((c, index) => {
+        const card = document.createElement('div');
+        card.className = 'case-card';
+        card.innerHTML = `
+            <div class="emoji">${c.emoji}</div>
+            <div class="name">${c.name}</div>
+            <div class="price">💰 ${c.price} Gold</div>
+            <div class="chance">Шанс: ${c.chance}%</div>
+        `;
+        card.addEventListener('click', () => openCasePreview(index));
+        grid.appendChild(card);
+    });
+}
+
+function openCasePreview(index) {
+    const c = cases[index];
+    const modal = document.getElementById('previewModal');
+    document.getElementById('previewTitle').textContent = `📦 Кейс «${c.name}»`;
+    const list = document.getElementById('previewList');
+    list.innerHTML = '<p style="color:#888;font-size:14px;">🎯 Возможные скины:</p>';
+    skinsList.forEach(s => {
+        const div = document.createElement('div');
+        div.className = 'skin-item';
+        div.innerHTML = `
+            <span class="name">${s.emoji} ${s.name}</span>
+            <span class="price">${s.price} Gold</span>
+        `;
+        list.appendChild(div);
+    });
+    const btn = document.createElement('button');
+    btn.className = 'btn';
+    btn.textContent = `🎰 Открыть за ${c.price} Gold`;
+    btn.style.cssText = 'background: linear-gradient(135deg,#ffd700,#ff8c00);border:none;padding:12px 30px;font-size:16px;font-weight:bold;border-radius:12px;cursor:pointer;color:#000;margin-top:15px;width:100%;';
+    btn.addEventListener('click', () => {
+        closePreview();
+        openCase(index);
+    });
+    list.appendChild(btn);
+    modal.classList.add('active');
+}
+
+function closePreview() {
+    document.getElementById('previewModal').classList.remove('active');
+}
+
+function openCase(index) {
+    const c = cases[index];
+    if (balance < c.price) {
+        alert('❌ Недостаточно Gold!');
+        return;
+    }
+    balance -= c.price;
+    document.getElementById('balanceDisplay').textContent = balance;
+    document.getElementById('sapperBalanceDisplay').textContent = balance;
+
+    const modal = document.getElementById('caseModal');
+    const track = document.getElementById('scrollTrack');
+    const resultText = document.getElementById('resultText');
+
+    const win = skinsList[Math.floor(Math.random() * skinsList.length)];
+    inventory.push(win);
+
+    let items = '';
+    for (let i = 0; i < 40; i++) {
+        const s = skinsList[i % skinsList.length];
+        items += `<div class="scroll-item">
+                    <div class="skin-box" style="background:${s.color};">${s.emoji}</div>
+                    <div class="name">${s.name}</div>
+                    <div class="rarity" style="color:${s.color};">${s.rarity}</div>
+                 </div>`;
+    }
+    track.innerHTML = items;
+
+    const itemWidth = 122;
+    const containerWidth = 360;
+    const totalWidth = 40 * itemWidth;
+    const maxOffset = totalWidth - containerWidth;
+    let winIndex = 0;
+    for (let i = 0; i < 40; i++) {
+        const s = skinsList[i % skinsList.length];
+        if (s.name === win.name && s.rarity === win.rarity) {
+            winIndex = i;
+            break;
+        }
+    }
+    const targetOffset = Math.max(0, Math.min(winIndex * itemWidth - containerWidth/2 + itemWidth/2, maxOffset));
+
+    modal.classList.add('active');
+    resultText.textContent = '';
+    document.getElementById('arrow').style.display = 'block';
+
+    setTimeout(() => {
+        track.style.transition = 'transform 6s cubic-bezier(0.1, 0.8, 0.1, 1)';
+        track.style.transform = `translateX(-${targetOffset}px)`;
+    }, 100);
+
+    setTimeout(() => {
+        resultText.innerHTML = `🎉 <span style="color:${win.color};">${win.emoji} ${win.name}</span> (${win.rarity})!<br><span style="color:#ffd700;font-size:16px;">💰 ${win.price} Gold</span>`;
+        saveGlobalData();
+        renderInventory();
+        renderUpgradeInventory();
+    }, 6500);
+}
+
+function closeModal() {
+    document.getElementById('caseModal').classList.remove('active');
+    document.getElementById('scrollTrack').style.transform = 'translateX(0px)';
+    document.getElementById('resultText').textContent = '';
+}
+
+function renderInventory() {
+    const grid = document.getElementById('inventoryGrid');
+    grid.innerHTML = '';
+    if (inventory.length === 0) {
+        grid.innerHTML = '<p style="color:#444;font-size:14px;grid-column:span 3;">Инвентарь пуст</p>';
+        return;
+    }
+    inventory.forEach((skin, index) => {
+        const div = document.createElement('div');
+        div.className = 'inv-item';
+        div.innerHTML = `
+            <div class="emoji">${skin.emoji}</div>
+            <div class="name">${skin.name}</div>
+            <div class="rarity" style="color:${skin.color};">${skin.rarity}</div>
+            <div class="price">💰 ${skin.price} Gold</div>
+            <button class="btn-sell" data-index="${index}">Продать</button>
+        `;
+        div.querySelector('.btn-sell').addEventListener('click', (e) => {
+            e.stopPropagation();
+            sellSkin(index);
+        });
+        grid.appendChild(div);
+    });
+}
+
+function sellSkin(index) {
+    const skin = inventory[index];
+    balance += skin.price;
+    inventory.splice(index, 1);
+    document.getElementById('balanceDisplay').textContent = balance;
+    document.getElementById('sapperBalanceDisplay').textContent = balance;
+    saveGlobalData();
+    renderInventory();
+    renderUpgradeInventory();
+}
+
+function renderUpgradeSlots() {
+    const container = document.getElementById('upgradeSlots');
+    container.innerHTML = '';
+    upgradeSlots.forEach((slot, i) => {
+        const div = document.createElement('div');
+        div.className = 'upgrade-slot' + (slot ? ' filled' : '');
+        div.textContent = slot ? slot.emoji : '➕';
+        if (slot) {
+            const removeBtn = document.createElement('button');
+            removeBtn.className = 'remove-btn';
+            removeBtn.textContent = '✕';
+            removeBtn.addEventListener('click', (e) => {
+                e.stopPropagation();
+                clearUpgradeSlot(i);
+            });
+            div.appendChild(removeBtn);
+        }
+        container.appendChild(div);
+    });
+    updateUpgradeChance();
+    checkUpgradeArrow();
+}
+
+function checkUpgradeArrow() {
+    const filled = upgradeSlots.filter(s => s !== null).length;
+    const arrow = document.getElementById('upgradeArrow');
+    if (filled === 0) {
+        arrow.style.display = 'block';
+    } else {
+        arrow.style.display = 'none';
+    }
+}
+
+function clearUpgradeSlot(index) {
+    if (!upgradeSlots[index]) return;
+    inventory.push(upgradeSlots[index]);
+    upgradeSlots[index] = null;
+    saveGlobalData();
+    renderUpgradeSlots();
+    renderInventory();
+    renderUpgradeInventory();
+}
+
+function selectSkinForUpgrade(index) {
+    const skin = inventory[index];
+    if (!skin) return;
+    const emptyIdx = upgradeSlots.indexOf(null);
+    if (emptyIdx === -1) {
+        alert('❌ Все слоты заняты!');
+        return;
+    }
+    upgradeSlots[emptyIdx] = skin;
+    inventory.splice(index, 1);
+    saveGlobalData();
+    renderUpgradeSlots();
+    renderInventory();
+    renderUpgradeInventory();
+}
+
+function renderUpgradeInventory() {
+    const container = document.getElementById('upgradeInventory');
+    container.innerHTML = '';
+    if (inventory.length === 0) {
+        container.innerHTML = '<p style="color:#444;font-size:14px;grid-column:span 3;">Инвентарь пуст</p>';
+        return;
+    }
+    inventory.forEach((skin, index) => {
+        const div = document.createElement('div');
+        div.className = 'inv-item';
+        div.innerHTML = `
+            <div class="emoji">${skin.emoji}</div>
+            <div class="name">${skin.name}</div>
+            <div class="rarity" style="color:${skin.color};">${skin.rarity}</div>
+            <div class="price">💰 ${skin.price} Gold</div>
+            <button class="btn-sell" data-index="${index}">Выбрать</button>
+        `;
+        div.querySelector('.btn-sell').addEventListener('click', (e) => {
+            e.stopPropagation();
+            selectSkinForUpgrade(index);
+        });
+        container.appendChild(div);
+    });
+}
+
+function renderTargetSkins() {
+    const select = document.getElementById('targetSkinSelect');
+    select.innerHTML = '';
+    skinsList.forEach((skin, index) => {
+        const option = document.createElement('option');
+        option.value = index;
+        option.textContent = `${skin.emoji} ${skin.name} (${skin.price} Gold)`;
+        select.appendChild(option);
+    });
+    targetSkin = skinsList[0];
+}
+
+function updateUpgradeChance() {
+    const filled = upgradeSlots.filter(s => s !== null);
+    const targetIndex = document.getElementById('targetSkinSelect').value;
+    const target = skinsList[targetIndex] || skinsList[0];
+    targetSkin = target;
+    
+    const bonusGoldInput = parseInt(document.getElementById('bonusGoldInput').value) || 0;
+    bonusGold = Math.min(bonusGoldInput, balance);
+    document.getElementById('bonusGoldInput').value = bonusGold;
+    
+    const bonusChance = Math.floor(bonusGold / 10);
+    document.getElementById('bonusChanceDisplay').textContent = bonusChance;
+    
+    if (filled.length === 0 || !target) {
+        document.getElementById('chanceText').textContent = '0%';
+        document.getElementById('circleFill').style.strokeDashoffset = 597;
+        document.getElementById('upgradeBtn').disabled = true;
+        return;
+    }
+    
+    const totalPrice = filled.reduce((sum, s) => sum + s.price, 0);
+    const targetPrice = target.price;
+    
+    let chance = (totalPrice / targetPrice) * 100;
+    chance = Math.min(chance + bonusChance, 95);
+    chance = Math.round(chance);
+    
+    const circumference = 597;
+    const offset = circumference - (chance / 100) * circumference;
+    
+    document.getElementById('chanceText').textContent = `${chance}%`;
+    document.getElementById('circleFill').style.strokeDashoffset = offset;
+    document.getElementById('upgradeBtn').disabled = false;
+    document.getElementById('upgradeBtn').dataset.chance = chance;
+    document.getElementById('upgradeBtn').dataset.target = targetIndex;
+}
+
+document.getElementById('bonusGoldSlider').addEventListener('input', function() {
+    const val = parseInt(this.value);
+    document.getElementById('bonusGoldInput').value = val;
+    updateUpgradeChance();
+});
+
+document.getElementById('bonusGoldInput').addEventListener('input', function() {
+    let val = parseInt(this.value) || 0;
+    if (val < 0) val = 0;
+    if (val > balance) val = balance;
+    this.value = val;
+    document.getElementById('bonusGoldSlider').value = val;
+    updateUpgradeChance();
+});
+
+document.getElementById('targetSkinSelect').addEventListener('change', updateUpgradeChance);
+
+function spinCircleArrow(finalPercent, callback) {
+    const arrow = document.getElementById('arrowHandle');
+    const resultDisplay = document.getElementById('arrowResult');
+    resultDisplay.textContent = '...';
+    
+    const endAngle = (finalPercent / 100) * 360;
+    const extraSpins = Math.floor(Math.random() * 5) + 8;
+    const totalRotation = extraSpins * 360 + endAngle;
+    const duration = 4500 + Math.random() * 1500;
+    
+    const startTime = Date.now();
+    
+    function animate() {
+        const elapsed = Date.now() - startTime;
+        if (elapsed >= duration) {
+            arrow.style.transform = `translate(-50%, -100%) rotate(${totalRotation}deg)`;
+            resultDisplay.textContent = finalPercent + '%';
+            resultDisplay.style.color = finalPercent <= parseFloat(document.getElementById('chanceText').textContent) ? '#4b69ff' : '#ff2d55';
+            if (callback) callback();
+            return;
+        }
+        
+        const progress = elapsed / duration;
+        const eased = 1 - Math.pow(1 - progress, 5);
+        const currentAngle = eased * totalRotation;
+        arrow.style.transform = `translate(-50%, -100%) rotate(${currentAngle}deg)`;
+        
+        requestAnimationFrame(animate);
+    }
+    
+    animate();
+}
+
+document.getElementById('upgradeBtn').addEventListener('click', function() {
+    if (isArrowSpinning) return;
+    
+    const filled = upgradeSlots.filter(s => s !== null);
+    const targetIndex = parseInt(this.dataset.target);
+    const target = skinsList[targetIndex];
+    const chance = parseInt(this.dataset.chance);
+    const bonusGoldUsed = parseInt(document.getElementById('bonusGoldInput').value) || 0;
+    
+    if (filled.length === 0 || !target) {
+        alert('❌ Выберите скины и цель!');
+        return;
+    }
+    
+    if (bonusGoldUsed > balance) {
+        alert('❌ Недостаточно Gold для бонуса!');
+        return;
+    }
+    
+    isArrowSpinning = true;
+    this.disabled = true;
+    document.getElementById('upgradeResult').textContent = '🎯 Апгрейд в процессе...';
+    document.getElementById('upgradeResult').style.color = '#ffd700';
+    
+    let resultPercent;
+    let attempts = 0;
+    do {
+        resultPercent = Math.random() * 100;
+        attempts++;
+    } while (lastResult !== null && Math.abs(resultPercent - lastResult) < 3 && attempts < 20);
+    lastResult = resultPercent;
+    
+    spinCircleArrow(resultPercent, () => {
+        isArrowSpinning = false;
+        document.getElementById('upgradeBtn').disabled = false;
+        
+        const isSuccess = resultPercent <= chance;
+        const resultDiv = document.getElementById('upgradeResult');
+        
+        if (bonusGoldUsed > 0) {
+            balance -= bonusGoldUsed;
+            document.getElementById('balanceDisplay').textContent = balance;
+            document.getElementById('sapperBalanceDisplay').textContent = balance;
+        }
+        
+        upgradeSlots.fill(null);
+        
+        if (isSuccess) {
+            const winSkin = { ...target };
+            inventory.push(winSkin);
+            resultDiv.innerHTML = `🎉 АПГРЕЙД УСПЕШЕН!<br>${winSkin.emoji} ${winSkin.name} (${winSkin.rarity})`;
+            resultDiv.style.color = '#ffd700';
+        } else {
+            resultDiv.innerHTML = `💥 АПГРЕЙД НЕ УДАЛСЯ!<br>Скины сгорели`;
+            resultDiv.style.color = '#ff2d55';
+        }
+        
+        saveGlobalData();
+        renderUpgradeSlots();
+        renderInventory();
+        renderUpgradeInventory();
+        document.getElementById('bonusGoldInput').value = 0;
+        document.getElementById('bonusGoldSlider').value = 0;
+        updateUpgradeChance();
+    });
+});
+
+function claimBonus(type) {
+    if (bonusClaimed[type]) {
+        alert('❌ Бонус уже получен!');
+        return;
+    }
+    const rewards = { tg: 50, daily: 100, cases: 200 };
+    balance += rewards[type];
+    document.getElementById('balanceDisplay').textContent = balance;
+    document.getElementById('sapperBalanceDisplay').textContent = balance;
+    bonusClaimed[type] = true;
+    document.querySelectorAll('.btn-claim')[Object.keys(bonusClaimed).indexOf(type)].disabled = true;
+    saveGlobalData();
+    alert(`✅ Бонус получен! +${rewards[type]} Gold`);
+}
+
+function openSupport() {
+    document.getElementById('supportModal').classList.add('active');
+}
+
+function closeSupport() {
+    document.getElementById('supportModal').classList.remove('active');
+}
+
+document.getElementById('supportModal').addEventListener('click', function(e) {
+    if (e.target === this) closeSupport();
+});
+
+let sapperBet = 10;
+let sapperBombs = 9;
+let sapperGrid = [];
+let sapperRevealed = [];
+let sapperGameOver = false;
+let sapperFirstClick = true;
+let sapperCurrentWin = 0;
+let sapperOpenedCells = 0;
+
+const BASE_MULTIPLIER = 1.20;
+const STEP_MULTIPLIER = 0.20;
+const sapperMultipliers = { 9: 1.6, 12: 2.2, 15: 3.0, 20: 5.0 };
+
+function resetSapper() {
+    sapperGrid = [];
+    sapperRevealed = [];
+    sapperGameOver = false;
+    sapperFirstClick = true;
+    sapperCurrentWin = 0;
+    sapperOpenedCells = 0;
+    
+    const betInput = document.getElementById('sapperBetInput');
+    let val = parseInt(betInput.value) || 10;
+    if (val < 1) val = 1;
+    sapperBet = val;
+    betInput.placeholder = '10';
+    betInput.value = '';
+    
+    document.getElementById('sapperBalanceDisplay').textContent = balance;
+    document.getElementById('sapperStatus').textContent = `💰 Ставка: ${sapperBet} Gold | Выигрыш: 0 Gold`;
+    document.getElementById('sapperTakeBtn').disabled = true;
+    
+    renderSapperGrid();
+}
+
+function renderSapperGrid() {
+    const grid = document.getElementById('sapperGrid');
+    grid.innerHTML = '';
+    for (let i = 0; i < 25; i++) {
+        const cell = document.createElement('div');
+        cell.className = 'sapper-cell';
+        cell.dataset.index = i;
+        cell.textContent = '?';
+        cell.addEventListener('click', () => sapperClick(i));
+        grid.appendChild(cell);
+    }
+    sapperGrid = new Array(25).fill(0);
+    sapperRevealed = new Array(25).fill(false);
+}
+
+function sapperClick(index) {
+    if (sapperGameOver || sapperRevealed[index]) return;
+
+    if (sapperFirstClick) {
+        sapperFirstClick = false;
+        const betInput = document.getElementById('sapperBetInput');
+        let val = parseInt(betInput.value) || 10;
+        if (val < 1) val = 1;
+        sapperBet = val;
+        betInput.placeholder = '10';
+        betInput.value = '';
+        
+        if (balance < sapperBet) {
+            alert('❌ Недостаточно Gold!');
+            sapperGameOver = true;
+            document.getElementById('sapperStatus').textContent = '❌ Недостаточно Gold!';
+            return;
+        }
+        
+        let bombsPlaced = 0;
+        while (bombsPlaced < sapperBombs) {
+            const pos = Math.floor(Math.random() * 25);
+            if (pos !== index && sapperGrid[pos] !== 1) {
+                sapperGrid[pos] = 1;
+                bombsPlaced++;
+            }
+        }
+        if (sapperGrid[index] === 1) {
+            sapperGrid[index] = 0;
+            let newPos = Math.floor(Math.random() * 25);
+            while (newPos === index || sapperGrid[newPos] === 1) {
+                newPos = Math.floor(Math.random() * 25);
+            }
+            sapperGrid[newPos] = 1;
+        }
+        
+        balance -= sapperBet;
+        document.getElementById('balanceDisplay').textContent = balance;
+        document.getElementById('sapperBalanceDisplay').textContent = balance;
+        document.getElementById('sapperTakeBtn').disabled = false;
+        document.getElementById('sapperStatus').textContent = `💰 Ставка: ${sapperBet} Gold | Выигрыш: 0 Gold`;
+    }
+
+    if (sapperGrid[index] === 1) {
+        sapperGameOver = true;
+        revealAll();
+        document.getElementById('sapperStatus').textContent = `💥 БОМБА! Проиграно ${sapperBet} Gold`;
+        document.getElementById('sapperTakeBtn').disabled = true;
+        return;
+    }
+
+    sapperRevealed[index] = true;
+    sapperOpenedCells++;
+    const cell = document.querySelector(`.sapper-cell[data-index="${index}"]`);
+    cell.classList.add('revealed', 'safe');
+    cell.textContent = '✅';
+
+    const multiplier = BASE_MULTIPLIER + (sapperOpenedCells - 1) * STEP_MULTIPLIER;
+    sapperCurrentWin = Math.round(sapperBet * multiplier);
+
+    const safeCells = sapperGrid.filter(c => c === 0).length;
+    const revealedSafe = sapperRevealed.filter((r, i) => r && sapperGrid[i] === 0).length;
+    document.getElementById('sapperStatus').textContent = `💰 Выигрыш: ${sapperCurrentWin} Gold (${revealedSafe}/${safeCells} клеток) | x${multiplier.toFixed(2)}`;
+
+    if (revealedSafe === safeCells) {
+        sapperGameOver = true;
+        const winAmount = Math.round(sapperBet * sapperMultipliers[sapperBombs]);
+        balance += winAmount;
+        document.getElementById('balanceDisplay').textContent = balance;
+        document.getElementById('sapperBalanceDisplay').textContent = balance;
+        document.getElementById('sapperStatus').textContent = `🎉 ПОБЕДА! Вы выиграли ${winAmount} Gold (x${sapperMultipliers[sapperBombs]})!`;
+        revealAll();
+        document.getElementById('sapperTakeBtn').disabled = true;
+        saveGlobalData();
+        return;
+    }
+}
+
+function takeWin() {
+    if (sapperGameOver || sapperCurrentWin === 0) {
+        alert('❌ Нечего забирать!');
+        return;
+    }
+    balance += sapperCurrentWin;
+    document.getElementById('balanceDisplay').textContent = balance;
+    document.getElementById('sapperBalanceDisplay').textContent = balance;
+    document.getElementById('sapperStatus').textContent = `✅ Вы забрали ${sapperCurrentWin} Gold!`;
+    sapperGameOver = true;
+    revealAll();
+    document.getElementById('sapperTakeBtn').disabled = true;
+    saveGlobalData();
+}
+
+function revealAll() {
+    document.querySelectorAll('.sapper-cell').forEach(cell => {
+        const index = parseInt(cell.dataset.index);
+        if (!sapperRevealed[index]) {
+            cell.classList.add('revealed');
+            if (sapperGrid[index] === 1) {
+                cell.classList.add('bomb');
+                cell.textContent = '💣';
+            } else {
+                cell.classList.add('safe');
+                cell.textContent = '✅';
+            }
+        }
+    });
+}
+
+document.getElementById('sapperBetInput').addEventListener('input', function() {
+    let val = parseInt(this.value) || 10;
+    if (val < 1) val = 1;
+    sapperBet = val;
+    document.getElementById('sapperStatus').textContent = `💰 Ставка: ${sapperBet} Gold | Выигрыш: 0 Gold`;
+});
+
+document.querySelectorAll('#sapperDifficulty button').forEach(btn => {
+    btn.addEventListener('click', function() {
+        document.querySelectorAll('#sapperDifficulty button').forEach(b => b.classList.remove('active'));
+        this.classList.add('active');
+        sapperBombs = parseInt(this.dataset.bombs);
+        resetSapper();
+    });
+});
+
+document.querySelectorAll('.tab-btn').forEach(btn => {
+    btn.addEventListener('click', function() {
+        document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+        document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+        this.classList.add('active');
+        document.getElementById('tab-' + this.dataset.tab).classList.add('active');
+        if (this.dataset.tab === 'profile') renderInventory();
+        if (this.dataset.tab === 'upgrade') {
+            renderUpgradeSlots();
+            renderUpgradeInventory();
+            renderTargetSkins();
+            updateUpgradeChance();
+        }
+        if (this.dataset.tab === 'sapper') {
+            document.getElementById('sapperBalanceDisplay').textContent = balance;
+            renderSapperGrid();
+        }
+    });
+});
+
+// ============================================================
+//  ЗАПУСК
+// ============================================================
+renderCases();
+renderInventory();
+renderUpgradeSlots();
+renderUpgradeInventory();
+renderTargetSkins();
+updateUpgradeChance();
+document.getElementById('balanceDisplay').textContent = balance;
+resetSapper();
+loadGlobalData();
+
+// ============================================================
+//  ПРОВЕРКА ПОДТВЕРЖДЕНИЯ ПОЧТЫ ПРИ ЗАГРУЗКЕ
+// ============================================================
+// Если пользователь перешёл по ссылке из письма, он попадёт на сайт
+// и мы автоматически обновим его статус
+auth.onAuthStateChanged(user => {
+    if (user && user.emailVerified) {
+        updateUIForUser(user);
+        document.getElementById('authSuccess').textContent = '✅ Почта подтверждена! Добро пожаловать!';
+        document.getElementById('authSuccess').style.color = '#4b69ff';
+    }
+});
+</script>
+</body>
+</html>
