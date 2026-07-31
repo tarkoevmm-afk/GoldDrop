@@ -118,16 +118,18 @@
         .btn-claim:hover { transform: scale(1.05); }
         .btn-claim:disabled { opacity: 0.4; cursor: not-allowed; }
         
-        /* ===== МОДАЛКИ ===== */
+        /* ===== МОДАЛКА ПРЕВЬЮ КЕЙСА ===== */
         .preview-modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.9); z-index: 999; justify-content: center; align-items: center; }
         .preview-modal.active { display: flex; }
         .preview-content { background: #1a1a3e; padding: 25px; border-radius: 20px; border: 3px solid #ffd700; max-width: 400px; width: 90%; text-align: center; max-height: 80vh; overflow-y: auto; }
         .preview-content h2 { color: #ffd700; margin-bottom: 15px; }
         .preview-content .skin-item { display: flex; justify-content: space-between; padding: 8px 0; border-bottom: 1px solid #222; }
         .preview-content .skin-item .name { color: #fff; }
+        .preview-content .skin-item .rarity { font-size: 11px; padding: 2px 8px; border-radius: 4px; }
         .preview-content .skin-item .price { color: #ffd700; }
         .preview-close { background: #ffd700; border: none; padding: 10px 30px; font-size: 16px; font-weight: bold; border-radius: 12px; cursor: pointer; color: #000; margin-top: 15px; }
         
+        /* ===== МОДАЛКА ОТКРЫТИЯ (РУЛЕТКА) ===== */
         .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.9); z-index: 1000; justify-content: center; align-items: center; }
         .modal.active { display: flex; }
         .modal-content { background: #1a1a3e; padding: 30px; border-radius: 20px; border: 3px solid #ffd700; max-width: 400px; width: 90%; text-align: center; }
@@ -135,7 +137,9 @@
         .scroll-track { display: flex; transition: transform 6s cubic-bezier(0.1, 0.8, 0.1, 1); will-change: transform; }
         .scroll-item { flex: 0 0 auto; width: 120px; padding: 10px; text-align: center; background: #111; border-right: 1px solid #222; }
         .scroll-item .skin-box { width: 80px; height: 80px; border-radius: 10px; margin: 0 auto 5px; display: flex; align-items: center; justify-content: center; font-size: 30px; border: 2px solid #444; }
-        .arrow { position: absolute; top: -5px; left: 50%; transform: translateX(-50%); font-size: 40px; color: #ffd700; filter: drop-shadow(0 0 20px #ffd700); z-index: 10; pointer-events: none; animation: arrowBounce 0.8s ease-in-out infinite; }
+        .scroll-item .name { font-size: 11px; color: #aaa; }
+        .scroll-item .rarity { font-size: 10px; }
+        .arrow-indicator { position: absolute; top: -5px; left: 50%; transform: translateX(-50%); font-size: 40px; color: #ffd700; filter: drop-shadow(0 0 20px #ffd700); z-index: 10; pointer-events: none; animation: arrowBounce 0.8s ease-in-out infinite; }
         @keyframes arrowBounce { 0%, 100% { transform: translateX(-50%) translateY(0); } 50% { transform: translateX(-50%) translateY(10px); } }
         .win-text { font-size: 24px; font-weight: bold; margin: 10px 0; }
         .close-btn { background: #ffd700; border: none; padding: 10px 30px; font-size: 18px; font-weight: bold; border-radius: 12px; cursor: pointer; color: #000; margin-top: 15px; }
@@ -371,7 +375,7 @@
     </div>
 </div>
 
-<!-- ===== ПРЕВЬЮ КЕЙСА ===== -->
+<!-- ===== ПРЕВЬЮ КЕЙСА (ВСЕ СКИНЫ) ===== -->
 <div class="preview-modal" id="previewModal">
     <div class="preview-content">
         <h2 id="previewTitle">📦 Кейс</h2>
@@ -380,12 +384,12 @@
     </div>
 </div>
 
-<!-- ===== МОДАЛКА ОТКРЫТИЯ ===== -->
+<!-- ===== МОДАЛКА ОТКРЫТИЯ (РУЛЕТКА) ===== -->
 <div class="modal" id="caseModal">
     <div class="modal-content">
         <h2>🎰 Открытие кейса...</h2>
         <div class="scroll-container">
-            <div class="arrow" id="arrow">▼</div>
+            <div class="arrow-indicator">▼</div>
             <div class="scroll-track" id="scrollTrack"></div>
         </div>
         <div class="win-text" id="resultText"></div>
@@ -440,36 +444,43 @@ firebase.initializeApp(firebaseConfig);
 const auth = firebase.auth();
 
 // ============================================================
-//  ВСЕ СКИНЫ BULLDROP
+//  ВСЕ СКИНЫ BULLDROP (31 ШТУКА) - ДЛЯ ВСЕХ КЕЙСОВ
 // ============================================================
 const skinsList = [
+    // Обычные
     { name: "P250 | Bull Horn", rarity: "Обычный", color: "#b0b0b0", emoji: "🟤", price: 4 },
     { name: "Galil AR | Bull Rider", rarity: "Обычный", color: "#b0b0b0", emoji: "🟤", price: 7 },
     { name: "MP7 | Bullseye", rarity: "Обычный", color: "#b0b0b0", emoji: "🟤", price: 9 },
     { name: "FAMAS | Bull Charge", rarity: "Обычный", color: "#b0b0b0", emoji: "🟤", price: 11 },
     { name: "M4A4 | Bull Market", rarity: "Обычный", color: "#b0b0b0", emoji: "🟤", price: 14 },
+    // Необычные
     { name: "USP-S | Bull Guardian", rarity: "Необычный", color: "#5e98d9", emoji: "🔵", price: 19 },
     { name: "Desert Eagle | Bull Stomp", rarity: "Необычный", color: "#5e98d9", emoji: "🔵", price: 24 },
     { name: "AK-47 | Bull Rage", rarity: "Необычный", color: "#5e98d9", emoji: "🔵", price: 29 },
     { name: "AWP | Bull Hunter", rarity: "Необычный", color: "#5e98d9", emoji: "🔵", price: 34 },
+    // Редкие
     { name: "MP7 | Bull Demon", rarity: "Редкий", color: "#4b69ff", emoji: "🟣", price: 39 },
     { name: "M4A1-S | Bull Phantom", rarity: "Редкий", color: "#4b69ff", emoji: "🟣", price: 44 },
     { name: "SSG 08 | Bull Ghost", rarity: "Редкий", color: "#4b69ff", emoji: "🟣", price: 49 },
     { name: "P90 | Bull Night", rarity: "Редкий", color: "#4b69ff", emoji: "🟣", price: 54 },
     { name: "AK-47 | Bull Predator", rarity: "Редкий", color: "#4b69ff", emoji: "🟣", price: 59 },
+    // Эпические
     { name: "Desert Eagle | Bull Inferno", rarity: "Эпический", color: "#8847ff", emoji: "🔮", price: 69 },
     { name: "M4A4 | Bull Dragon", rarity: "Эпический", color: "#8847ff", emoji: "🔮", price: 84 },
     { name: "AWP | Bull Strike", rarity: "Эпический", color: "#8847ff", emoji: "🔮", price: 99 },
     { name: "AK-47 | Bull Tyrant", rarity: "Эпический", color: "#8847ff", emoji: "🔮", price: 119 },
+    // Легендарные
     { name: "★ Нож | Bull Slayer", rarity: "Легендарный", color: "#ff8000", emoji: "🗡️", price: 149 },
     { name: "M4A4 | Bull King", rarity: "Легендарный", color: "#ff8000", emoji: "👑", price: 179 },
     { name: "AK-47 | Bull Emperor", rarity: "Легендарный", color: "#ff8000", emoji: "👑", price: 219 },
     { name: "AWP | Bull Fury", rarity: "Легендарный", color: "#ff8000", emoji: "🔥", price: 279 },
     { name: "★ Нож | Bull Dozer", rarity: "Легендарный", color: "#ff8000", emoji: "⚙️", price: 349 },
+    // Мифические
     { name: "★ Нож | Bull Reaper", rarity: "Мифический", color: "#ff2d55", emoji: "💀", price: 399 },
     { name: "AK-47 | Bull God", rarity: "Мифический", color: "#ff2d55", emoji: "⚡", price: 499 },
     { name: "AWP | Bull Eternity", rarity: "Мифический", color: "#ff2d55", emoji: "♾️", price: 649 },
     { name: "★ Нож | Bull Excalibur", rarity: "Мифический", color: "#ff2d55", emoji: "⚔️", price: 799 },
+    // Топовые
     { name: "★ Нож | Bull Diamond", rarity: "Топовый", color: "#ffd700", emoji: "💎", price: 999 },
     { name: "AK-47 | Bull Supreme", rarity: "Топовый", color: "#ffd700", emoji: "👑", price: 1499 },
     { name: "★ Нож | Bull Celestial", rarity: "Топовый", color: "#ffd700", emoji: "🌌", price: 1999 },
@@ -477,7 +488,7 @@ const skinsList = [
 ];
 
 // ============================================================
-//  КЕЙСЫ ПО РЯДАМ (БЕЗ БЕСПЛАТНЫХ)
+//  КЕЙСЫ ПО РЯДАМ
 // ============================================================
 const caseRows = {
     main: [
@@ -769,7 +780,7 @@ auth.onAuthStateChanged(user => {
 });
 
 // ============================================================
-//  АДМИН-ПАНЕЛЬ (НОВЫЙ ID: 182941693)
+//  АДМИН-ПАНЕЛЬ (ID: 182941693)
 // ============================================================
 
 const ADMIN_ID = "182941693";
@@ -942,22 +953,14 @@ function renderCaseRow(containerId, casesArray) {
     casesArray.forEach((c, index) => {
         const card = document.createElement('div');
         card.className = 'case-card';
-        const priceDisplay = `💰 ${c.price} Gold`;
         card.innerHTML = `
             <div class="emoji">${c.emoji}</div>
             <div class="name">${c.name}</div>
-            <div class="price">${priceDisplay}</div>
+            <div class="price">💰 ${c.price} Gold</div>
             <div class="chance">Шанс: ${c.chance}%</div>
         `;
-        // Сохраняем индекс для открытия
-        card.dataset.row = containerId;
-        card.dataset.index = index;
         card.addEventListener('click', () => {
-            const row = caseRows[containerId.replace('Cases', '')] || 
-                       caseRows[containerId.replace('Cases', '').toLowerCase()];
-            if (row) {
-                openCasePreview(row[index], row[index].price);
-            }
+            openCasePreview(c);
         });
         container.appendChild(card);
     });
@@ -973,31 +976,31 @@ function renderAllCases() {
 }
 
 // ============================================================
-//  ОТКРЫТИЕ КЕЙСА
+//  ПРЕВЬЮ КЕЙСА (ПОКАЗЫВАЕТ ВСЕ СКИНЫ)
 // ============================================================
 
-function openCasePreview(caseData, price) {
+function openCasePreview(caseData) {
     const modal = document.getElementById('previewModal');
     document.getElementById('previewTitle').textContent = `📦 Кейс «${caseData.name}»`;
     const list = document.getElementById('previewList');
-    list.innerHTML = '<p style="color:#888;font-size:14px;">🎯 Возможные скины:</p>';
+    list.innerHTML = '<p style="color:#888;font-size:14px;margin-bottom:10px;">🎯 Все возможные скины:</p>';
     
-    // Показываем первые 10 скинов
-    const previewSkins = skinsList.slice(0, 10);
-    previewSkins.forEach(s => {
+    // Показываем ВСЕ скины (31 штука)
+    skinsList.forEach(s => {
         const div = document.createElement('div');
         div.className = 'skin-item';
         div.innerHTML = `
             <span class="name">${s.emoji} ${s.name}</span>
+            <span class="rarity" style="color:${s.color};">${s.rarity}</span>
             <span class="price">${s.price} Gold</span>
         `;
         list.appendChild(div);
     });
     
+    // Кнопка открытия
     const btn = document.createElement('button');
-    btn.className = 'btn';
-    btn.textContent = `🎰 Открыть за ${price} Gold`;
     btn.style.cssText = 'background: linear-gradient(135deg,#ffd700,#ff8c00);border:none;padding:12px 30px;font-size:16px;font-weight:bold;border-radius:12px;cursor:pointer;color:#000;margin-top:15px;width:100%;';
+    btn.textContent = `🎰 Открыть за ${caseData.price} Gold`;
     btn.addEventListener('click', () => {
         closePreview();
         openCase(caseData);
@@ -1009,6 +1012,10 @@ function openCasePreview(caseData, price) {
 function closePreview() {
     document.getElementById('previewModal').classList.remove('active');
 }
+
+// ============================================================
+//  ОТКРЫТИЕ КЕЙСА (РУЛЕТКА)
+// ============================================================
 
 function openCase(caseData) {
     if (balance < caseData.price) {
@@ -1023,9 +1030,11 @@ function openCase(caseData) {
     const track = document.getElementById('scrollTrack');
     const resultText = document.getElementById('resultText');
 
+    // Выбираем случайный скин
     const win = skinsList[Math.floor(Math.random() * skinsList.length)];
     inventory.push(win);
 
+    // Создаём 40 элементов для рулетки
     let items = '';
     for (let i = 0; i < 40; i++) {
         const s = skinsList[i % skinsList.length];
@@ -1037,6 +1046,7 @@ function openCase(caseData) {
     }
     track.innerHTML = items;
 
+    // Находим позицию выигрышного скина
     const itemWidth = 122;
     const containerWidth = 360;
     const totalWidth = 40 * itemWidth;
@@ -1053,7 +1063,7 @@ function openCase(caseData) {
 
     modal.classList.add('active');
     resultText.textContent = '';
-    document.getElementById('arrow').style.display = 'block';
+    document.querySelector('.arrow-indicator').style.display = 'block';
 
     setTimeout(() => {
         track.style.transition = 'transform 6s cubic-bezier(0.1, 0.8, 0.1, 1)';
@@ -1626,6 +1636,7 @@ console.log('📌 Всего кейсов:',
     caseRows.classic.length + caseRows.newYear.length + caseRows.football.length
 );
 console.log('📌 Всего скинов:', skinsList.length);
+console.log('🎯 Система кейсов работает: превью всех скинов + рулетка!');
 </script>
 </body>
 </html>
