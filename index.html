@@ -12,49 +12,52 @@
         .container { text-align: center; padding: 20px; max-width: 480px; width: 100%; }
         .logo { font-size: 42px; font-weight: 900; background: linear-gradient(135deg, #ffd700, #ff8c00); -webkit-background-clip: text; -webkit-text-fill-color: transparent; margin-bottom: 15px; letter-spacing: 2px; }
         
-        /* ===== ВКЛАДКИ ПО ЦЕНТРУ И БОЛЬШИЕ ===== */
+        /* ===== ВКЛАДКИ ПО ЦЕНТРУ, БОЛЬШИЕ, ЧУТЬ ПРАВЕЕ ===== */
         .tabs {
             display: flex;
-            gap: 8px;
+            gap: 10px;
             margin: 15px auto;
             background: #1a1a2e;
-            border-radius: 18px;
-            padding: 6px;
+            border-radius: 20px;
+            padding: 8px 12px;
             border: 1px solid #2a2a4a;
             justify-content: center;
-            max-width: 440px;
+            max-width: 460px;
+            padding-left: 20px;
+            padding-right: 10px;
         }
         .tab-btn {
             background: transparent;
             border: none;
             color: #888;
-            padding: 12px 16px;
-            font-size: 15px;
+            padding: 14px 18px;
+            font-size: 17px;
             font-weight: bold;
             cursor: pointer;
-            border-radius: 14px;
+            border-radius: 16px;
             flex: 1;
-            min-width: 60px;
+            min-width: 70px;
             transition: 0.3s;
             text-align: center;
+            letter-spacing: 0.5px;
         }
         .tab-btn.active {
             background: #ffd700;
             color: #000;
-            box-shadow: 0 0 30px rgba(255,215,0,0.4);
-            transform: scale(1.05);
+            box-shadow: 0 0 35px rgba(255,215,0,0.5);
+            transform: scale(1.08);
         }
         .tab-btn:hover {
             color: #fff;
-            background: rgba(255,215,0,0.1);
+            background: rgba(255,215,0,0.15);
         }
         .tab-content { display: none; }
         .tab-content.active { display: block; }
         
-        /* ===== КЕЙСЫ С АВАТАРКАМИ 200×200 (КАК В BULL DROP) ===== */
+        /* ===== КЕЙСЫ ПО 2 В РЯД ===== */
         .cases-grid {
             display: grid;
-            grid-template-columns: repeat(3, 1fr);
+            grid-template-columns: repeat(2, 1fr);
             gap: 16px;
             margin-bottom: 24px;
         }
@@ -77,8 +80,8 @@
             border-color: #ffd700;
         }
         .case-card .case-avatar {
-            width: 200px;
-            height: 200px;
+            width: 180px;
+            height: 180px;
             object-fit: contain;
             border-radius: 16px;
             margin: 0 auto 8px;
@@ -88,7 +91,7 @@
             border: 2px solid #2a2a5e;
         }
         .case-card .emoji {
-            font-size: 120px;
+            font-size: 100px;
             margin-bottom: 6px;
         }
         .case-card .name {
@@ -267,7 +270,7 @@
 <div class="container">
     <div class="logo">🎰 GoldDrop 4.0</div>
 
-    <!-- ===== ВКЛАДКИ ПО ЦЕНТРУ (БОЛЬШИЕ) ===== -->
+    <!-- ===== ВКЛАДКИ ПО ЦЕНТРУ, БОЛЬШИЕ, ЧУТЬ ПРАВЕЕ ===== -->
     <div class="tabs">
         <button class="tab-btn active" data-tab="cases">🏠 Кейсы</button>
         <button class="tab-btn" data-tab="upgrade">🔧 Апгрейд</button>
@@ -607,11 +610,9 @@ function saveUserData(userId, data) {
 function getOrCreatePlayerId(user) {
     const userId = user.uid;
     const data = loadUserData(userId);
-    // ✅ ЕСЛИ ID УЖЕ ЕСТЬ — ВОЗВРАЩАЕМ ЕГО (НЕ СОЗДАЁМ НОВЫЙ!)
     if (data && data.playerId) {
         return data.playerId;
     }
-    // Если нет — создаём новый
     const newId = Math.floor(Math.random() * 9999999999) + 1;
     saveUserData(userId, { 
         playerId: newId, 
@@ -637,7 +638,13 @@ function updateUIForUser(user) {
         playerId.textContent = playerIdValue;
         currentUser = user;
         loadUserInventory(user.uid);
-        addAdminButtonIfNeeded(playerIdValue);
+        
+        // Админ-панель по ПОЧТЕ
+        if (user.email && user.email.toLowerCase() === "tarkoevmm@gmail.com") {
+            addAdminButtonIfNeeded();
+        } else {
+            removeAdminButton();
+        }
     } else {
         userInfo.style.display = 'none';
         authForm.style.display = 'block';
@@ -803,30 +810,26 @@ auth.onAuthStateChanged(user => {
     updateUIForUser(user);
 });
 
-const ADMIN_ID = "182941693";
+// ============================================================
+//  АДМИН-ПАНЕЛЬ ПО ПОЧТЕ (НЕ ПО ID)
+// ============================================================
 
-function isAdmin(playerId) {
-    return playerId && playerId.toString() === ADMIN_ID.toString();
-}
-
-function addAdminButtonIfNeeded(playerId) {
+function addAdminButtonIfNeeded() {
     const authSection = document.getElementById('authSection');
     if (!authSection) return;
     removeAdminButton();
-    if (isAdmin(playerId)) {
-        const btn = document.createElement('button');
-        btn.id = 'adminPanelBtn';
-        btn.className = 'admin-panel-btn';
-        btn.textContent = '👑 Админ-панель';
-        btn.addEventListener('click', () => {
-            document.getElementById('adminModal').classList.add('active');
-            document.getElementById('adminMessage').style.display = 'none';
-            document.getElementById('adminPlayerId').value = '';
-            document.getElementById('adminAmount').value = '';
-            document.getElementById('adminHistoryList').style.display = 'none';
-        });
-        authSection.appendChild(btn);
-    }
+    const btn = document.createElement('button');
+    btn.id = 'adminPanelBtn';
+    btn.className = 'admin-panel-btn';
+    btn.textContent = '👑 Админ-панель';
+    btn.addEventListener('click', () => {
+        document.getElementById('adminModal').classList.add('active');
+        document.getElementById('adminMessage').style.display = 'none';
+        document.getElementById('adminPlayerId').value = '';
+        document.getElementById('adminAmount').value = '';
+        document.getElementById('adminHistoryList').style.display = 'none';
+    });
+    authSection.appendChild(btn);
 }
 
 function removeAdminButton() {
@@ -879,7 +882,7 @@ document.getElementById('adminAddBtn').addEventListener('click', function() {
                     history.push({
                         date: new Date().toLocaleString(),
                         amount: amount,
-                        admin: ADMIN_ID
+                        admin: "tarkoevmm@gmail.com"
                     });
                     localStorage.setItem(historyKey, JSON.stringify(history));
                     
@@ -913,7 +916,7 @@ document.getElementById('adminAddBtn').addEventListener('click', function() {
                     history.push({
                         date: new Date().toLocaleString(),
                         amount: amount,
-                        admin: ADMIN_ID
+                        admin: "tarkoevmm@gmail.com"
                     });
                     localStorage.setItem(historyKey, JSON.stringify(history));
                 }
@@ -1605,14 +1608,13 @@ resetSapper();
 loadGlobalData();
 
 console.log('✅ GoldDrop 4.0 загружен!');
-console.log('👑 Твой ID администратора:', ADMIN_ID);
+console.log('👑 Админ-панель по почте: tarkoevmm@gmail.com');
 console.log('📌 Всего кейсов:', 
     caseRows.main.length + caseRows.sweet.length + caseRows.japan.length + 
     caseRows.classic.length + caseRows.newYear.length + caseRows.football.length
 );
 console.log('📌 Всего скинов:', skinsList.length);
-console.log('🎯 Аватарки 200×200 для ряда "Проклятый остров" добавлены!');
-console.log('✅ ID теперь НЕ МЕНЯЕТСЯ при повторном входе!');
+console.log('✅ Ряд теперь по 2 кейса!');
 </script>
 </body>
 </html>
