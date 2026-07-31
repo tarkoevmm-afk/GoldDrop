@@ -429,66 +429,120 @@ const skinsList = [
 ];
 
 // ============================================================
-//  ВСЕ КЕЙСЫ BULLDROP (ТОЧНО ПО СКРИНАМ)
+//  ВСЕ КЕЙСЫ BULLDROP (100 ШТУК) С ЦЕНАМИ НА 1 МЕНЬШЕ
 // ============================================================
 const cases = [
-    // ===== БЕСПЛАТНЫЕ КЕЙСЫ =====
-    { name: "Бесплатный кейс", price: 0, emoji: "🎁", chance: 100 },
-    { name: "Бесплатный кейс", price: 0, emoji: "🎁", chance: 100 },
-    { name: "Бесплатный кейс", price: 0, emoji: "🎁", chance: 100 },
-    
-    // ===== ПРОКЛЯТЫЙ ОСТРОВ =====
-    { name: "Райское извержение", price: 19, emoji: "🌋", chance: 8 },
-    { name: "Розовый оазис", price: 39, emoji: "🌺", chance: 8 },
-    { name: "Гавайский отдых", price: 59, emoji: "🏝️", chance: 7 },
-    { name: "Ядовитая флора", price: 99, emoji: "☠️", chance: 7 },
-    { name: "Тропическое наслаждение", price: 199, emoji: "🌴", chance: 6 },
-    { name: "Гнев тики", price: 399, emoji: "🗿", chance: 6 },
-    { name: "Игроическое наслаждение", price: 399, emoji: "🎮", chance: 5 },
-    { name: "Проклятый тотем", price: 699, emoji: "🪬", chance: 5 },
-    { name: "Тайна острова", price: 1499, emoji: "🏴‍☠️", chance: 4 },
+    // Базовые кейсы (49-159 Gold)
+    { name: "Бычий Гнев", price: 49, emoji: "🐂", chance: 8 },
+    { name: "Золотой Телец", price: 59, emoji: "🐃", chance: 8 },
+    { name: "Теневой Бык", price: 69, emoji: "🌑", chance: 8 },
+    { name: "Ледяной Рог", price: 79, emoji: "❄️", chance: 8 },
+    { name: "Огненный Копыт", price: 89, emoji: "🔥", chance: 7 },
+    { name: "Стальной Копыт", price: 99, emoji: "⚙️", chance: 7 },
+    { name: "Кровавый Рог", price: 109, emoji: "🩸", chance: 7 },
+    { name: "Призрачный Бык", price: 119, emoji: "👻", chance: 7 },
+    { name: "Громовой Телец", price: 129, emoji: "⛈️", chance: 7 },
+    { name: "Изумрудный Рог", price: 139, emoji: "💚", chance: 7 },
+    { name: "Сапфировый Копыт", price: 149, emoji: "💙", chance: 6 },
+    { name: "Рубиновый Бык", price: 159, emoji: "❤️", chance: 6 },
 
-    // ===== СЛАДКАЯ СЕРИЯ =====
-    { name: "Twix", price: 65, emoji: "🍫", chance: 8 },
-    { name: "Snickers", price: 70, emoji: "🥜", chance: 8 },
-    { name: "Bounty", price: 75, emoji: "🥥", chance: 7 },
-    { name: "KitKat", price: 135, emoji: "🍫", chance: 7 },
+    // Средние кейсы (169-349 Gold)
+    { name: "Драконий Рог", price: 169, emoji: "🐉", chance: 6 },
+    { name: "Феникс Копыт", price: 179, emoji: "🔥", chance: 6 },
+    { name: "Теневой Рог", price: 189, emoji: "🌑", chance: 6 },
+    { name: "Космический Бык", price: 199, emoji: "🚀", chance: 6 },
+    { name: "Лунный Телец", price: 209, emoji: "🌙", chance: 5 },
+    { name: "Солнечный Бык", price: 219, emoji: "☀️", chance: 5 },
+    { name: "Звёздный Рог", price: 229, emoji: "⭐", chance: 5 },
+    { name: "Адский Бык", price: 239, emoji: "👿", chance: 5 },
+    { name: "Райский Телец", price: 249, emoji: "😇", chance: 5 },
+    { name: "Водный Рог", price: 259, emoji: "🌊", chance: 5 },
+    { name: "Земной Копыт", price: 269, emoji: "🌍", chance: 5 },
+    { name: "Воздушный Бык", price: 279, emoji: "🌪️", chance: 5 },
+    { name: "Огненный Телец", price: 289, emoji: "🔥", chance: 5 },
+    { name: "Ледяный Бык", price: 299, emoji: "❄️", chance: 5 },
+    { name: "Грозовой Рог", price: 309, emoji: "⚡", chance: 4 },
+    { name: "Каменный Копыт", price: 319, emoji: "🪨", chance: 4 },
+    { name: "Железный Бык", price: 329, emoji: "🛡️", chance: 4 },
+    { name: "Бронзовый Рог", price: 339, emoji: "🥉", chance: 4 },
+    { name: "Серебряный Копыт", price: 349, emoji: "🥈", chance: 4 },
 
-    // ===== ЯПОНСКИЙ СТИЛЬ =====
-    { name: "Sparkling Gaze", price: 39, emoji: "👀", chance: 8 },
-    { name: "Northern Lights", price: 99, emoji: "🌌", chance: 7 },
-    { name: "Pink Shot", price: 159, emoji: "🌸", chance: 7 },
-    { name: "Wavesong", price: 219, emoji: "🌊", chance: 6 },
-    { name: "Vermillion", price: 279, emoji: "🔴", chance: 6 },
-    { name: "Hanami", price: 339, emoji: "🌺", chance: 5 },
-    { name: "Ronin", price: 399, emoji: "⚔️", chance: 5 },
-    { name: "Amber koi", price: 459, emoji: "🐟", chance: 5 },
+    // Дорогие кейсы (359-599 Gold)
+    { name: "Золотой Рог", price: 359, emoji: "🥇", chance: 4 },
+    { name: "Платиновый Бык", price: 369, emoji: "💎", chance: 4 },
+    { name: "Алмазный Телец", price: 379, emoji: "💎", chance: 4 },
+    { name: "Изумрудный Бык", price: 389, emoji: "💚", chance: 4 },
+    { name: "Сапфировый Бык", price: 399, emoji: "💙", chance: 4 },
+    { name: "Рубиновый Рог", price: 409, emoji: "❤️", chance: 4 },
+    { name: "Топасовый Копыт", price: 419, emoji: "🧡", chance: 4 },
+    { name: "Аметистовый Бык", price: 429, emoji: "💜", chance: 4 },
+    { name: "Ониксовый Рог", price: 439, emoji: "⚫", chance: 4 },
+    { name: "Жемчужный Телец", price: 449, emoji: "🤍", chance: 4 },
+    { name: "Янтарный Бык", price: 459, emoji: "🟠", chance: 4 },
+    { name: "Коралловый Рог", price: 469, emoji: "🪸", chance: 4 },
+    { name: "Нефритовый Копыт", price: 479, emoji: "🟢", chance: 4 },
+    { name: "Лазурный Бык", price: 489, emoji: "🔵", chance: 4 },
+    { name: "Пурпурный Телец", price: 499, emoji: "🟣", chance: 3 },
+    { name: "Розовый Рог", price: 509, emoji: "🩷", chance: 3 },
+    { name: "Чёрный Бык", price: 519, emoji: "⬛", chance: 3 },
+    { name: "Белый Телец", price: 529, emoji: "⬜", chance: 3 },
+    { name: "Серый Рог", price: 539, emoji: "🔘", chance: 3 },
 
-    // ===== CLASSIC =====
-    { name: "LAKESIDE", price: 105, emoji: "🏞️", chance: 7 },
-    { name: "CALYPSO", price: 119, emoji: "🎵", chance: 7 },
-    { name: "Sharp", price: 150, emoji: "🔪", chance: 6 },
-    { name: "Scorpion", price: 150, emoji: "🦂", chance: 6 },
-    { name: "Revenge", price: 190, emoji: "💀", chance: 6 },
-    { name: "Empire", price: 240, emoji: "🏛️", chance: 5 },
-    { name: "Rival", price: 330, emoji: "⚔️", chance: 5 },
-    { name: "Fable", price: 400, emoji: "📖", chance: 4 },
+    // Очень дорогие кейсы (549-999 Gold)
+    { name: "Мифический Рог", price: 549, emoji: "⚡", chance: 3 },
+    { name: "Легендарный Копыт", price: 559, emoji: "🏆", chance: 3 },
+    { name: "Эпический Бык", price: 569, emoji: "🔮", chance: 3 },
+    { name: "Драконий Бык", price: 579, emoji: "🐉", chance: 3 },
+    { name: "Феникс Бык", price: 589, emoji: "🔥", chance: 3 },
+    { name: "Космический Рог", price: 599, emoji: "🚀", chance: 3 },
+    { name: "Галактический Телец", price: 619, emoji: "🌌", chance: 3 },
+    { name: "Туманный Бык", price: 639, emoji: "🌫️", chance: 3 },
+    { name: "Радужный Рог", price: 659, emoji: "🌈", chance: 3 },
+    { name: "Звёздный Бык", price: 679, emoji: "⭐", chance: 3 },
+    { name: "Планетарный Телец", price: 699, emoji: "🪐", chance: 3 },
+    { name: "Солнечный Рог", price: 719, emoji: "☀️", chance: 3 },
+    { name: "Лунный Бык", price: 739, emoji: "🌙", chance: 3 },
+    { name: "Теневой Телец", price: 759, emoji: "🌑", chance: 3 },
+    { name: "Световой Рог", price: 779, emoji: "✨", chance: 3 },
+    { name: "Хаотичный Копыт", price: 799, emoji: "🔥", chance: 3 },
+    { name: "Порядковый Бык", price: 819, emoji: "⚖️", chance: 3 },
+    { name: "Вечный Рог", price: 839, emoji: "♾️", chance: 3 },
+    { name: "Бесконечный Телец", price: 859, emoji: "∞", chance: 3 },
+    { name: "Абсолютный Бык", price: 879, emoji: "👑", chance: 3 },
 
-    // ===== НОВЫЙ ГОД =====
-    { name: "Новый 2021 год", price: 666, emoji: "🎆", chance: 4 },
-    { name: "Возрождение", price: 1000, emoji: "🌟", chance: 4 },
-    { name: "Furious", price: 1400, emoji: "🔥", chance: 3 },
-    { name: "Project Z9", price: 6600, emoji: "🤖", chance: 2 },
+    // Топовые кейсы (899-2499 Gold)
+    { name: "Бог Быков", price: 899, emoji: "⚡", chance: 2 },
+    { name: "Император Рогов", price: 949, emoji: "👑", chance: 2 },
+    { name: "Король Копыт", price: 999, emoji: "🏆", chance: 2 },
+    { name: "Властелин Телцов", price: 1049, emoji: "👾", chance: 2 },
+    { name: "Повелитель Быков", price: 1099, emoji: "🔥", chance: 2 },
+    { name: "Царь Рогов", price: 1149, emoji: "⚔️", chance: 2 },
+    { name: "Легенда Копыт", price: 1199, emoji: "🏅", chance: 2 },
+    { name: "Миф Телцов", price: 1249, emoji: "📜", chance: 2 },
+    { name: "Эпос Быков", price: 1299, emoji: "📖", chance: 2 },
+    { name: "Сага Рогов", price: 1349, emoji: "⚔️", chance: 2 },
+    { name: "Космический Телец", price: 1399, emoji: "🚀", chance: 2 },
+    { name: "Галактический Рог", price: 1449, emoji: "🌌", chance: 2 },
+    { name: "Бесконечный Копыт", price: 1499, emoji: "∞", chance: 2 },
+    { name: "Вечный Бык", price: 1599, emoji: "⏳", chance: 2 },
+    { name: "Абсолютный Рог", price: 1699, emoji: "💎", chance: 2 },
+    { name: "Высший Телец", price: 1799, emoji: "👑", chance: 2 },
+    { name: "Божественный Бык", price: 1899, emoji: "✨", chance: 2 },
+    { name: "Священный Рог", price: 1999, emoji: "⛪", chance: 1.5 },
+    { name: "Бессмертный Копыт", price: 2199, emoji: "♾️", chance: 1.5 },
+    { name: "Вечный Телец", price: 2499, emoji: "🕊️", chance: 1.5 },
 
-    // ===== ЛЕГЕНДЫ ФУТБОЛА =====
-    { name: "Неймар", price: 400, emoji: "🇧🇷", chance: 5 },
-    { name: "М6анне", price: 425, emoji: "🇫🇷", chance: 5 },
-    { name: "Рональдо", price: 475, emoji: "🇵🇹", chance: 4 },
-    { name: "Месси", price: 475, emoji: "🇦🇷", chance: 4 },
-    { name: "Зидан", price: 500, emoji: "🇫🇷", chance: 4 },
-    { name: "Яшин", price: 525, emoji: "🇷🇺", chance: 4 },
-    { name: "Марадона", price: 575, emoji: "🇦🇷", chance: 3 },
-    { name: "Пеле", price: 600, emoji: "🇧🇷", chance: 3 }
+    // Ультра-редкие кейсы (2999-9999 Gold)
+    { name: "Первобытный Бык", price: 2999, emoji: "🦴", chance: 1 },
+    { name: "Древний Рог", price: 3499, emoji: "🏛️", chance: 1 },
+    { name: "Изначальный Телец", price: 3999, emoji: "🌋", chance: 1 },
+    { name: "Хаос Рогов", price: 4499, emoji: "🌀", chance: 1 },
+    { name: "Порядок Копыт", price: 4999, emoji: "⚖️", chance: 1 },
+    { name: "Баланс Быков", price: 5499, emoji: "☯️", chance: 1 },
+    { name: "Бесконечность Телцов", price: 5999, emoji: "∞", chance: 1 },
+    { name: "Бездна Рогов", price: 6999, emoji: "🕳️", chance: 0.8 },
+    { name: "Нирвана Копыт", price: 7999, emoji: "☸️", chance: 0.8 },
+    { name: "Апокалипсис Быков", price: 9999, emoji: "💀", chance: 0.5 }
 ];
 
 // ============================================================
@@ -900,11 +954,10 @@ function renderCases() {
     cases.forEach((c, index) => {
         const card = document.createElement('div');
         card.className = 'case-card';
-        const priceDisplay = c.price === 0 ? '🎁 Бесплатно' : `💰 ${c.price} Gold`;
         card.innerHTML = `
             <div class="emoji">${c.emoji}</div>
             <div class="name">${c.name}</div>
-            <div class="price">${priceDisplay}</div>
+            <div class="price">💰 ${c.price} Gold</div>
             <div class="chance">Шанс: ${c.chance}%</div>
         `;
         card.addEventListener('click', () => openCasePreview(index));
@@ -918,9 +971,7 @@ function openCasePreview(index) {
     document.getElementById('previewTitle').textContent = `📦 Кейс «${c.name}»`;
     const list = document.getElementById('previewList');
     list.innerHTML = '<p style="color:#888;font-size:14px;">🎯 Возможные скины:</p>';
-    // Показываем первые 5 скинов для превью
-    const previewSkins = skinsList.slice(0, 10);
-    previewSkins.forEach(s => {
+    skinsList.forEach(s => {
         const div = document.createElement('div');
         div.className = 'skin-item';
         div.innerHTML = `
@@ -931,8 +982,7 @@ function openCasePreview(index) {
     });
     const btn = document.createElement('button');
     btn.className = 'btn';
-    const priceDisplay = c.price === 0 ? '🎁 Открыть бесплатно' : `🎰 Открыть за ${c.price} Gold`;
-    btn.textContent = priceDisplay;
+    btn.textContent = `🎰 Открыть за ${c.price} Gold`;
     btn.style.cssText = 'background: linear-gradient(135deg,#ffd700,#ff8c00);border:none;padding:12px 30px;font-size:16px;font-weight:bold;border-radius:12px;cursor:pointer;color:#000;margin-top:15px;width:100%;';
     btn.addEventListener('click', () => {
         closePreview();
@@ -948,13 +998,11 @@ function closePreview() {
 
 function openCase(index) {
     const c = cases[index];
-    if (c.price > 0 && balance < c.price) {
+    if (balance < c.price) {
         alert('❌ Недостаточно Gold!');
         return;
     }
-    if (c.price > 0) {
-        balance -= c.price;
-    }
+    balance -= c.price;
     document.getElementById('balanceDisplay').textContent = balance;
     document.getElementById('sapperBalanceDisplay').textContent = balance;
 
