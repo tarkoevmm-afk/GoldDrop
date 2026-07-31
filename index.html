@@ -134,6 +134,21 @@
         .sapper-balance span { color: #ffd700; font-weight: bold; }
         .footer { margin-top: 20px; font-size: 11px; color: #333; }
         .rarity-common { color: #b0b0b0; } .rarity-uncommon { color: #5e98d9; } .rarity-rare { color: #4b69ff; } .rarity-epic { color: #8847ff; } .rarity-legendary { color: #ff8000; } .rarity-mythical { color: #ff2d55; }
+        
+        /* Админ-панель */
+        .admin-modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.95); z-index: 9999; justify-content: center; align-items: center; }
+        .admin-modal.active { display: flex; }
+        .admin-content { background: #1a1a3e; padding: 30px; border-radius: 20px; border: 3px solid #ffd700; max-width: 420px; width: 90%; text-align: center; max-height: 80vh; overflow-y: auto; }
+        .admin-content h2 { color: #ffd700; margin-bottom: 15px; }
+        .admin-content label { color: #aaa; font-size: 13px; display: block; margin-top: 10px; text-align: left; }
+        .admin-content input { width: 100%; padding: 10px; margin: 5px 0; background: #111; border: 1px solid #444; border-radius: 10px; color: #fff; font-size: 15px; }
+        .admin-content input:focus { border-color: #ffd700; outline: none; }
+        .admin-actions { display: flex; gap: 10px; margin-top: 15px; }
+        .admin-actions .btn-primary { flex: 1; padding: 12px; background: #ffd700; color: #000; border: none; border-radius: 10px; font-weight: bold; cursor: pointer; }
+        .admin-actions .btn-secondary { flex: 1; padding: 12px; background: #444; color: #fff; border: none; border-radius: 10px; font-weight: bold; cursor: pointer; }
+        .admin-panel-btn { background: #ff2d55; color: #fff; border: none; padding: 8px 20px; border-radius: 10px; cursor: pointer; font-weight: bold; margin: 5px; }
+        .admin-panel-btn:hover { transform: scale(1.05); }
+        #adminHistoryList div { padding: 4px 0; border-bottom: 1px solid #1a1a2e; font-size: 13px; color: #aaa; }
     </style>
 </head>
 <body>
@@ -317,6 +332,35 @@
     </div>
 </div>
 
+<!-- ===== АДМИН-ПАНЕЛЬ ===== -->
+<div class="admin-modal" id="adminModal">
+    <div class="admin-content">
+        <h2>👑 Админ-панель</h2>
+        <p style="color:#888; font-size:14px;">Управление балансом игроков</p>
+        
+        <label>🆔 ID игрока</label>
+        <input type="text" id="adminPlayerId" placeholder="Введите ID игрока">
+        
+        <label>💰 Сумма Gold</label>
+        <input type="number" id="adminAmount" placeholder="Сколько добавить?" min="1">
+        
+        <div class="admin-actions">
+            <button class="btn-primary" id="adminAddBtn">➕ Добавить</button>
+            <button class="btn-secondary" id="adminCloseBtn">❌ Закрыть</button>
+        </div>
+        
+        <div id="adminMessage" style="margin-top:10px; padding:10px; border-radius:10px; background:#0f0f1a; display:none; font-size:14px;"></div>
+        
+        <div style="margin-top:20px; border-top:1px solid #2a2a4a; padding-top:16px;">
+            <div style="display:flex; justify-content:space-between; align-items:center;">
+                <span style="font-weight:600; font-size:14px; color:#aaa;">📜 История пополнений</span>
+                <button id="adminHistoryBtn" style="background:#222; border:1px solid #ffd700; color:#ffd700; padding:4px 12px; border-radius:8px; cursor:pointer;">Показать</button>
+            </div>
+            <div id="adminHistoryList" style="margin-top:10px; max-height:150px; overflow-y:auto; display:none;"></div>
+        </div>
+    </div>
+</div>
+
 <script>
 // ============================================================
 //  КЛЮЧИ FIREBASE
@@ -440,12 +484,16 @@ function updateUIForUser(user) {
         
         currentUser = user;
         loadUserInventory(user.uid);
+        
+        // Добавляем админ-кнопку
+        addAdminButtonIfNeeded(playerIdValue);
     } else {
         userInfo.style.display = 'none';
         authForm.style.display = 'block';
         playerId.textContent = 'Гость';
         currentUser = null;
         loadGlobalData();
+        removeAdminButton();
     }
 }
 
@@ -607,10 +655,182 @@ document.getElementById('changePasswordBtn').addEventListener('click', () => {
 document.getElementById('logoutBtn').addEventListener('click', () => {
     auth.signOut();
     saveGlobalData();
+    removeAdminButton();
 });
 
 auth.onAuthStateChanged(user => {
     updateUIForUser(user);
+});
+
+// ============================================================
+//  АДМИН-ПАНЕЛЬ
+// ============================================================
+
+// 👑 ТВОЙ ID
+const ADMIN_ID = "830585813";
+
+function isAdmin(playerId) {
+    return playerId && playerId.toString() === ADMIN_ID.toString();
+}
+
+function addAdminButtonIfNeeded(playerId) {
+    const authSection = document.getElementById('authSection');
+    if (!authSection) return;
+    
+    removeAdminButton();
+    
+    if (isAdmin(playerId)) {
+        const btn = document.createElement('button');
+        btn.id = 'adminPanelBtn';
+        btn.className = 'admin-panel-btn';
+        btn.textContent = '👑 Админ-панель';
+        btn.addEventListener('click', () => {
+            document.getElementById('adminModal').classList.add('active');
+            document.getElementById('adminMessage').style.display = 'none';
+            document.getElementById('adminPlayerId').value = '';
+            document.getElementById('adminAmount').value = '';
+            document.getElementById('adminHistoryList').style.display = 'none';
+        });
+        authSection.appendChild(btn);
+    }
+}
+
+function removeAdminButton() {
+    const oldBtn = document.getElementById('adminPanelBtn');
+    if (oldBtn) oldBtn.remove();
+}
+
+// Закрытие админ-панели
+document.getElementById('adminCloseBtn').addEventListener('click', () => {
+    document.getElementById('adminModal').classList.remove('active');
+});
+
+document.getElementById('adminModal').addEventListener('click', function(e) {
+    if (e.target === this) this.classList.remove('active');
+});
+
+// Добавление Gold
+document.getElementById('adminAddBtn').addEventListener('click', function() {
+    const playerId = document.getElementById('adminPlayerId').value.trim();
+    const amount = parseInt(document.getElementById('adminAmount').value);
+    const msg = document.getElementById('adminMessage');
+    
+    if (!playerId) {
+        msg.style.display = 'block';
+        msg.innerHTML = '❌ Введите ID игрока!';
+        msg.style.color = '#ff6b6b';
+        return;
+    }
+    if (!amount || amount <= 0) {
+        msg.style.display = 'block';
+        msg.innerHTML = '❌ Введите корректную сумму!';
+        msg.style.color = '#ff6b6b';
+        return;
+    }
+    
+    let found = false;
+    let targetBalance = 0;
+    
+    // Ищем во всех пользовательских данных
+    for (let i = 0; i < localStorage.length; i++) {
+        const key = localStorage.key(i);
+        if (key && key.startsWith('golddrop_user_')) {
+            try {
+                const data = JSON.parse(localStorage.getItem(key));
+                if (data && data.playerId && data.playerId.toString() === playerId) {
+                    data.balance = (data.balance || 0) + amount;
+                    localStorage.setItem(key, JSON.stringify(data));
+                    found = true;
+                    targetBalance = data.balance;
+                    
+                    // Сохраняем историю
+                    const historyKey = `golddrop_history_${playerId}`;
+                    const history = JSON.parse(localStorage.getItem(historyKey)) || [];
+                    history.push({
+                        date: new Date().toLocaleString(),
+                        amount: amount,
+                        admin: ADMIN_ID
+                    });
+                    localStorage.setItem(historyKey, JSON.stringify(history));
+                    
+                    // Обновляем интерфейс
+                    if (currentUser) {
+                        const currentData = loadUserData(currentUser.uid);
+                        if (currentData && currentData.playerId && currentData.playerId.toString() === playerId) {
+                            balance = data.balance;
+                            document.getElementById('balanceDisplay').textContent = balance;
+                            document.getElementById('sapperBalanceDisplay').textContent = balance;
+                        }
+                    }
+                    break;
+                }
+            } catch (e) { /* игнорируем */ }
+        }
+    }
+    
+    // Если не нашли — ищем в гостевых
+    if (!found) {
+        const guestData = localStorage.getItem('golddrop_guest');
+        if (guestData) {
+            try {
+                const data = JSON.parse(guestData);
+                if (data && data.playerId && data.playerId.toString() === playerId) {
+                    data.balance = (data.balance || 0) + amount;
+                    localStorage.setItem('golddrop_guest', JSON.stringify(data));
+                    found = true;
+                    targetBalance = data.balance;
+                    
+                    const historyKey = `golddrop_history_${playerId}`;
+                    const history = JSON.parse(localStorage.getItem(historyKey)) || [];
+                    history.push({
+                        date: new Date().toLocaleString(),
+                        amount: amount,
+                        admin: ADMIN_ID
+                    });
+                    localStorage.setItem(historyKey, JSON.stringify(history));
+                }
+            } catch (e) { /* игнорируем */ }
+        }
+    }
+    
+    if (found) {
+        msg.style.display = 'block';
+        msg.innerHTML = `✅ Игрок ${playerId} получил ${amount} Gold! Новый баланс: ${targetBalance} Gold`;
+        msg.style.color = '#51cf66';
+        document.getElementById('adminPlayerId').value = '';
+        document.getElementById('adminAmount').value = '';
+    } else {
+        msg.style.display = 'block';
+        msg.innerHTML = '❌ Игрок с таким ID не найден!';
+        msg.style.color = '#ff6b6b';
+    }
+});
+
+// Показать историю
+document.getElementById('adminHistoryBtn').addEventListener('click', function() {
+    const list = document.getElementById('adminHistoryList');
+    const playerId = document.getElementById('adminPlayerId').value.trim();
+    if (!playerId) {
+        list.style.display = 'block';
+        list.innerHTML = '❌ Сначала введите ID игрока';
+        list.style.color = '#ff6b6b';
+        return;
+    }
+    const historyKey = `golddrop_history_${playerId}`;
+    const history = JSON.parse(localStorage.getItem(historyKey)) || [];
+    if (history.length === 0) {
+        list.style.display = 'block';
+        list.innerHTML = '📭 История пуста';
+        list.style.color = '#888';
+        return;
+    }
+    let html = '';
+    history.slice().reverse().forEach(t => {
+        html += `<div>${t.date} — +${t.amount} Gold</div>`;
+    });
+    list.style.display = 'block';
+    list.innerHTML = html;
+    list.style.color = '#aaa';
 });
 
 // ============================================================
@@ -1252,7 +1472,8 @@ resetSapper();
 loadGlobalData();
 
 console.log('✅ GoldDrop 4.0 загружен!');
-console.log('📌 ID теперь привязан к аккаунту и НЕ МЕНЯЕТСЯ при повторном входе.');
+console.log('👑 Твой ID администратора:', ADMIN_ID);
+console.log('📌 ID привязан к аккаунту и НЕ МЕНЯЕТСЯ при повторном входе.');
 </script>
 </body>
 </html>
