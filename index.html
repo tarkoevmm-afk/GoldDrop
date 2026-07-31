@@ -3,9 +3,11 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>GoldDrop 2.0 - Кейсы Standoff 2</title>
+    <title>GoldDrop 3.0 - Кейсы Standoff 2</title>
+    <!-- Firebase SDK -->
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
     <style>
-        /* ===== ВСЕ СТИЛИ (ОСТАВЛЯЕМ ТЕ ЖЕ, МЕНЯЕМ ТОЛЬКО СТРЕЛКУ) ===== */
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body { background: #0a0a1a; font-family: 'Segoe UI', Arial, sans-serif; color: #fff; min-height: 100vh; display: flex; justify-content: center; align-items: flex-start; padding: 20px 0; }
         .container { text-align: center; padding: 20px; max-width: 480px; width: 100%; }
@@ -31,6 +33,17 @@
         .profile-card .id { color: #888; font-size: 14px; }
         .profile-card .id span { color: #ffd700; font-weight: bold; }
         .profile-card .balance { font-size: 22px; color: #ffd700; margin: 10px 0; }
+
+        .user-info { display: flex; align-items: center; justify-content: center; gap: 15px; margin: 10px 0; flex-wrap: wrap; }
+        .user-avatar { width: 50px; height: 50px; border-radius: 50%; border: 2px solid #ffd700; }
+        .user-name { font-size: 16px; color: #fff; font-weight: bold; }
+
+        .btn-google { background: #fff; color: #000; border: none; padding: 10px 20px; border-radius: 12px; font-weight: bold; cursor: pointer; transition: 0.3s; display: inline-flex; align-items: center; gap: 10px; font-size: 14px; }
+        .btn-google:hover { transform: scale(1.05); box-shadow: 0 0 20px rgba(255,255,255,0.2); }
+        .btn-google img { width: 20px; height: 20px; }
+
+        .btn-logout { background: #ff2d55; color: #fff; border: none; padding: 6px 16px; border-radius: 10px; font-weight: bold; cursor: pointer; transition: 0.3s; }
+        .btn-logout:hover { transform: scale(1.05); }
 
         .inventory-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin: 15px 0; }
         .inv-item { background: #111; border: 1px solid #444; border-radius: 12px; padding: 10px; text-align: center; transition: 0.3s; cursor: pointer; }
@@ -65,95 +78,18 @@
         .craft-btn:hover { transform: scale(1.05); box-shadow: 0 0 30px rgba(255,215,0,0.4); }
         .craft-btn:disabled { opacity: 0.5; cursor: not-allowed; }
 
-        /* КРУГЛАЯ ШКАЛА (СТАНДОФФ КРАФТ) */
-        .circle-container { 
-            position: relative; 
-            width: 220px; 
-            height: 220px; 
-            margin: 20px auto; 
-        }
+        .circle-container { position: relative; width: 220px; height: 220px; margin: 20px auto; }
         .circle-bg { fill: none; stroke: #1a1a2e; stroke-width: 14; }
-        .circle-fill { 
-            fill: none; 
-            stroke: url(#grad); 
-            stroke-width: 14; 
-            stroke-linecap: round; 
-            transition: stroke-dashoffset 0.5s ease; 
-            transform: rotate(-90deg); 
-            transform-origin: 50% 50%; 
-        }
-        .circle-center { 
-            position: absolute; 
-            top: 50%; 
-            left: 50%; 
-            transform: translate(-50%, -50%); 
-            text-align: center; 
-        }
+        .circle-fill { fill: none; stroke: url(#grad); stroke-width: 14; stroke-linecap: round; transition: stroke-dashoffset 0.5s ease; transform: rotate(-90deg); transform-origin: 50% 50%; }
+        .circle-center { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); text-align: center; }
         .circle-center .chance-text { font-size: 32px; font-weight: bold; color: #ffd700; }
         .circle-center .chance-label { font-size: 14px; color: #888; }
 
-        /* ===== НОРМАЛЬНАЯ СТРЕЛКА (НЕ БОМЖ) ===== */
-        .arrow-handle {
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -100%) rotate(0deg);
-            transform-origin: bottom center;
-            transition: transform 4s cubic-bezier(0.1, 0.6, 0.1, 1);
-            width: 4px;
-            height: 90px;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            z-index: 5;
-        }
-        .arrow-center {
-            position: absolute;
-            bottom: -16px;
-            left: 50%;
-            transform: translateX(-50%);
-            width: 32px;
-            height: 32px;
-            background: radial-gradient(circle, #ffd700 30%, #ff8c00 70%, #cc7700 100%);
-            border-radius: 50%;
-            box-shadow: 0 0 40px rgba(255, 215, 0, 0.8), 0 0 80px rgba(255, 215, 0, 0.4);
-            border: 3px solid #fff8e7;
-            z-index: 6;
-        }
-        .arrow-line {
-            position: absolute;
-            bottom: 16px;
-            left: 50%;
-            transform: translateX(-50%);
-            width: 4px;
-            height: 70px;
-            background: linear-gradient(to top, #ffd700, #ffec8b);
-            box-shadow: 0 0 20px rgba(255, 215, 0, 0.5);
-            border-radius: 2px;
-        }
-        .arrow-head {
-            position: absolute;
-            bottom: 86px;
-            left: 50%;
-            transform: translateX(-50%);
-            width: 0;
-            height: 0;
-            border-left: 18px solid transparent;
-            border-right: 18px solid transparent;
-            border-bottom: 28px solid #ffd700;
-            filter: drop-shadow(0 0 20px rgba(255, 215, 0, 0.8));
-        }
-        .arrow-head::after {
-            content: '';
-            position: absolute;
-            top: 4px;
-            left: -12px;
-            width: 0;
-            height: 0;
-            border-left: 12px solid transparent;
-            border-right: 12px solid transparent;
-            border-bottom: 20px solid #ffec8b;
-        }
+        .arrow-handle { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -100%) rotate(0deg); transform-origin: bottom center; transition: transform 4s cubic-bezier(0.1, 0.6, 0.1, 1); width: 4px; height: 90px; display: flex; flex-direction: column; align-items: center; z-index: 5; }
+        .arrow-center { position: absolute; bottom: -16px; left: 50%; transform: translateX(-50%); width: 32px; height: 32px; background: radial-gradient(circle, #ffd700 30%, #ff8c00 70%, #cc7700 100%); border-radius: 50%; box-shadow: 0 0 40px rgba(255, 215, 0, 0.8), 0 0 80px rgba(255, 215, 0, 0.4); border: 3px solid #fff8e7; z-index: 6; }
+        .arrow-line { position: absolute; bottom: 16px; left: 50%; transform: translateX(-50%); width: 4px; height: 70px; background: linear-gradient(to top, #ffd700, #ffec8b); box-shadow: 0 0 20px rgba(255, 215, 0, 0.5); border-radius: 2px; }
+        .arrow-head { position: absolute; bottom: 86px; left: 50%; transform: translateX(-50%); width: 0; height: 0; border-left: 18px solid transparent; border-right: 18px solid transparent; border-bottom: 28px solid #ffd700; filter: drop-shadow(0 0 20px rgba(255, 215, 0, 0.8)); }
+        .arrow-head::after { content: ''; position: absolute; top: 4px; left: -12px; width: 0; height: 0; border-left: 12px solid transparent; border-right: 12px solid transparent; border-bottom: 20px solid #ffec8b; }
 
         .bonus-card { background: #1a1a3e; border: 2px solid #ffd700; border-radius: 20px; padding: 20px; margin: 15px 0; }
         .bonus-card .task { display: flex; justify-content: space-between; align-items: center; padding: 10px 0; border-bottom: 1px solid #222; }
@@ -224,7 +160,7 @@
 </head>
 <body>
 <div class="container">
-    <div class="logo">🎰 GoldDrop 2.0</div>
+    <div class="logo">🎰 GoldDrop 3.0</div>
 
     <div class="tabs">
         <button class="tab-btn active" data-tab="cases">🏠 Кейсы</button>
@@ -243,18 +179,14 @@
     <div id="tab-upgrade" class="tab-content">
         <h3 style="color:#ffd700;">🔧 Апгрейд скинов</h3>
         <p style="color:#888; font-size:14px;">Выбери от 1 до 10 скинов и цель для апгрейда</p>
-        
         <div class="upgrade-arrow" id="upgradeArrow">▼ Выберите скины ▼</div>
         <div class="upgrade-slots" id="upgradeSlots"></div>
-
         <p style="color:#888; font-size:14px; margin-top:15px;">Твой инвентарь:</p>
         <div class="inventory-grid" id="upgradeInventory" style="grid-template-columns: repeat(3, 1fr);"></div>
-
         <div class="upgrade-target">
             <p style="color:#888; font-size:14px;">🎯 Выбери целевой скин:</p>
             <select id="targetSkinSelect"></select>
         </div>
-
         <div class="upgrade-gold">
             <p style="color:#888; font-size:14px;">💰 Добавь Gold к шансу:</p>
             <input type="range" id="bonusGoldSlider" min="0" max="1000" value="0" step="10">
@@ -264,8 +196,6 @@
                 <span style="color:#888; font-size:12px;">(+<span id="bonusChanceDisplay">0</span>%)</span>
             </div>
         </div>
-
-        <!-- КРУГЛАЯ ШКАЛА С НОРМАЛЬНОЙ СТРЕЛКОЙ -->
         <div class="circle-container">
             <svg width="220" height="220" viewBox="0 0 220 220">
                 <defs>
@@ -276,10 +206,8 @@
                     </linearGradient>
                 </defs>
                 <circle class="circle-bg" cx="110" cy="110" r="95" />
-                <circle class="circle-fill" id="circleFill" cx="110" cy="110" r="95" 
-                    stroke-dasharray="597" stroke-dashoffset="597" />
+                <circle class="circle-fill" id="circleFill" cx="110" cy="110" r="95" stroke-dasharray="597" stroke-dashoffset="597" />
             </svg>
-            <!-- НОРМАЛЬНАЯ СТРЕЛКА -->
             <div class="arrow-handle" id="arrowHandle">
                 <div class="arrow-center"></div>
                 <div class="arrow-line"></div>
@@ -290,11 +218,9 @@
                 <div class="chance-label">Шанс</div>
             </div>
         </div>
-
         <div style="display: flex; justify-content: space-between; margin-top: 10px; font-size: 14px; color: #888;">
             <span>Результат: <span id="arrowResult" style="color:#ffd700;">—</span></span>
         </div>
-
         <button class="craft-btn" id="upgradeBtn" disabled>🔮 Апгрейд</button>
         <div id="upgradeResult" style="margin-top:15px; font-size:18px;"></div>
     </div>
@@ -302,8 +228,19 @@
     <!-- ===== ПРОФИЛЬ ===== -->
     <div id="tab-profile" class="tab-content">
         <div class="profile-card">
-            <div class="id">🆔 ID: <span id="playerId">tarkoevmm-afk</span></div>
+            <div class="id">🆔 ID: <span id="playerId">Гость</span></div>
             <div class="balance">💰 Баланс: <span id="balanceDisplay">100</span> Gold</div>
+            <div id="authSection">
+                <div id="userInfo" style="display:none;" class="user-info">
+                    <img id="userAvatar" class="user-avatar" src="" alt="Avatar">
+                    <span id="userName" class="user-name"></span>
+                    <button id="logoutBtn" class="btn-logout">Выйти</button>
+                </div>
+                <button id="googleLoginBtn" class="btn-google">
+                    <img src="https://cdn.jsdelivr.net/npm/simple-icons@v9/icons/google.svg" alt="Google">
+                    Войти через Google
+                </button>
+            </div>
             <button class="btn-support" onclick="openSupport()">💳 Пополнить</button>
         </div>
         <h3 style="color:#ffd700; margin-top:15px;">📦 Инвентарь</h3>
@@ -355,7 +292,7 @@
         </div>
     </div>
 
-    <div class="footer">GoldDrop 2.0 — лучший портал для Standoff 2</div>
+    <div class="footer">GoldDrop 3.0 — лучший портал для Standoff 2</div>
 </div>
 
 <!-- ===== ПОДДЕРЖКА ===== -->
@@ -395,7 +332,27 @@
 
 <script>
 // ============================================================
-//  ВЕСЬ СКРИПТ (БЕЗ ИЗМЕНЕНИЙ — ТОТ ЖЕ, ЧТО БЫЛ)
+//  🔑 ТВОИ КЛЮЧИ FIREBASE (ВСТАВЛЕНЫ)
+// ============================================================
+const firebaseConfig = {
+  apiKey: "AIzaSyDkV_vNvALn0tFOUXWSUTL6aO",
+  authDomain: "golddroppp.firebaseapp.com",
+  projectId: "golddroppp",
+  storageBucket: "golddroppp.firebasestor",
+  messagingSenderId: "938800668444",
+  appId: "1:938800668444:web:41f82ac2ec7f",
+  measurementId: "G-CGNW2HX952"
+};
+
+// ============================================================
+//  ИНИЦИАЛИЗАЦИЯ FIREBASE
+// ============================================================
+firebase.initializeApp(firebaseConfig);
+const auth = firebase.auth();
+const provider = new firebase.auth.GoogleAuthProvider();
+
+// ============================================================
+//  БАЗА ДАННЫХ
 // ============================================================
 const skinsList = [
     { name: "P250 | Sand Dune", rarity: "Обычный", color: "#b0b0b0", emoji: "🟤", price: 10 },
@@ -432,6 +389,9 @@ const cases = [
     { name: "Бессмертный", price: 500, emoji: "⚡", chance: 5 }
 ];
 
+// ============================================================
+//  СОСТОЯНИЕ
+// ============================================================
 let balance = 100;
 let inventory = [];
 let bonusClaimed = { tg: false, daily: false, cases: false };
@@ -440,7 +400,79 @@ let targetSkin = null;
 let bonusGold = 0;
 let isArrowSpinning = false;
 let lastResult = null;
+let currentUser = null;
 
+// ============================================================
+//  АВТОРИЗАЦИЯ
+// ============================================================
+function updateUIForUser(user) {
+    const userInfo = document.getElementById('userInfo');
+    const googleBtn = document.getElementById('googleLoginBtn');
+    const playerId = document.getElementById('playerId');
+    
+    if (user) {
+        userInfo.style.display = 'flex';
+        googleBtn.style.display = 'none';
+        document.getElementById('userAvatar').src = user.photoURL || 'https://ui-avatars.com/api/?name=User';
+        document.getElementById('userName').textContent = user.displayName || 'Игрок';
+        playerId.textContent = user.uid.substring(0, 12) + '...';
+        currentUser = user;
+        loadUserData(user.uid);
+    } else {
+        userInfo.style.display = 'none';
+        googleBtn.style.display = 'inline-flex';
+        playerId.textContent = 'Гость';
+        currentUser = null;
+        loadUserData('guest');
+    }
+}
+
+function loadUserData(userId) {
+    const key = `golddrop_${userId}`;
+    const data = localStorage.getItem(key);
+    if (data) {
+        const parsed = JSON.parse(data);
+        balance = parsed.balance || 100;
+        inventory = parsed.inventory || [];
+        bonusClaimed = parsed.bonusClaimed || { tg: false, daily: false, cases: false };
+    } else {
+        balance = 100;
+        inventory = [];
+        bonusClaimed = { tg: false, daily: false, cases: false };
+    }
+    document.getElementById('balanceDisplay').textContent = balance;
+    document.getElementById('sapperBalanceDisplay').textContent = balance;
+    renderInventory();
+    renderUpgradeInventory();
+    renderUpgradeSlots();
+    renderCases();
+}
+
+function saveUserData() {
+    if (!currentUser) return;
+    const key = `golddrop_${currentUser.uid}`;
+    const data = { balance, inventory, bonusClaimed };
+    localStorage.setItem(key, JSON.stringify(data));
+}
+
+document.getElementById('googleLoginBtn').addEventListener('click', () => {
+    auth.signInWithPopup(provider).catch(error => {
+        console.error('Ошибка входа:', error);
+        alert('Ошибка при входе через Google. Попробуйте позже.');
+    });
+});
+
+document.getElementById('logoutBtn').addEventListener('click', () => {
+    auth.signOut();
+});
+
+auth.onAuthStateChanged(user => {
+    updateUIForUser(user);
+});
+
+// ============================================================
+//  КЕЙСЫ
+// ============================================================
 function renderCases() {
     const grid = document.getElementById('casesGrid');
     grid.innerHTML = '';
@@ -497,6 +529,7 @@ function openCase(index) {
     }
     balance -= c.price;
     document.getElementById('balanceDisplay').textContent = balance;
+    document.getElementById('sapperBalanceDisplay').textContent = balance;
 
     const modal = document.getElementById('caseModal');
     const track = document.getElementById('scrollTrack');
@@ -541,6 +574,7 @@ function openCase(index) {
 
     setTimeout(() => {
         resultText.innerHTML = `🎉 <span style="color:${win.color};">${win.emoji} ${win.name}</span> (${win.rarity})!<br><span style="color:#ffd700;font-size:16px;">💰 ${win.price} Gold</span>`;
+        saveUserData();
         renderInventory();
         renderUpgradeInventory();
     }, 6500);
@@ -552,6 +586,9 @@ function closeModal() {
     document.getElementById('resultText').textContent = '';
 }
 
+// ============================================================
+//  ИНВЕНТАРЬ
+// ============================================================
 function renderInventory() {
     const grid = document.getElementById('inventoryGrid');
     grid.innerHTML = '';
@@ -582,10 +619,15 @@ function sellSkin(index) {
     balance += skin.price;
     inventory.splice(index, 1);
     document.getElementById('balanceDisplay').textContent = balance;
+    document.getElementById('sapperBalanceDisplay').textContent = balance;
+    saveUserData();
     renderInventory();
     renderUpgradeInventory();
 }
 
+// ============================================================
+//  АПГРЕЙД
+// ============================================================
 function renderUpgradeSlots() {
     const container = document.getElementById('upgradeSlots');
     container.innerHTML = '';
@@ -623,21 +665,23 @@ function clearUpgradeSlot(index) {
     if (!upgradeSlots[index]) return;
     inventory.push(upgradeSlots[index]);
     upgradeSlots[index] = null;
+    saveUserData();
     renderUpgradeSlots();
     renderInventory();
     renderUpgradeInventory();
 }
 
-function selectSkinForUpgrade(index) {
+function selectSkinForUpgrade(indexskin) return;
+    const) {
     const skin = inventory[index];
-    if (!skin) return;
-    const emptyIdx = upgradeSlots.indexOf(null);
+    if (! emptyIdx = upgradeSlots.indexOf(null);
     if (emptyIdx === -1) {
         alert('❌ Все слоты заняты!');
         return;
     }
     upgradeSlots[emptyIdx] = skin;
     inventory.splice(index, 1);
+    saveUserData();
     renderUpgradeSlots();
     renderInventory();
     renderUpgradeInventory();
@@ -809,6 +853,7 @@ document.getElementById('upgradeBtn').addEventListener('click', function() {
         if (bonusGoldUsed > 0) {
             balance -= bonusGoldUsed;
             document.getElementById('balanceDisplay').textContent = balance;
+            document.getElementById('sapperBalanceDisplay').textContent = balance;
         }
         
         upgradeSlots.fill(null);
@@ -823,6 +868,7 @@ document.getElementById('upgradeBtn').addEventListener('click', function() {
             resultDiv.style.color = '#ff2d55';
         }
         
+        saveUserData();
         renderUpgradeSlots();
         renderInventory();
         renderUpgradeInventory();
@@ -832,6 +878,9 @@ document.getElementById('upgradeBtn').addEventListener('click', function() {
     });
 });
 
+// ============================================================
+//  БОНУСЫ
+// ============================================================
 function claimBonus(type) {
     if (bonusClaimed[type]) {
         alert('❌ Бонус уже получен!');
@@ -840,11 +889,16 @@ function claimBonus(type) {
     const rewards = { tg: 50, daily: 100, cases: 200 };
     balance += rewards[type];
     document.getElementById('balanceDisplay').textContent = balance;
+    document.getElementById('sapperBalanceDisplay').textContent = balance;
     bonusClaimed[type] = true;
     document.querySelectorAll('.btn-claim')[Object.keys(bonusClaimed).indexOf(type)].disabled = true;
+    saveUserData();
     alert(`✅ Бонус получен! +${rewards[type]} Gold`);
 }
 
+// ============================================================
+//  ПОДДЕРЖКА
+// ============================================================
 function openSupport() {
     document.getElementById('supportModal').classList.add('active');
 }
@@ -857,6 +911,9 @@ document.getElementById('supportModal').addEventListener('click', function(e) {
     if (e.target === this) closeSupport();
 });
 
+// ============================================================
+//  САПЁР
+// ============================================================
 let sapperBet = 10;
 let sapperBombs = 9;
 let sapperGrid = [];
@@ -980,6 +1037,7 @@ function sapperClick(index) {
         document.getElementById('sapperStatus').textContent = `🎉 ПОБЕДА! Вы выиграли ${winAmount} Gold (x${sapperMultipliers[sapperBombs]})!`;
         revealAll();
         document.getElementById('sapperTakeBtn').disabled = true;
+        saveUserData();
         return;
     }
 }
@@ -996,6 +1054,7 @@ function takeWin() {
     sapperGameOver = true;
     revealAll();
     document.getElementById('sapperTakeBtn').disabled = true;
+    saveUserData();
 }
 
 function revealAll() {
@@ -1050,6 +1109,9 @@ document.querySelectorAll('.tab-btn').forEach(btn => {
     });
 });
 
+// ============================================================
+//  ЗАПУСК
+// ============================================================
 renderCases();
 renderInventory();
 renderUpgradeSlots();
@@ -1058,6 +1120,7 @@ renderTargetSkins();
 updateUpgradeChance();
 document.getElementById('balanceDisplay').textContent = balance;
 resetSapper();
+loadUserData('guest');
 </script>
 </body>
 </html>
