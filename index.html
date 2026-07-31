@@ -17,13 +17,36 @@
         .tab-btn:hover { color: #fff; }
         .tab-content { display: none; }
         .tab-content.active { display: block; }
-        .cases-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin: 15px 0; }
-        .case-card { background: #1a1a3e; border: 2px solid #ffd700; border-radius: 15px; padding: 12px 8px; cursor: pointer; transition: 0.3s; }
-        .case-card:hover { transform: scale(1.03); box-shadow: 0 0 30px rgba(255,215,0,0.2); }
+        
+        /* ===== КЕЙСЫ С РЯДАМИ ===== */
+        .section-title {
+            font-size: 18px;
+            font-weight: bold;
+            color: #ffd700;
+            margin: 20px 0 12px 0;
+            text-align: left;
+            padding-left: 12px;
+            border-left: 4px solid #ffd700;
+        }
+        .section-title .sub {
+            font-size: 13px;
+            color: #888;
+            font-weight: normal;
+        }
+        .cases-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 10px;
+            margin-bottom: 16px;
+        }
+        .case-card { background: #1a1a3e; border: 2px solid #2a2a5e; border-radius: 15px; padding: 12px 8px; cursor: pointer; transition: 0.3s; }
+        .case-card:hover { transform: scale(1.03); box-shadow: 0 0 30px rgba(255,215,0,0.2); border-color: #ffd700; }
         .case-card .emoji { font-size: 32px; }
-        .case-card .name { font-size: 13px; color: #ffd700; margin: 5px 0; font-weight: bold; }
-        .case-card .price { font-size: 12px; color: #888; }
-        .case-card .chance { font-size: 11px; color: #555; }
+        .case-card .name { font-size: 12px; color: #ddd; margin: 5px 0; font-weight: bold; min-height: 28px; }
+        .case-card .price { font-size: 12px; color: #ffd700; }
+        .case-card .chance { font-size: 10px; color: #555; }
+        
+        /* ===== ПРОФИЛЬ ===== */
         .profile-card { background: #1a1a3e; border: 2px solid #ffd700; border-radius: 20px; padding: 20px; margin: 15px 0; }
         .profile-card .id { color: #888; font-size: 14px; }
         .profile-card .id span { color: #ffd700; font-weight: bold; }
@@ -44,6 +67,8 @@
         .btn-logout:hover { transform: scale(1.05); }
         .btn-support { background: #222; border: 1px solid #ffd700; color: #ffd700; padding: 8px 20px; border-radius: 10px; cursor: pointer; transition: 0.3s; font-weight: bold; margin: 5px; }
         .btn-support:hover { background: #ffd700; color: #000; }
+        
+        /* ===== ИНВЕНТАРЬ ===== */
         .inventory-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin: 15px 0; }
         .inv-item { background: #111; border: 1px solid #444; border-radius: 12px; padding: 10px; text-align: center; transition: 0.3s; cursor: pointer; }
         .inv-item .emoji { font-size: 28px; }
@@ -52,6 +77,8 @@
         .inv-item .price { font-size: 11px; color: #ffd700; margin-top: 3px; }
         .btn-sell { background: #ff2d55; border: none; color: #fff; padding: 4px 12px; border-radius: 8px; font-size: 11px; cursor: pointer; transition: 0.3s; margin-top: 5px; }
         .btn-sell:hover { transform: scale(1.05); }
+        
+        /* ===== АПГРЕЙД ===== */
         .upgrade-slots { display: grid; grid-template-columns: repeat(5, 1fr); gap: 8px; margin: 15px 0; max-width: 400px; margin-left: auto; margin-right: auto; }
         .upgrade-slot { background: #111; border: 2px dashed #444; border-radius: 12px; aspect-ratio: 1; display: flex; align-items: center; justify-content: center; font-size: 24px; cursor: pointer; transition: 0.3s; position: relative; }
         .upgrade-slot.filled { border: 2px solid #ffd700; background: #1a1a3e; }
@@ -67,6 +94,8 @@
         .craft-btn { background: linear-gradient(135deg, #ffd700, #ff8c00); border: none; padding: 12px 30px; font-size: 16px; font-weight: bold; border-radius: 12px; cursor: pointer; color: #000; transition: 0.3s; margin: 10px 0; }
         .craft-btn:hover { transform: scale(1.05); box-shadow: 0 0 30px rgba(255,215,0,0.4); }
         .craft-btn:disabled { opacity: 0.5; cursor: not-allowed; }
+        
+        /* ===== КРУГ ДЛЯ АПГРЕЙДА ===== */
         .circle-container { position: relative; width: 220px; height: 220px; margin: 20px auto; }
         .circle-bg { fill: none; stroke: #1a1a2e; stroke-width: 14; }
         .circle-fill { fill: none; stroke: url(#grad); stroke-width: 14; stroke-linecap: round; transition: stroke-dashoffset 0.5s ease; transform: rotate(-90deg); transform-origin: 50% 50%; }
@@ -78,6 +107,8 @@
         .arrow-line { position: absolute; bottom: 16px; left: 50%; transform: translateX(-50%); width: 4px; height: 70px; background: linear-gradient(to top, #ffd700, #ffec8b); box-shadow: 0 0 20px rgba(255, 215, 0, 0.5); border-radius: 2px; }
         .arrow-head { position: absolute; bottom: 86px; left: 50%; transform: translateX(-50%); width: 0; height: 0; border-left: 18px solid transparent; border-right: 18px solid transparent; border-bottom: 28px solid #ffd700; filter: drop-shadow(0 0 20px rgba(255, 215, 0, 0.8)); }
         .arrow-head::after { content: ''; position: absolute; top: 4px; left: -12px; width: 0; height: 0; border-left: 12px solid transparent; border-right: 12px solid transparent; border-bottom: 20px solid #ffec8b; }
+        
+        /* ===== БОНУСЫ ===== */
         .bonus-card { background: #1a1a3e; border: 2px solid #ffd700; border-radius: 20px; padding: 20px; margin: 15px 0; }
         .bonus-card .task { display: flex; justify-content: space-between; align-items: center; padding: 10px 0; border-bottom: 1px solid #222; }
         .bonus-card .task:last-child { border-bottom: none; }
@@ -86,6 +117,8 @@
         .btn-claim { background: #ffd700; border: none; padding: 6px 16px; border-radius: 10px; font-weight: bold; cursor: pointer; color: #000; transition: 0.3s; }
         .btn-claim:hover { transform: scale(1.05); }
         .btn-claim:disabled { opacity: 0.4; cursor: not-allowed; }
+        
+        /* ===== МОДАЛКИ ===== */
         .preview-modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.9); z-index: 999; justify-content: center; align-items: center; }
         .preview-modal.active { display: flex; }
         .preview-content { background: #1a1a3e; padding: 25px; border-radius: 20px; border: 3px solid #ffd700; max-width: 400px; width: 90%; text-align: center; max-height: 80vh; overflow-y: auto; }
@@ -94,6 +127,7 @@
         .preview-content .skin-item .name { color: #fff; }
         .preview-content .skin-item .price { color: #ffd700; }
         .preview-close { background: #ffd700; border: none; padding: 10px 30px; font-size: 16px; font-weight: bold; border-radius: 12px; cursor: pointer; color: #000; margin-top: 15px; }
+        
         .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.9); z-index: 1000; justify-content: center; align-items: center; }
         .modal.active { display: flex; }
         .modal-content { background: #1a1a3e; padding: 30px; border-radius: 20px; border: 3px solid #ffd700; max-width: 400px; width: 90%; text-align: center; }
@@ -105,6 +139,8 @@
         @keyframes arrowBounce { 0%, 100% { transform: translateX(-50%) translateY(0); } 50% { transform: translateX(-50%) translateY(10px); } }
         .win-text { font-size: 24px; font-weight: bold; margin: 10px 0; }
         .close-btn { background: #ffd700; border: none; padding: 10px 30px; font-size: 18px; font-weight: bold; border-radius: 12px; cursor: pointer; color: #000; margin-top: 15px; }
+        
+        /* ===== ПОДДЕРЖКА ===== */
         .support-modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.9); z-index: 1001; justify-content: center; align-items: center; }
         .support-modal.active { display: flex; }
         .support-content { background: #1a1a3e; padding: 30px; border-radius: 20px; border: 3px solid #ffd700; max-width: 380px; width: 90%; text-align: center; }
@@ -112,6 +148,8 @@
         .support-content .info { color: #aaa; font-size: 16px; line-height: 1.6; margin: 15px 0; }
         .support-content .highlight { color: #ffd700; font-weight: bold; font-size: 18px; }
         .support-close-btn { background: #ffd700; border: none; padding: 10px 30px; font-size: 18px; font-weight: bold; border-radius: 12px; cursor: pointer; color: #000; margin-top: 15px; }
+        
+        /* ===== САПЁР ===== */
         .sapper-grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 6px; margin: 15px auto; max-width: 300px; }
         .sapper-cell { background: #1a1a3e; border: 2px solid #444; border-radius: 8px; aspect-ratio: 1; display: flex; align-items: center; justify-content: center; font-size: 20px; font-weight: bold; cursor: pointer; transition: 0.3s; color: #fff; }
         .sapper-cell:hover { border-color: #ffd700; transform: scale(1.05); }
@@ -133,9 +171,10 @@
         .sapper-balance { margin: 10px 0; padding: 10px; background: #111; border-radius: 10px; color: #888; font-size: 16px; border: 1px solid #222; }
         .sapper-balance span { color: #ffd700; font-weight: bold; }
         .footer { margin-top: 20px; font-size: 11px; color: #333; }
+        
         .rarity-common { color: #b0b0b0; } .rarity-uncommon { color: #5e98d9; } .rarity-rare { color: #4b69ff; } .rarity-epic { color: #8847ff; } .rarity-legendary { color: #ff8000; } .rarity-mythical { color: #ff2d55; }
         
-        /* Админ-панель */
+        /* ===== АДМИН-ПАНЕЛЬ ===== */
         .admin-modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.95); z-index: 9999; justify-content: center; align-items: center; }
         .admin-modal.active { display: flex; }
         .admin-content { background: #1a1a3e; padding: 30px; border-radius: 20px; border: 3px solid #ffd700; max-width: 420px; width: 90%; text-align: center; max-height: 80vh; overflow-y: auto; }
@@ -165,7 +204,29 @@
 
     <!-- ===== КЕЙСЫ ===== -->
     <div id="tab-cases" class="tab-content active">
-        <div class="cases-grid" id="casesGrid"></div>
+        <!-- Ряд: Проклятый остров -->
+        <div class="section-title">🏝️ Проклятый остров <span class="sub">— 6 кейсов</span></div>
+        <div class="cases-grid" id="mainCases"></div>
+
+        <!-- Ряд: Сладкая серия -->
+        <div class="section-title">🍫 Сладкая серия <span class="sub">— 4 кейса</span></div>
+        <div class="cases-grid" id="sweetCases"></div>
+
+        <!-- Ряд: Японский стиль -->
+        <div class="section-title">🎌 Японский стиль <span class="sub">— 8 кейсов</span></div>
+        <div class="cases-grid" id="japanCases"></div>
+
+        <!-- Ряд: Classic -->
+        <div class="section-title">🏛️ Classic <span class="sub">— 8 кейсов</span></div>
+        <div class="cases-grid" id="classicCases"></div>
+
+        <!-- Ряд: Новый год -->
+        <div class="section-title">🎆 Новый год <span class="sub">— 4 кейса</span></div>
+        <div class="cases-grid" id="newYearCases"></div>
+
+        <!-- Ряд: Легенды футбола -->
+        <div class="section-title">⚽ Легенды футбола <span class="sub">— 8 кейсов</span></div>
+        <div class="cases-grid" id="footballCases"></div>
     </div>
 
     <!-- ===== АПГРЕЙД ===== -->
@@ -379,49 +440,36 @@ firebase.initializeApp(firebaseConfig);
 const auth = firebase.auth();
 
 // ============================================================
-//  ВСЕ СКИНЫ BULLDROP (31 ШТУКА) С ЦЕНАМИ
+//  ВСЕ СКИНЫ BULLDROP
 // ============================================================
 const skinsList = [
-    // === ОБЫЧНЫЕ (Common) — 4-14 Gold ===
     { name: "P250 | Bull Horn", rarity: "Обычный", color: "#b0b0b0", emoji: "🟤", price: 4 },
     { name: "Galil AR | Bull Rider", rarity: "Обычный", color: "#b0b0b0", emoji: "🟤", price: 7 },
     { name: "MP7 | Bullseye", rarity: "Обычный", color: "#b0b0b0", emoji: "🟤", price: 9 },
     { name: "FAMAS | Bull Charge", rarity: "Обычный", color: "#b0b0b0", emoji: "🟤", price: 11 },
     { name: "M4A4 | Bull Market", rarity: "Обычный", color: "#b0b0b0", emoji: "🟤", price: 14 },
-    
-    // === НЕОБЫЧНЫЕ (Uncommon) — 19-34 Gold ===
     { name: "USP-S | Bull Guardian", rarity: "Необычный", color: "#5e98d9", emoji: "🔵", price: 19 },
     { name: "Desert Eagle | Bull Stomp", rarity: "Необычный", color: "#5e98d9", emoji: "🔵", price: 24 },
     { name: "AK-47 | Bull Rage", rarity: "Необычный", color: "#5e98d9", emoji: "🔵", price: 29 },
     { name: "AWP | Bull Hunter", rarity: "Необычный", color: "#5e98d9", emoji: "🔵", price: 34 },
-    
-    // === РЕДКИЕ (Rare) — 39-59 Gold ===
     { name: "MP7 | Bull Demon", rarity: "Редкий", color: "#4b69ff", emoji: "🟣", price: 39 },
     { name: "M4A1-S | Bull Phantom", rarity: "Редкий", color: "#4b69ff", emoji: "🟣", price: 44 },
     { name: "SSG 08 | Bull Ghost", rarity: "Редкий", color: "#4b69ff", emoji: "🟣", price: 49 },
     { name: "P90 | Bull Night", rarity: "Редкий", color: "#4b69ff", emoji: "🟣", price: 54 },
     { name: "AK-47 | Bull Predator", rarity: "Редкий", color: "#4b69ff", emoji: "🟣", price: 59 },
-    
-    // === ЭПИЧЕСКИЕ (Epic) — 69-119 Gold ===
     { name: "Desert Eagle | Bull Inferno", rarity: "Эпический", color: "#8847ff", emoji: "🔮", price: 69 },
     { name: "M4A4 | Bull Dragon", rarity: "Эпический", color: "#8847ff", emoji: "🔮", price: 84 },
     { name: "AWP | Bull Strike", rarity: "Эпический", color: "#8847ff", emoji: "🔮", price: 99 },
     { name: "AK-47 | Bull Tyrant", rarity: "Эпический", color: "#8847ff", emoji: "🔮", price: 119 },
-    
-    // === ЛЕГЕНДАРНЫЕ (Legendary) — 149-349 Gold ===
     { name: "★ Нож | Bull Slayer", rarity: "Легендарный", color: "#ff8000", emoji: "🗡️", price: 149 },
     { name: "M4A4 | Bull King", rarity: "Легендарный", color: "#ff8000", emoji: "👑", price: 179 },
     { name: "AK-47 | Bull Emperor", rarity: "Легендарный", color: "#ff8000", emoji: "👑", price: 219 },
     { name: "AWP | Bull Fury", rarity: "Легендарный", color: "#ff8000", emoji: "🔥", price: 279 },
     { name: "★ Нож | Bull Dozer", rarity: "Легендарный", color: "#ff8000", emoji: "⚙️", price: 349 },
-    
-    // === МИФИЧЕСКИЕ (Mythical) — 399-799 Gold ===
     { name: "★ Нож | Bull Reaper", rarity: "Мифический", color: "#ff2d55", emoji: "💀", price: 399 },
     { name: "AK-47 | Bull God", rarity: "Мифический", color: "#ff2d55", emoji: "⚡", price: 499 },
     { name: "AWP | Bull Eternity", rarity: "Мифический", color: "#ff2d55", emoji: "♾️", price: 649 },
     { name: "★ Нож | Bull Excalibur", rarity: "Мифический", color: "#ff2d55", emoji: "⚔️", price: 799 },
-    
-    // === ТОПОВЫЕ (Ultra Rare) — 999-2499 Gold ===
     { name: "★ Нож | Bull Diamond", rarity: "Топовый", color: "#ffd700", emoji: "💎", price: 999 },
     { name: "AK-47 | Bull Supreme", rarity: "Топовый", color: "#ffd700", emoji: "👑", price: 1499 },
     { name: "★ Нож | Bull Celestial", rarity: "Топовый", color: "#ffd700", emoji: "🌌", price: 1999 },
@@ -429,121 +477,60 @@ const skinsList = [
 ];
 
 // ============================================================
-//  ВСЕ КЕЙСЫ BULLDROP (100 ШТУК) С ЦЕНАМИ НА 1 МЕНЬШЕ
+//  КЕЙСЫ ПО РЯДАМ (БЕЗ БЕСПЛАТНЫХ)
 // ============================================================
-const cases = [
-    // Базовые кейсы (49-159 Gold)
-    { name: "Бычий Гнев", price: 49, emoji: "🐂", chance: 8 },
-    { name: "Золотой Телец", price: 59, emoji: "🐃", chance: 8 },
-    { name: "Теневой Бык", price: 69, emoji: "🌑", chance: 8 },
-    { name: "Ледяной Рог", price: 79, emoji: "❄️", chance: 8 },
-    { name: "Огненный Копыт", price: 89, emoji: "🔥", chance: 7 },
-    { name: "Стальной Копыт", price: 99, emoji: "⚙️", chance: 7 },
-    { name: "Кровавый Рог", price: 109, emoji: "🩸", chance: 7 },
-    { name: "Призрачный Бык", price: 119, emoji: "👻", chance: 7 },
-    { name: "Громовой Телец", price: 129, emoji: "⛈️", chance: 7 },
-    { name: "Изумрудный Рог", price: 139, emoji: "💚", chance: 7 },
-    { name: "Сапфировый Копыт", price: 149, emoji: "💙", chance: 6 },
-    { name: "Рубиновый Бык", price: 159, emoji: "❤️", chance: 6 },
-
-    // Средние кейсы (169-349 Gold)
-    { name: "Драконий Рог", price: 169, emoji: "🐉", chance: 6 },
-    { name: "Феникс Копыт", price: 179, emoji: "🔥", chance: 6 },
-    { name: "Теневой Рог", price: 189, emoji: "🌑", chance: 6 },
-    { name: "Космический Бык", price: 199, emoji: "🚀", chance: 6 },
-    { name: "Лунный Телец", price: 209, emoji: "🌙", chance: 5 },
-    { name: "Солнечный Бык", price: 219, emoji: "☀️", chance: 5 },
-    { name: "Звёздный Рог", price: 229, emoji: "⭐", chance: 5 },
-    { name: "Адский Бык", price: 239, emoji: "👿", chance: 5 },
-    { name: "Райский Телец", price: 249, emoji: "😇", chance: 5 },
-    { name: "Водный Рог", price: 259, emoji: "🌊", chance: 5 },
-    { name: "Земной Копыт", price: 269, emoji: "🌍", chance: 5 },
-    { name: "Воздушный Бык", price: 279, emoji: "🌪️", chance: 5 },
-    { name: "Огненный Телец", price: 289, emoji: "🔥", chance: 5 },
-    { name: "Ледяный Бык", price: 299, emoji: "❄️", chance: 5 },
-    { name: "Грозовой Рог", price: 309, emoji: "⚡", chance: 4 },
-    { name: "Каменный Копыт", price: 319, emoji: "🪨", chance: 4 },
-    { name: "Железный Бык", price: 329, emoji: "🛡️", chance: 4 },
-    { name: "Бронзовый Рог", price: 339, emoji: "🥉", chance: 4 },
-    { name: "Серебряный Копыт", price: 349, emoji: "🥈", chance: 4 },
-
-    // Дорогие кейсы (359-599 Gold)
-    { name: "Золотой Рог", price: 359, emoji: "🥇", chance: 4 },
-    { name: "Платиновый Бык", price: 369, emoji: "💎", chance: 4 },
-    { name: "Алмазный Телец", price: 379, emoji: "💎", chance: 4 },
-    { name: "Изумрудный Бык", price: 389, emoji: "💚", chance: 4 },
-    { name: "Сапфировый Бык", price: 399, emoji: "💙", chance: 4 },
-    { name: "Рубиновый Рог", price: 409, emoji: "❤️", chance: 4 },
-    { name: "Топасовый Копыт", price: 419, emoji: "🧡", chance: 4 },
-    { name: "Аметистовый Бык", price: 429, emoji: "💜", chance: 4 },
-    { name: "Ониксовый Рог", price: 439, emoji: "⚫", chance: 4 },
-    { name: "Жемчужный Телец", price: 449, emoji: "🤍", chance: 4 },
-    { name: "Янтарный Бык", price: 459, emoji: "🟠", chance: 4 },
-    { name: "Коралловый Рог", price: 469, emoji: "🪸", chance: 4 },
-    { name: "Нефритовый Копыт", price: 479, emoji: "🟢", chance: 4 },
-    { name: "Лазурный Бык", price: 489, emoji: "🔵", chance: 4 },
-    { name: "Пурпурный Телец", price: 499, emoji: "🟣", chance: 3 },
-    { name: "Розовый Рог", price: 509, emoji: "🩷", chance: 3 },
-    { name: "Чёрный Бык", price: 519, emoji: "⬛", chance: 3 },
-    { name: "Белый Телец", price: 529, emoji: "⬜", chance: 3 },
-    { name: "Серый Рог", price: 539, emoji: "🔘", chance: 3 },
-
-    // Очень дорогие кейсы (549-999 Gold)
-    { name: "Мифический Рог", price: 549, emoji: "⚡", chance: 3 },
-    { name: "Легендарный Копыт", price: 559, emoji: "🏆", chance: 3 },
-    { name: "Эпический Бык", price: 569, emoji: "🔮", chance: 3 },
-    { name: "Драконий Бык", price: 579, emoji: "🐉", chance: 3 },
-    { name: "Феникс Бык", price: 589, emoji: "🔥", chance: 3 },
-    { name: "Космический Рог", price: 599, emoji: "🚀", chance: 3 },
-    { name: "Галактический Телец", price: 619, emoji: "🌌", chance: 3 },
-    { name: "Туманный Бык", price: 639, emoji: "🌫️", chance: 3 },
-    { name: "Радужный Рог", price: 659, emoji: "🌈", chance: 3 },
-    { name: "Звёздный Бык", price: 679, emoji: "⭐", chance: 3 },
-    { name: "Планетарный Телец", price: 699, emoji: "🪐", chance: 3 },
-    { name: "Солнечный Рог", price: 719, emoji: "☀️", chance: 3 },
-    { name: "Лунный Бык", price: 739, emoji: "🌙", chance: 3 },
-    { name: "Теневой Телец", price: 759, emoji: "🌑", chance: 3 },
-    { name: "Световой Рог", price: 779, emoji: "✨", chance: 3 },
-    { name: "Хаотичный Копыт", price: 799, emoji: "🔥", chance: 3 },
-    { name: "Порядковый Бык", price: 819, emoji: "⚖️", chance: 3 },
-    { name: "Вечный Рог", price: 839, emoji: "♾️", chance: 3 },
-    { name: "Бесконечный Телец", price: 859, emoji: "∞", chance: 3 },
-    { name: "Абсолютный Бык", price: 879, emoji: "👑", chance: 3 },
-
-    // Топовые кейсы (899-2499 Gold)
-    { name: "Бог Быков", price: 899, emoji: "⚡", chance: 2 },
-    { name: "Император Рогов", price: 949, emoji: "👑", chance: 2 },
-    { name: "Король Копыт", price: 999, emoji: "🏆", chance: 2 },
-    { name: "Властелин Телцов", price: 1049, emoji: "👾", chance: 2 },
-    { name: "Повелитель Быков", price: 1099, emoji: "🔥", chance: 2 },
-    { name: "Царь Рогов", price: 1149, emoji: "⚔️", chance: 2 },
-    { name: "Легенда Копыт", price: 1199, emoji: "🏅", chance: 2 },
-    { name: "Миф Телцов", price: 1249, emoji: "📜", chance: 2 },
-    { name: "Эпос Быков", price: 1299, emoji: "📖", chance: 2 },
-    { name: "Сага Рогов", price: 1349, emoji: "⚔️", chance: 2 },
-    { name: "Космический Телец", price: 1399, emoji: "🚀", chance: 2 },
-    { name: "Галактический Рог", price: 1449, emoji: "🌌", chance: 2 },
-    { name: "Бесконечный Копыт", price: 1499, emoji: "∞", chance: 2 },
-    { name: "Вечный Бык", price: 1599, emoji: "⏳", chance: 2 },
-    { name: "Абсолютный Рог", price: 1699, emoji: "💎", chance: 2 },
-    { name: "Высший Телец", price: 1799, emoji: "👑", chance: 2 },
-    { name: "Божественный Бык", price: 1899, emoji: "✨", chance: 2 },
-    { name: "Священный Рог", price: 1999, emoji: "⛪", chance: 1.5 },
-    { name: "Бессмертный Копыт", price: 2199, emoji: "♾️", chance: 1.5 },
-    { name: "Вечный Телец", price: 2499, emoji: "🕊️", chance: 1.5 },
-
-    // Ультра-редкие кейсы (2999-9999 Gold)
-    { name: "Первобытный Бык", price: 2999, emoji: "🦴", chance: 1 },
-    { name: "Древний Рог", price: 3499, emoji: "🏛️", chance: 1 },
-    { name: "Изначальный Телец", price: 3999, emoji: "🌋", chance: 1 },
-    { name: "Хаос Рогов", price: 4499, emoji: "🌀", chance: 1 },
-    { name: "Порядок Копыт", price: 4999, emoji: "⚖️", chance: 1 },
-    { name: "Баланс Быков", price: 5499, emoji: "☯️", chance: 1 },
-    { name: "Бесконечность Телцов", price: 5999, emoji: "∞", chance: 1 },
-    { name: "Бездна Рогов", price: 6999, emoji: "🕳️", chance: 0.8 },
-    { name: "Нирвана Копыт", price: 7999, emoji: "☸️", chance: 0.8 },
-    { name: "Апокалипсис Быков", price: 9999, emoji: "💀", chance: 0.5 }
-];
+const caseRows = {
+    main: [
+        { name: "Райское извержение", price: 19, emoji: "🌋", chance: 8 },
+        { name: "Розовый оазис", price: 39, emoji: "🌺", chance: 8 },
+        { name: "Гавайский отдых", price: 59, emoji: "🏝️", chance: 7 },
+        { name: "Ядовитая флора", price: 99, emoji: "☠️", chance: 7 },
+        { name: "Тропическое наслаждение", price: 199, emoji: "🌴", chance: 6 },
+        { name: "Гнев тики", price: 399, emoji: "🗿", chance: 6 }
+    ],
+    sweet: [
+        { name: "Twix", price: 65, emoji: "🍫", chance: 8 },
+        { name: "Snickers", price: 70, emoji: "🥜", chance: 8 },
+        { name: "Bounty", price: 75, emoji: "🥥", chance: 7 },
+        { name: "KitKat", price: 135, emoji: "🍫", chance: 7 }
+    ],
+    japan: [
+        { name: "Sparkling Gaze", price: 39, emoji: "👀", chance: 8 },
+        { name: "Northern Lights", price: 99, emoji: "🌌", chance: 7 },
+        { name: "Pink Shot", price: 159, emoji: "🌸", chance: 7 },
+        { name: "Wavesong", price: 219, emoji: "🌊", chance: 6 },
+        { name: "Vermillion", price: 279, emoji: "🔴", chance: 6 },
+        { name: "Hanami", price: 339, emoji: "🌺", chance: 5 },
+        { name: "Ronin", price: 399, emoji: "⚔️", chance: 5 },
+        { name: "Amber koi", price: 459, emoji: "🐟", chance: 5 }
+    ],
+    classic: [
+        { name: "LAKESIDE", price: 105, emoji: "🏞️", chance: 7 },
+        { name: "CALYPSO", price: 119, emoji: "🎵", chance: 7 },
+        { name: "Sharp", price: 150, emoji: "🔪", chance: 6 },
+        { name: "Scorpion", price: 150, emoji: "🦂", chance: 6 },
+        { name: "Revenge", price: 190, emoji: "💀", chance: 6 },
+        { name: "Empire", price: 240, emoji: "🏛️", chance: 5 },
+        { name: "Rival", price: 330, emoji: "⚔️", chance: 5 },
+        { name: "Fable", price: 400, emoji: "📖", chance: 4 }
+    ],
+    newYear: [
+        { name: "Новый 2021 год", price: 666, emoji: "🎆", chance: 4 },
+        { name: "Возрождение", price: 1000, emoji: "🌟", chance: 4 },
+        { name: "Furious", price: 1400, emoji: "🔥", chance: 3 },
+        { name: "Project Z9", price: 6600, emoji: "🤖", chance: 2 }
+    ],
+    football: [
+        { name: "Неймар", price: 400, emoji: "🇧🇷", chance: 5 },
+        { name: "М6анне", price: 425, emoji: "🇫🇷", chance: 5 },
+        { name: "Рональдо", price: 475, emoji: "🇵🇹", chance: 4 },
+        { name: "Месси", price: 475, emoji: "🇦🇷", chance: 4 },
+        { name: "Зидан", price: 500, emoji: "🇫🇷", chance: 4 },
+        { name: "Яшин", price: 525, emoji: "🇷🇺", chance: 4 },
+        { name: "Марадона", price: 575, emoji: "🇦🇷", chance: 3 },
+        { name: "Пеле", price: 600, emoji: "🇧🇷", chance: 3 }
+    ]
+};
 
 // ============================================================
 //  СОСТОЯНИЕ
@@ -559,7 +546,7 @@ let lastResult = null;
 let currentUser = null;
 
 // ============================================================
-//  РАБОТА С ПОЛЬЗОВАТЕЛЕМ (ИСПРАВЛЕННАЯ — ID НЕ МЕНЯЕТСЯ)
+//  РАБОТА С ПОЛЬЗОВАТЕЛЕМ (ФИКС ID)
 // ============================================================
 
 function loadUserData(userId) {
@@ -666,11 +653,11 @@ function updateUI() {
     renderInventory();
     renderUpgradeInventory();
     renderUpgradeSlots();
-    renderCases();
+    renderAllCases();
 }
 
 // ============================================================
-//  АВТОРИЗАЦИЯ (С ПОДТВЕРЖДЕНИЕМ ПОЧТЫ)
+//  АВТОРИЗАЦИЯ
 // ============================================================
 
 document.getElementById('registerBtn').addEventListener('click', () => {
@@ -692,7 +679,7 @@ document.getElementById('registerBtn').addEventListener('click', () => {
     
     auth.createUserWithEmailAndPassword(email, password)
         .then((result) => {
-            successDiv.textContent = '✅ Аккаунт создан! Проверьте почту для подтверждения (если письмо не пришло, проверьте спам).';
+            successDiv.textContent = '✅ Аккаунт создан! Проверьте почту для подтверждения.';
             successDiv.style.color = '#4b69ff';
             result.user.sendEmailVerification();
             updateUIForUser(result.user);
@@ -718,12 +705,12 @@ document.getElementById('signInBtn').addEventListener('click', () => {
     auth.signInWithEmailAndPassword(email, password)
         .then((result) => {
             if (!result.user.emailVerified) {
-                errorDiv.textContent = '⚠️ Подтвердите почту! Проверьте письмо (спам тоже).';
+                errorDiv.textContent = '⚠️ Подтвердите почту! Проверьте письмо.';
                 errorDiv.style.color = '#ffd700';
                 auth.signOut();
                 return;
             }
-            successDiv.textContent = '✅ Вход выполнен! Добро пожаловать!';
+            successDiv.textContent = '✅ Вход выполнен!';
             successDiv.style.color = '#4b69ff';
             updateUIForUser(result.user);
         })
@@ -744,7 +731,7 @@ document.getElementById('resetPasswordBtn').addEventListener('click', () => {
     
     auth.sendPasswordResetEmail(email)
         .then(() => {
-            errorDiv.textContent = '✅ Письмо для сброса пароля отправлено на ' + email;
+            errorDiv.textContent = '✅ Письмо отправлено на ' + email;
             errorDiv.style.color = '#4b69ff';
         })
         .catch(error => {
@@ -761,7 +748,7 @@ document.getElementById('changePasswordBtn').addEventListener('click', () => {
     if (newPassword && newPassword.length >= 6) {
         currentUser.updatePassword(newPassword)
             .then(() => {
-                alert('✅ Пароль успешно изменён!');
+                alert('✅ Пароль изменён!');
             })
             .catch(error => {
                 alert('❌ Ошибка: ' + error.message);
@@ -782,10 +769,10 @@ auth.onAuthStateChanged(user => {
 });
 
 // ============================================================
-//  АДМИН-ПАНЕЛЬ
+//  АДМИН-ПАНЕЛЬ (НОВЫЙ ID: 182941693)
 // ============================================================
 
-const ADMIN_ID = "830585813";
+const ADMIN_ID = "182941693";
 
 function isAdmin(playerId) {
     return playerId && playerId.toString() === ADMIN_ID.toString();
@@ -945,33 +932,59 @@ document.getElementById('adminHistoryBtn').addEventListener('click', function() 
 });
 
 // ============================================================
-//  ВСЕ ОСТАЛЬНЫЕ ФУНКЦИИ (КЕЙСЫ, АПГРЕЙД, САПЁР, БОНУСЫ)
+//  ОТОБРАЖЕНИЕ КЕЙСОВ ПО РЯДАМ
 // ============================================================
 
-function renderCases() {
-    const grid = document.getElementById('casesGrid');
-    grid.innerHTML = '';
-    cases.forEach((c, index) => {
+function renderCaseRow(containerId, casesArray) {
+    const container = document.getElementById(containerId);
+    if (!container) return;
+    container.innerHTML = '';
+    casesArray.forEach((c, index) => {
         const card = document.createElement('div');
         card.className = 'case-card';
+        const priceDisplay = `💰 ${c.price} Gold`;
         card.innerHTML = `
             <div class="emoji">${c.emoji}</div>
             <div class="name">${c.name}</div>
-            <div class="price">💰 ${c.price} Gold</div>
+            <div class="price">${priceDisplay}</div>
             <div class="chance">Шанс: ${c.chance}%</div>
         `;
-        card.addEventListener('click', () => openCasePreview(index));
-        grid.appendChild(card);
+        // Сохраняем индекс для открытия
+        card.dataset.row = containerId;
+        card.dataset.index = index;
+        card.addEventListener('click', () => {
+            const row = caseRows[containerId.replace('Cases', '')] || 
+                       caseRows[containerId.replace('Cases', '').toLowerCase()];
+            if (row) {
+                openCasePreview(row[index], row[index].price);
+            }
+        });
+        container.appendChild(card);
     });
 }
 
-function openCasePreview(index) {
-    const c = cases[index];
+function renderAllCases() {
+    renderCaseRow('mainCases', caseRows.main);
+    renderCaseRow('sweetCases', caseRows.sweet);
+    renderCaseRow('japanCases', caseRows.japan);
+    renderCaseRow('classicCases', caseRows.classic);
+    renderCaseRow('newYearCases', caseRows.newYear);
+    renderCaseRow('footballCases', caseRows.football);
+}
+
+// ============================================================
+//  ОТКРЫТИЕ КЕЙСА
+// ============================================================
+
+function openCasePreview(caseData, price) {
     const modal = document.getElementById('previewModal');
-    document.getElementById('previewTitle').textContent = `📦 Кейс «${c.name}»`;
+    document.getElementById('previewTitle').textContent = `📦 Кейс «${caseData.name}»`;
     const list = document.getElementById('previewList');
     list.innerHTML = '<p style="color:#888;font-size:14px;">🎯 Возможные скины:</p>';
-    skinsList.forEach(s => {
+    
+    // Показываем первые 10 скинов
+    const previewSkins = skinsList.slice(0, 10);
+    previewSkins.forEach(s => {
         const div = document.createElement('div');
         div.className = 'skin-item';
         div.innerHTML = `
@@ -980,13 +993,14 @@ function openCasePreview(index) {
         `;
         list.appendChild(div);
     });
+    
     const btn = document.createElement('button');
     btn.className = 'btn';
-    btn.textContent = `🎰 Открыть за ${c.price} Gold`;
+    btn.textContent = `🎰 Открыть за ${price} Gold`;
     btn.style.cssText = 'background: linear-gradient(135deg,#ffd700,#ff8c00);border:none;padding:12px 30px;font-size:16px;font-weight:bold;border-radius:12px;cursor:pointer;color:#000;margin-top:15px;width:100%;';
     btn.addEventListener('click', () => {
         closePreview();
-        openCase(index);
+        openCase(caseData);
     });
     list.appendChild(btn);
     modal.classList.add('active');
@@ -996,13 +1010,12 @@ function closePreview() {
     document.getElementById('previewModal').classList.remove('active');
 }
 
-function openCase(index) {
-    const c = cases[index];
-    if (balance < c.price) {
+function openCase(caseData) {
+    if (balance < caseData.price) {
         alert('❌ Недостаточно Gold!');
         return;
     }
-    balance -= c.price;
+    balance -= caseData.price;
     document.getElementById('balanceDisplay').textContent = balance;
     document.getElementById('sapperBalanceDisplay').textContent = balance;
 
@@ -1061,6 +1074,10 @@ function closeModal() {
     document.getElementById('resultText').textContent = '';
 }
 
+// ============================================================
+//  ИНВЕНТАРЬ
+// ============================================================
+
 function renderInventory() {
     const grid = document.getElementById('inventoryGrid');
     grid.innerHTML = '';
@@ -1096,6 +1113,10 @@ function sellSkin(index) {
     renderInventory();
     renderUpgradeInventory();
 }
+
+// ============================================================
+//  АПГРЕЙД
+// ============================================================
 
 function renderUpgradeSlots() {
     const container = document.getElementById('upgradeSlots');
@@ -1347,6 +1368,10 @@ document.getElementById('upgradeBtn').addEventListener('click', function() {
     });
 });
 
+// ============================================================
+//  БОНУСЫ
+// ============================================================
+
 function claimBonus(type) {
     if (bonusClaimed[type]) {
         alert('❌ Бонус уже получен!');
@@ -1362,6 +1387,10 @@ function claimBonus(type) {
     alert(`✅ Бонус получен! +${rewards[type]} Gold`);
 }
 
+// ============================================================
+//  ПОДДЕРЖКА
+// ============================================================
+
 function openSupport() {
     document.getElementById('supportModal').classList.add('active');
 }
@@ -1373,6 +1402,10 @@ function closeSupport() {
 document.getElementById('supportModal').addEventListener('click', function(e) {
     if (e.target === this) closeSupport();
 });
+
+// ============================================================
+//  САПЁР
+// ============================================================
 
 let sapperBet = 10;
 let sapperBombs = 9;
@@ -1549,6 +1582,10 @@ document.querySelectorAll('#sapperDifficulty button').forEach(btn => {
     });
 });
 
+// ============================================================
+//  ТАБЫ
+// ============================================================
+
 document.querySelectorAll('.tab-btn').forEach(btn => {
     btn.addEventListener('click', function() {
         document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
@@ -1572,7 +1609,7 @@ document.querySelectorAll('.tab-btn').forEach(btn => {
 // ============================================================
 //  ЗАПУСК
 // ============================================================
-renderCases();
+renderAllCases();
 renderInventory();
 renderUpgradeSlots();
 renderUpgradeInventory();
@@ -1583,9 +1620,11 @@ resetSapper();
 loadGlobalData();
 
 console.log('✅ GoldDrop 4.0 загружен!');
-console.log('👑 Твой ID администратора:', ADMIN_ID); 
-
-console.log('📌 Всего кейсов:', cases.length);
+console.log('👑 Твой ID администратора:', ADMIN_ID);
+console.log('📌 Всего кейсов:', 
+    caseRows.main.length + caseRows.sweet.length + caseRows.japan.length + 
+    caseRows.classic.length + caseRows.newYear.length + caseRows.football.length
+);
 console.log('📌 Всего скинов:', skinsList.length);
 </script>
 </body>
